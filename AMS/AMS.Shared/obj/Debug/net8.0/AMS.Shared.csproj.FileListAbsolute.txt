@@ -1,0 +1,15 @@
+C:\Users\Dell\source\repos\AMS\AMS.Shared\bin\Debug\net8.0\AMS.SHARED.deps.json
+C:\Users\Dell\source\repos\AMS\AMS.Shared\bin\Debug\net8.0\AMS.SHARED.dll
+C:\Users\Dell\source\repos\AMS\AMS.Shared\bin\Debug\net8.0\AMS.SHARED.pdb
+C:\Users\Dell\source\repos\AMS\AMS.Shared\bin\Debug\net8.0\AMS.MODELS.dll
+C:\Users\Dell\source\repos\AMS\AMS.Shared\bin\Debug\net8.0\AMS.MODELS.pdb
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.csproj.AssemblyReference.cache
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.AssemblyInfoInputs.cache
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.AssemblyInfo.cs
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.csproj.CoreCompileInputs.cache
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.csproj.CopyComplete
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.dll
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\refint\AMS.SHARED.dll
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\AMS.SHARED.pdb
+C:\Users\Dell\source\repos\AMS\AMS.Shared\obj\Debug\net8.0\ref\AMS.SHARED.dll
