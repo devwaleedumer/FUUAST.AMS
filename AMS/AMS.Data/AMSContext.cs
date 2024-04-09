@@ -116,6 +116,11 @@ namespace AMS.DATA
                 entity.Property(e => e.Description).HasMaxLength(100);
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
+                entity.HasMany(e => e.RoleClaims)
+                      .WithOne(e => e.Role)
+                      .HasForeignKey(e => e.RoleId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_RoleClaims_Role");
             });
 
             modelBuilder.Entity<IdentityUserRole<int>>(entity =>
@@ -138,11 +143,6 @@ namespace AMS.DATA
                 entity.ToTable(name: "UserRoleClaim", "Auth");
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.RoleClaims)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_UserRoleClaim_UserRole");
             });
 
             modelBuilder.Entity<IdentityUserToken<int>>(entity =>

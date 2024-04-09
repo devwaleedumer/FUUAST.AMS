@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QR4MwiI0+CT+7xogPcl1Kt4R8sSP1CkLvOTGNAeFNer7/8DZ6ntrY8DH/ERXLUQqwU7d1lQ17Y0dvXRnZLweyA==",
+  "dgSpecHash": "LGPiVrsfCkv606knLEyFVQgP0ItjboPckC3cfZF5qBIJ7hAS/K2rWjGIw0vYCNdT589QcqmyKFg2pwZRwpkbyw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Dell\\source\\repos\\AMS\\AMS.Services\\AMS.SERVICES.csproj",
+  "projectFilePath": "D:\\AMS\\AMS\\AMS.Services\\AMS.SERVICES.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dell\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
