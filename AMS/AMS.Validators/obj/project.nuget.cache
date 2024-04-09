@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "h8ovoHhHp8hJ6AW+kQgkdIFsu2UoAXdZRW0cCF2dlZ3EQ+bl2GKhffecX2tU4PutOuV1O4rHokpLUd+ao6Lg7w==",
+  "dgSpecHash": "zXVgoeF6obeJTE3xmAzT7QhhLbWJ2raTT+nGt4Kt7eS5Ee8LLf4WchjpqHkVDc0StoIfYMt/fZmuD9HwqNXgXw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Dell\\source\\repos\\AMS\\AMS.Validators\\AMS.VALIDATORS.csproj",
+  "projectFilePath": "D:\\AMS\\AMS\\AMS.Validators\\AMS.VALIDATORS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dell\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AMS.MODELS
-build_property.ProjectDir = C:\Users\Dell\source\repos\AMS\AMS.Models\
+build_property.ProjectDir = D:\AMS\AMS\AMS.Models\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
