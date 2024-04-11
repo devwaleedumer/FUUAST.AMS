@@ -162,7 +162,7 @@ namespace AMS.DATA
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
 
-                entity.Property(e => e.Dob).HasColumnType("datetime")
+                entity.Property(e => e.Dob).HasColumnType("datetime2")
                                                     .HasColumnName("DOB");
                
                 entity.Property(e => e.WhatsappNo).HasMaxLength(15)
@@ -299,11 +299,11 @@ namespace AMS.DATA
 
                 entity.Property(e => e.Percentage).HasColumnType("decimal(6, 2)");
                 
-                entity.Property(e => e.FromYear).HasColumnType("datetime");
+                entity.Property(e => e.FromYear).HasColumnType("datetime2");
 
                 entity.Property(e => e.RollNo).HasMaxLength(50);
                 
-                entity.Property(e => e.ToYear).HasColumnType("datetime");
+                entity.Property(e => e.ToYear).HasColumnType("datetime2");
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
@@ -343,10 +343,10 @@ namespace AMS.DATA
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.InfoConsent).HasDefaultValueSql("((0)");
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0)");
-                entity.Property(e => e.SubmissionDate).HasColumnType("datetime");
-                entity.Property(e => e.IsSubmitted).HasDefaultValueSql("((0)");
+                entity.Property(e => e.InfoConsent).HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                entity.Property(e => e.SubmissionDate).HasColumnType("datetime2");
+                entity.Property(e => e.IsSubmitted).HasDefaultValueSql("((0))");
 
                 entity.HasOne(e => e.FeeChallan)
                         .WithOne(e => e.ApplicationForm)
@@ -360,8 +360,8 @@ namespace AMS.DATA
                 entity.ToTable("FeeChallan", "Domain");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.DueTill).HasColumnType("datetime");
-                entity.Property(e => e.IssuedOn).HasColumnType("datetime");
+                entity.Property(e => e.DueTill).HasColumnType("datetime2");
+                entity.Property(e => e.IssuedOn).HasColumnType("datetime2");
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
                 entity.HasOne(e => e.FeeChallanSubmissionDetail)
@@ -382,7 +382,7 @@ namespace AMS.DATA
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
                 entity.Property(e => e.DocumentUrl)
                                     .IsUnicode(false);
-                entity.Property(e => e.SubmissionDate).HasColumnType("datetime");
+                entity.Property(e => e.SubmissionDate).HasColumnType("datetime2");
             });
 
             modelBuilder.Entity<Guardian>(entity => {
@@ -453,7 +453,7 @@ namespace AMS.DATA
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.StartDate).HasColumnType("datetime");
+                entity.Property(e => e.StartDate).HasColumnType("datetime2");
                 entity.Property(e => e.Name)
                       .HasMaxLength(50)
                       .IsUnicode(false);
@@ -465,7 +465,7 @@ namespace AMS.DATA
                       .HasConstraintName("FK_AcademicYear_AdmissionSession");
 
 
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.EndDate).HasColumnType("datetime2");
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
             });
 
@@ -577,8 +577,8 @@ namespace AMS.DATA
                       .HasMaxLength(50)
                       .IsUnicode(false);
 
-                entity.Property(e => e.StartDate).HasColumnType("datetime");
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.StartDate).HasColumnType("datetime2");
+                entity.Property(e => e.EndDate).HasColumnType("datetime2");
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
                 entity.HasMany(e => e.ApplicationForms)
@@ -596,7 +596,6 @@ namespace AMS.DATA
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.ConfigureWarnings(wa => wa.Ignore(RelationalEventId.ForeignKeyPropertiesMappedToUnrelatedTables));
 
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
