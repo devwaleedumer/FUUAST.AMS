@@ -30,7 +30,14 @@ namespace AMS.SERVICES.Identity.Services
             _jwtSettings = jwtSettings.Value;
             _securitySettings = securitySettings.Value;
         }
-
+        /// <summary>
+        /// Get Security Tokens i.e Access and Refresh
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="UnauthorizedException"></exception>
         public async Task<TokenResponse> GetTokenAsync(TokenRequest request, string ipAddress, CancellationToken cancellationToken)
         {
             if (await _userManager.FindByEmailAsync(request.Email.Trim().Normalize()) is not { } user
@@ -53,6 +60,13 @@ namespace AMS.SERVICES.Identity.Services
             return await GenerateTokensAndUpdateUser(user, ipAddress);
         }
 
+        /// <summary>
+        /// Generate pair of Token refresh and access token along expiry time
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="UnauthorizedException"></exception>
         public async Task<TokenResponse> RefreshTokenAsync(RefreshTokenRequest request, string ipAddress)
         {
             var userPrincipal = GetPrincipalFromExpiredToken(request.Token);
@@ -70,7 +84,12 @@ namespace AMS.SERVICES.Identity.Services
 
             return await GenerateTokensAndUpdateUser(user, ipAddress);
         }
-
+        /// <summary>
+        /// Create Tokens
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns>TokenResponse</returns>
         private async Task<TokenResponse> GenerateTokensAndUpdateUser(ApplicationUser user, string ipAddress)
         {
             string token = GenerateJwt(user, ipAddress);
@@ -82,10 +101,20 @@ namespace AMS.SERVICES.Identity.Services
 
             return new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime.Value);
         }
-
+        /// <summary>
+        ///  Generate JWT security access token Access Token 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns cref="string"></returns>
         private string GenerateJwt(ApplicationUser user, string ipAddress) =>
             GenerateEncryptedToken(GetSigningCredentials(), GetClaims(user, ipAddress));
-
+        /// <summary>
+        /// Generate Claims for Application user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns>Claims</returns>
         private IEnumerable<Claim> GetClaims(ApplicationUser user, string ipAddress) =>
             new List<Claim>
             {
@@ -97,6 +126,10 @@ namespace AMS.SERVICES.Identity.Services
             new(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
             };
 
+        /// <summary>
+        /// Random Bas64 Encoded string generated using RandomNumberGenerator
+        /// </summary>
+        /// <returns>Base64EncodedString</returns>
         private static string GenerateRefreshToken()
         {
             byte[] randomNumber = new byte[32];
@@ -105,6 +138,13 @@ namespace AMS.SERVICES.Identity.Services
             return Convert.ToBase64String(randomNumber);
         }
 
+
+        /// <summary>
+        /// Generates Encrypted Token 
+        /// </summary>
+        /// <param name="signingCredentials"></param>
+        /// <param name="claims"></param>
+        /// <returns></returns>
         private string GenerateEncryptedToken(SigningCredentials signingCredentials, IEnumerable<Claim> claims)
         {
             var token = new JwtSecurityToken(
@@ -114,7 +154,12 @@ namespace AMS.SERVICES.Identity.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
         }
-
+        /// <summary>
+        ///  ClaimsPrincipal from expired Access Token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns cref="ClaimsPrincipal">ClaimsPrinciple</returns>
+        /// <exception cref="UnauthorizedException"></exception>
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
@@ -140,6 +185,10 @@ namespace AMS.SERVICES.Identity.Services
             return principal;
         }
 
+        /// <summary>
+        /// Generate Signing Credentials using jwt secrets
+        /// </summary>
+        /// <returns>SigningCredentials</returns>
         private SigningCredentials GetSigningCredentials()
         {
             byte[] secret = Encoding.UTF8.GetBytes(_jwtSettings.Key);

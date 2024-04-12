@@ -17,7 +17,6 @@ namespace AMS.SHARED.Constants.Authorization
         public const string Export = nameof(Export);
         public const string Generate = nameof(Generate);
         public const string Clean = nameof(Clean);
-        public const string UpgradeSubscription = nameof(UpgradeSubscription);
     }
 
     public static class AMSResource
@@ -66,10 +65,6 @@ namespace AMS.SHARED.Constants.Authorization
         new("Delete Brands", AMSAction.Delete, AMSResource.Brands),
         new("Generate Brands", AMSAction.Generate, AMSResource.Brands),
         new("Clean Brands", AMSAction.Clean, AMSResource.Brands),
-        new("View Tenants", AMSAction.View, AMSResource.Tenants, IsRoot: true),
-        new("Create Tenants", AMSAction.Create, AMSResource.Tenants, IsRoot: true),
-        new("Update Tenants", AMSAction.Update, AMSResource.Tenants, IsRoot: true),
-        new("Upgrade Tenant Subscription", AMSAction.UpgradeSubscription, AMSResource.Tenants, IsRoot: true)
         };
 
         public static IReadOnlyList<AMSPermission> All { get; } = new ReadOnlyCollection<AMSPermission>(_all);

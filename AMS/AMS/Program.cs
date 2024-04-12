@@ -1,8 +1,8 @@
 
 using AMS.Extensions;
+using AMS.SHARED.ActionFilters;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using System.Net.Mime;
 
 
 namespace AMS
@@ -36,7 +36,14 @@ namespace AMS
             //builder.Services.AddProblemDetails();
 
             // Add services to the container.
-            builder.Services.AddControllers().ConfigureApiBehaviorOptions(options => 
+            builder.Services.AddControllers(opt =>
+            {
+                //opt.Filters.Add<ApiValidationFilter>();
+                //opt.ModelValidatorProviders.Clear();
+
+
+            })
+                .ConfigureApiBehaviorOptions(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {

@@ -12,6 +12,7 @@ using AMS.SERVICES.Identity.Interfaces;
 using AMS.SERVICES.Identity.Services;
 using AMS.SERVICES.MailService;
 using AMS.SHARED.Interfaces.CurrentUser;
+using AMS.SHARED.Validator;
 using AMS.VALIDATORS.Identity.Role;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -169,13 +170,18 @@ namespace AMS.Extensions
         public static IServiceCollection AddExceptionMiddleware(this IServiceCollection services) =>
     services.AddScoped<ExceptionMiddleware>();
 #pragma warning disable CS0618 // Type or member is obsolete
-        public static IServiceCollection AddFluentValidation(this IServiceCollection services) =>
-          services.AddFluentValidation(config =>
-          {
-              config.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateOrUpdateRoleRequestValidator)));
-              config.AutomaticValidationEnabled = true;
+        public static IServiceCollection AddFluentValidation(this IServiceCollection services)
+        {
+            services.AddFluentValidation(config =>
+            {
+                config.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateOrUpdateRoleRequestValidator)));
+                config.AutomaticValidationEnabled = true;
 
-          });
+            });
+            services.AddSingleton<ICustomValidatorFactory, CustomValidatorFactory>();
+            return services;
+
+        }
 #pragma warning restore CS0618 // Type or member is obsolete
         public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder app) =>
             app.UseMiddleware<ExceptionMiddleware>();

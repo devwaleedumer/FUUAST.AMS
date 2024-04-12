@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace AMS.SHARED.Constants.Authorization
 {
-    public static class FSHRoles
+    public static class AMSRoles
     {
         public const string Admin = nameof(Admin);
+        public const string SuperAdmin = nameof(SuperAdmin);
         public const string Basic = nameof(Basic);
         public const string Applicant = nameof(Applicant);
 
@@ -17,7 +18,8 @@ namespace AMS.SHARED.Constants.Authorization
         {
         Admin,
         Basic,
-        Applicant
+        Applicant,
+        SuperAdmin
     });
 
         public static bool IsDefault(string roleName) => DefaultRoles.Any(r => r == roleName);

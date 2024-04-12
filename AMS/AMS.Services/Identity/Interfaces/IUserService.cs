@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AMS.MODELS.Identity.User;
+
 
 namespace AMS.SERVICES.Identity.Interfaces
 {
     public interface IUserService
     {
         //Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken);
-
         Task<bool> ExistsWithNameAsync(string name);
 
         Task<bool> ExistsWithEmailAsync(string email, int? exceptId = null);
@@ -32,10 +27,10 @@ namespace AMS.SERVICES.Identity.Interfaces
         //Task ToggleStatusAsync(ToggleUserStatusRequest request, CancellationToken cancellationToken);
 
         ////Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal);
-        //Task<string> CreateAsync(CreateUserRequest request, string origin);
+        Task<string> CreateAsync(CreateUserRequest request, string origin);
         //Task UpdateAsync(UpdateUserRequest request, string userId);
 
-        //Task<string> ConfirmEmailAsync(int userId, string code, string tenant, CancellationToken cancellationToken);
+        Task<string> ConfirmEmailAsync(int userId, string code, CancellationToken cancellationToken);
         ////Task<string> ConfirmPhoneNumberAsync(int userId, string code);
 
         //Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
