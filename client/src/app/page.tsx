@@ -1,9 +1,5 @@
-import Image from "next/image";
-
+"use client";
+import Signup from "@/components/Authentication/Signup/Signup";
 export default function Home() {
-  return (
-    <section className="text-center">
-      <h1>Hello FUUAST HMS</h1>
-    </section>
-  );
+  return <Signup />;
 }
