@@ -34,7 +34,6 @@ namespace AMS.DOMAIN.Entities.AMS
         public virtual ParentInfo? ParentInfo { get; set; }
         public virtual EmergencyContact? ContactInfo { get; set; }
         public virtual ApplicationForm? ApplicationForm { get; set; }
-
         public virtual ApplicationUser? ApplicationUser { get; set; }
 
         public virtual ICollection<Address>? Addresses { get; set; }

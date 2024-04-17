@@ -31,10 +31,10 @@ namespace AMS.SERVICES.Identity.Interfaces
         //Task UpdateAsync(UpdateUserRequest request, string userId);
 
         Task<string> ConfirmEmailAsync(int userId, string code, CancellationToken cancellationToken);
-        ////Task<string> ConfirmPhoneNumberAsync(int userId, string code);
+        //Task<string> ConfirmPhoneNumberAsync(int userId, string code);
 
-        //Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
-        //Task<string> ResetPasswordAsync(ResetPasswordRequest request);
-        //Task ChangePasswordAsync(ChangePasswordRequest request, string userId);
+        Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
+        Task<string> ResetPasswordAsync(ResetPasswordRequest request);
+        Task ChangePasswordAsync(ChangePasswordRequest request, string userId);
     }
 }

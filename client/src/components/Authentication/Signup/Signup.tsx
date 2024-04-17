@@ -80,7 +80,12 @@ const Signup: FC<SignupProps> = ({}) => {
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>
+                        Full Name
+                        <FormDescription className="ml-1 inline">
+                          (as per CNIC)
+                        </FormDescription>
+                      </FormLabel>
                       <FormControl>
                         <Input placeholder="Full Name" {...field} />
                       </FormControl>

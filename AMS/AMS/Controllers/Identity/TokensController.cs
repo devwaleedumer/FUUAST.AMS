@@ -63,6 +63,8 @@ namespace AMS.Controllers.Identity
             return Ok(await _tokenService.RefreshTokenAsync(request, GetIpAddress()!));
         }
 
+        
+        // helper function
         private string? GetIpAddress() =>
        Request.Headers.ContainsKey("X-Forwarded-For")
            ? Request.Headers["X-Forwarded-For"]

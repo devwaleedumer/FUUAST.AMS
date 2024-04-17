@@ -19,21 +19,13 @@ namespace AMS
 
             builder.Logging.ClearProviders();
             builder.Logging.AddSerilog(Log.Logger);
-
             var configuration = builder.Configuration;
             var envirnoment = builder.Environment;
 
             builder.Services.AddIdentity();
-
             builder.Services.AddDatabaseServices(envirnoment, configuration);
-
-            builder.Services.AddApplicationServices(configuration);
-
             builder.Services.AddCurrentUserService();
-
             builder.Services.AddFluentValidation();
-
-            //builder.Services.AddProblemDetails();
 
             // Add services to the container.
             builder.Services.AddControllers(opt =>
@@ -52,6 +44,7 @@ namespace AMS
             });
 
             builder.Services.AddApplicationServices(configuration);
+            builder.Services.AddHangfireServices(configuration);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
            builder.Services.AddSwaggerService();
             builder.Services.AddExceptionMiddleware();

@@ -26,18 +26,20 @@ namespace AMS.Controllers.Identity
         ///     POST api/register
         ///     {        
         ///       "fullname": "Waleed Umer",
-        ///       "password": "xxxx",
-        ///       "fullname": "xxxx",
         ///       "email": "dev.waleedumer@gmail.com"        
+        ///       "password": "xxxx",
+        ///       "confirmPassword": "xxxx",
         ///     }
         /// </remarks>
         /// <param name="createUserRequest"></param>  
         ///  <returns>Sends confirmation mail and success or failure  messsage</returns>
         /// <response code="200">Returns the success or failure message </response>
+        /// <response code="409">User alread exists </response>
         /// <response code="500">If User Creation error occured</response>    
         /// <response code="422">Model validation error</response>    
         [HttpPost("register")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(409)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
         [Produces("application/json")]

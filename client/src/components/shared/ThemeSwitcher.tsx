@@ -19,12 +19,14 @@ function ThemeSwitcher({}: Props) {
           className="cursor-pointer"
           fill="black"
           size={25}
+          fontWeight={400}
           onClick={() => setTheme("dark")}
         />
       ) : (
         <BiSun
           className="cursor-pointer"
           size={25}
+          fontWeight={400}
           fill="white"
           onClick={() => setTheme("light")}
         />

@@ -6,15 +6,19 @@ using AMS.Middlewares;
 using AMS.MODELS.MODELS.SettingModels.Identity.Jwt;
 using AMS.MODELS.MODELS.SettingModels.Identity.User;
 using AMS.Services.CurrentUser;
+using AMS.Services.Hangfire;
 using AMS.Services.MailService;
 using AMS.SERVICES.EmailTemplateService;
 using AMS.SERVICES.Identity.Interfaces;
 using AMS.SERVICES.Identity.Services;
 using AMS.SERVICES.MailService;
 using AMS.SHARED.Interfaces.CurrentUser;
+using AMS.SHARED.Interfaces.Hangfire;
 using AMS.SHARED.Validator;
 using AMS.VALIDATORS.Identity.Role;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -113,7 +117,6 @@ namespace AMS.Extensions
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             });
-
             services
           .AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
           .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
@@ -199,25 +202,24 @@ namespace AMS.Extensions
            app.UseMiddleware<CurrentUserMiddleware>();
 
 
-        //public static IServiceCollection AddHangfireServices(this IServiceCollection services, IConfiguration configuration)
-        //{
-        //    var connString = configuration.GetConnectionString("DefaultConnection");
-        //    services.AddHangfire(configuration => configuration
-        //            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-        //            .UseSimpleAssemblyNameTypeSerializer()
-        //            .UseRecommendedSerializerSettings()
-        //            .UseSimpleAssemblyNameTypeSerializer()
-        //            .UseSqlServerStorage(connString, new SqlServerStorageOptions
-        //            {
-        //                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-        //                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-        //                QueuePollInterval = TimeSpan.Zero,
-        //                UseRecommendedIsolationLevel = true,
-        //                DisableGlobalLocks = true
-        //            }));
-        //    services.AddHangfireServer();
-        //    return services;
-        //}
+        public static IServiceCollection AddHangfireServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connString = configuration.GetConnectionString("DefaultConnection");
+            services.AddHangfire(configuration => configuration
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseSqlServerStorage(connString, new SqlServerStorageOptions
+                    {
+                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                        QueuePollInterval = TimeSpan.Zero,
+                        UseRecommendedIsolationLevel = true,
+                        DisableGlobalLocks = true
+                    }));
+            services.AddTransient<IJobService,HangfireService>();
+            return services;
+        }
 
         //public static void LoadAppSettings(IAppSettingsService appSettingsService, ILogger<Startup> logger)
         //{
