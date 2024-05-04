@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMS.DATA.Migrations
 {
     [DbContext(typeof(AMSContext))]
-    [Migration("20240411005858_Initial-Migration")]
-    partial class InitialMigration
+    [Migration("20240503163928_InitialMigrations")]
+    partial class InitialMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -129,6 +129,9 @@ namespace AMS.DATA.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ApplicationFormId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ApplicationUserId")
                         .HasColumnType("int");
 
@@ -146,7 +149,8 @@ namespace AMS.DATA.Migrations
 
                     b.Property<string>("DisablitityDetails")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("Dob")
                         .HasColumnType("datetime2")
@@ -214,6 +218,9 @@ namespace AMS.DATA.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationFormId")
+                        .IsUnique();
+
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Applicant", "Domain");
@@ -231,20 +238,15 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BorardOrUniversityName")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .IsUnicode(false)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<int?>("DegreeDetailId")
+                    b.Property<int?>("DegreeTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ExamTypeEid")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("FromYear")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GradingTypeEid")
+                    b.Property<int>("FromYear")
                         .HasColumnType("int");
 
                     b.Property<int?>("InsertedBy")
@@ -268,21 +270,22 @@ namespace AMS.DATA.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal?>("ObtainedMarks")
-                        .HasColumnType("decimal(8, 2)");
+                    b.Property<int?>("ObtainedMarks")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("Percentage")
-                        .HasColumnType("decimal(6, 2)");
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal");
 
                     b.Property<string>("RollNo")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("ToYear")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ToYear")
+                        .HasColumnType("int");
 
-                    b.Property<decimal?>("TotalMarks")
-                        .HasColumnType("decimal(8, 2)");
+                    b.Property<int?>("TotalMarks")
+                        .HasColumnType("int");
 
                     b.Property<string>("TranscriptUrl")
                         .HasColumnType("nvarchar(max)");
@@ -297,7 +300,7 @@ namespace AMS.DATA.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.HasIndex("DegreeDetailId");
+                    b.HasIndex("DegreeTypeId");
 
                     b.ToTable("ApplicantDegree", "Domain");
                 });
@@ -310,13 +313,10 @@ namespace AMS.DATA.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ApplicantId")
-                        .HasColumnType("int");
-
                     b.Property<bool?>("InfoConsent")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<int?>("InsertedBy")
                         .HasColumnType("int");
@@ -332,7 +332,7 @@ namespace AMS.DATA.Migrations
                     b.Property<bool>("IsSubmitted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<int>("SessionId")
                         .HasColumnType("int");
@@ -350,10 +350,6 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicantId")
-                        .IsUnique()
-                        .HasFilter("[ApplicantId] IS NOT NULL");
 
                     b.HasIndex("SessionId");
 
@@ -501,7 +497,7 @@ namespace AMS.DATA.Migrations
                     b.Property<bool>("IsSubmitted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime>("SubmissionDate")
                         .HasColumnType("datetime2");
@@ -562,15 +558,15 @@ namespace AMS.DATA.Migrations
 
                     b.Property<string>("Relation")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPerMonthExpenses")
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("TotalPerMonthIncome")
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -604,7 +600,6 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("varchar(20)");
 
                     b.Property<string>("FatherContact")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
                         .HasColumnType("varchar(15)");
@@ -616,7 +611,6 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("FatherOccupation")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
@@ -635,7 +629,7 @@ namespace AMS.DATA.Migrations
                     b.Property<bool>("IsFatherDeceased")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<string>("MotherName")
                         .IsRequired()
@@ -695,8 +689,7 @@ namespace AMS.DATA.Migrations
 
                     b.HasIndex("ApplicationFormId");
 
-                    b.HasIndex("ProgramId")
-                        .IsUnique();
+                    b.HasIndex("ProgramId");
 
                     b.ToTable("ProgramApplied", "Domain");
                 });
@@ -710,7 +703,7 @@ namespace AMS.DATA.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<int?>("InsertedBy")
                         .HasColumnType("int");
@@ -730,7 +723,7 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -755,7 +748,7 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<int?>("InsertedBy")
                         .HasColumnType("int");
@@ -777,7 +770,7 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -830,43 +823,7 @@ namespace AMS.DATA.Migrations
                     b.ToTable("DegreeLevel", "Lookup");
                 });
 
-            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Department", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("InsertedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("InsertedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool?>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Department", "Lookup");
-                });
-
-            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.PreviousDegreeDetail", b =>
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.DegreeType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -877,12 +834,8 @@ namespace AMS.DATA.Migrations
                     b.Property<int>("DegreeLevelId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DegreeName")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("DegreeName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
@@ -911,6 +864,83 @@ namespace AMS.DATA.Migrations
                     b.ToTable("PreviousDegreeDetail", "Lookup");
                 });
 
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FaculityId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InsertedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FaculityId");
+
+                    b.ToTable("Department", "Lookup");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Faculity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("InsertedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Faculity", "Lookup");
+                });
+
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Program", b =>
                 {
                     b.Property<int>("Id")
@@ -923,7 +953,8 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Duration")
-                        .HasColumnType("decimal(2,1)");
+                        .HasPrecision(2, 1)
+                        .HasColumnType("decimal");
 
                     b.Property<int?>("InsertedBy")
                         .HasColumnType("int");
@@ -937,7 +968,9 @@ namespace AMS.DATA.Migrations
                         .HasDefaultValueSql("((0))");
 
                     b.Property<bool>("IsProgramOffered")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -945,13 +978,10 @@ namespace AMS.DATA.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("ProgramCode")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProgramTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftEid")
+                    b.Property<int>("TimeShiftId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UpdatedBy")
@@ -965,6 +995,8 @@ namespace AMS.DATA.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("ProgramTypeId");
+
+                    b.HasIndex("TimeShiftId");
 
                     b.ToTable("Program", "Lookup");
                 });
@@ -1003,6 +1035,48 @@ namespace AMS.DATA.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProgramType", "Lookup");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.TimeShift", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int?>("InsertedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeShift", "Lookup");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Identity.ApplicationRole", b =>
@@ -1133,7 +1207,7 @@ namespace AMS.DATA.Migrations
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1297,11 +1371,20 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.Applicant", b =>
                 {
+                    b.HasOne("AMS.DOMAIN.Entities.AMS.ApplicationForm", "ApplicationForm")
+                        .WithOne("Applicant")
+                        .HasForeignKey("AMS.DOMAIN.Entities.AMS.Applicant", "ApplicationFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ApplicationForm_Applicant");
+
                     b.HasOne("AMS.DOMAIN.Identity.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ApplicationForm");
 
                     b.Navigation("ApplicationUser");
                 });
@@ -1314,30 +1397,25 @@ namespace AMS.DATA.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Degree_Applicant");
 
-                    b.HasOne("AMS.DOMAIN.Entities.Lookups.PreviousDegreeDetail", "DegreeDetail")
-                        .WithMany()
-                        .HasForeignKey("DegreeDetailId");
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.DegreeType", "DegreeType")
+                        .WithMany("ApplicantDegrees")
+                        .HasForeignKey("DegreeTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_Degree_DegreeType");
 
                     b.Navigation("Applicant");
 
-                    b.Navigation("DegreeDetail");
+                    b.Navigation("DegreeType");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.ApplicationForm", b =>
                 {
-                    b.HasOne("AMS.DOMAIN.Entities.AMS.Applicant", "Applicant")
-                        .WithOne("ApplicationForm")
-                        .HasForeignKey("AMS.DOMAIN.Entities.AMS.ApplicationForm", "ApplicantId")
-                        .HasConstraintName("FK_Applicant_ApplicationForm");
-
                     b.HasOne("AMS.DOMAIN.Entities.Lookups.AdmissionSession", "Session")
                         .WithMany("ApplicationForms")
                         .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_SessionApplicationForms");
-
-                    b.Navigation("Applicant");
 
                     b.Navigation("Session");
                 });
@@ -1349,7 +1427,7 @@ namespace AMS.DATA.Migrations
                         .HasForeignKey("AMS.DOMAIN.Entities.AMS.EmergencyContact", "ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("Fk_Applicant_EmergencyContact");
+                        .HasConstraintName("FK_Applicant_EmergencyContact");
 
                     b.Navigation("Applicant");
                 });
@@ -1385,7 +1463,7 @@ namespace AMS.DATA.Migrations
                         .HasForeignKey("AMS.DOMAIN.Entities.AMS.Guardian", "ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("Fk_Applicant_Guardian");
+                        .HasConstraintName("FK_Applicant_Guardian");
 
                     b.Navigation("Applicant");
                 });
@@ -1412,11 +1490,11 @@ namespace AMS.DATA.Migrations
                         .HasConstraintName("FK_ProgramApplied_ApplicationForm");
 
                     b.HasOne("AMS.DOMAIN.Entities.Lookups.Program", "Program")
-                        .WithOne("ProgramApplied")
-                        .HasForeignKey("AMS.DOMAIN.Entities.AMS.ProgramApplied", "ProgramId")
+                        .WithMany("ProgramsApplied")
+                        .HasForeignKey("ProgramId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_ProgramApplied_Program");
+                        .HasConstraintName("FK_ProgramApplied_Programs");
 
                     b.Navigation("ApplicationForm");
 
@@ -1440,16 +1518,27 @@ namespace AMS.DATA.Migrations
                     b.Navigation("Program");
                 });
 
-            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.PreviousDegreeDetail", b =>
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.DegreeType", b =>
                 {
                     b.HasOne("AMS.DOMAIN.Entities.Lookups.DegreeLevel", "DegreeLevel")
-                        .WithMany("PreviousDegreeDetails")
+                        .WithMany("DegreeTypes")
                         .HasForeignKey("DegreeLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_DegreeLevel_PreviousDegreeDetails");
+                        .IsRequired();
 
                     b.Navigation("DegreeLevel");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Department", b =>
+                {
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.Faculity", "Faculity")
+                        .WithMany("Departments")
+                        .HasForeignKey("FaculityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Department_Faculity");
+
+                    b.Navigation("Faculity");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Program", b =>
@@ -1468,9 +1557,18 @@ namespace AMS.DATA.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_ProgramType_Programs");
 
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.TimeShift", "TimeShift")
+                        .WithMany("Programs")
+                        .HasForeignKey("TimeShiftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_TimeShift_Program");
+
                     b.Navigation("Department");
 
                     b.Navigation("ProgramType");
+
+                    b.Navigation("TimeShift");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Identity.ApplicationRoleClaim", b =>
@@ -1531,8 +1629,6 @@ namespace AMS.DATA.Migrations
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("ApplicationForm");
-
                     b.Navigation("ContactInfo");
 
                     b.Navigation("Degrees");
@@ -1544,6 +1640,8 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.ApplicationForm", b =>
                 {
+                    b.Navigation("Applicant");
+
                     b.Navigation("FeeChallan");
 
                     b.Navigation("ProgramsApplied");
@@ -1566,7 +1664,12 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.DegreeLevel", b =>
                 {
-                    b.Navigation("PreviousDegreeDetails");
+                    b.Navigation("DegreeTypes");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.DegreeType", b =>
+                {
+                    b.Navigation("ApplicantDegrees");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Department", b =>
@@ -1574,12 +1677,22 @@ namespace AMS.DATA.Migrations
                     b.Navigation("Programs");
                 });
 
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Faculity", b =>
+                {
+                    b.Navigation("Departments");
+                });
+
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Program", b =>
                 {
-                    b.Navigation("ProgramApplied");
+                    b.Navigation("ProgramsApplied");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.ProgramType", b =>
+                {
+                    b.Navigation("Programs");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.TimeShift", b =>
                 {
                     b.Navigation("Programs");
                 });

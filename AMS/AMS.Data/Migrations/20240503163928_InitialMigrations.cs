@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AMS.DATA.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,8 +28,8 @@ namespace AMS.DATA.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "date", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "date", nullable: false),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
                     InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -82,13 +82,13 @@ namespace AMS.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Department",
+                name: "Faculity",
                 schema: "Lookup",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
                     InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -97,7 +97,7 @@ namespace AMS.DATA.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Department", x => x.Id);
+                    table.PrimaryKey("PK_Faculity", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -142,6 +142,26 @@ namespace AMS.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TimeShift",
+                schema: "Lookup",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TimeShift", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 schema: "Auth",
                 columns: table => new
@@ -152,7 +172,7 @@ namespace AMS.DATA.Migrations
                     ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((0))"),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
                     InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -187,8 +207,7 @@ namespace AMS.DATA.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DegreeLevelId = table.Column<int>(type: "int", nullable: false),
-                    DegreeName = table.Column<int>(type: "int", unicode: false, maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    DegreeName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
                     InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -199,7 +218,7 @@ namespace AMS.DATA.Migrations
                 {
                     table.PrimaryKey("PK_PreviousDegreeDetail", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DegreeLevel_PreviousDegreeDetails",
+                        name: "FK_PreviousDegreeDetail_DegreeLevel_DegreeLevelId",
                         column: x => x.DegreeLevelId,
                         principalSchema: "Lookup",
                         principalTable: "DegreeLevel",
@@ -208,19 +227,14 @@ namespace AMS.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Program",
+                name: "Department",
                 schema: "Lookup",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    ProgramCode = table.Column<int>(type: "int", nullable: false),
-                    ProgramTypeId = table.Column<int>(type: "int", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    IsProgramOffered = table.Column<bool>(type: "bit", nullable: false),
-                    Duration = table.Column<decimal>(type: "decimal(2,1)", nullable: false),
-                    ShiftEid = table.Column<int>(type: "int", nullable: false),
+                    FaculityId = table.Column<int>(type: "int", nullable: false),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
                     InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -229,19 +243,12 @@ namespace AMS.DATA.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Program", x => x.Id);
+                    table.PrimaryKey("PK_Department", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Department_Program",
-                        column: x => x.DepartmentId,
+                        name: "FK_Department_Faculity",
+                        column: x => x.FaculityId,
                         principalSchema: "Lookup",
-                        principalTable: "Department",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProgramType_Programs",
-                        column: x => x.ProgramTypeId,
-                        principalSchema: "Lookup",
-                        principalTable: "ProgramType",
+                        principalTable: "Faculity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -270,44 +277,6 @@ namespace AMS.DATA.Migrations
                         column: x => x.RoleId,
                         principalSchema: "Auth",
                         principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Applicant",
-                schema: "Domain",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CNIC = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
-                    IsDisabled = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))"),
-                    DisablitityDetails = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    WhatsappNo = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    NextOfKinName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    NextOfKinRelation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    DomicileDistrict = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    DomicileProvince = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    ApplicationUserId = table.Column<int>(type: "int", nullable: false),
-                    Religion = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Gender = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    BloodGroup = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    InsertedBy = table.Column<int>(type: "int", nullable: true),
-                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Applicant", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Applicant_User_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalSchema: "Auth",
-                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -407,6 +376,51 @@ namespace AMS.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Program",
+                schema: "Lookup",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    ProgramTypeId = table.Column<int>(type: "int", nullable: false),
+                    TimeShiftId = table.Column<int>(type: "int", nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    IsProgramOffered = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Duration = table.Column<decimal>(type: "decimal(2,1)", precision: 2, scale: 1, nullable: false),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Program", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Department_Program",
+                        column: x => x.DepartmentId,
+                        principalSchema: "Lookup",
+                        principalTable: "Department",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProgramType_Programs",
+                        column: x => x.ProgramTypeId,
+                        principalSchema: "Lookup",
+                        principalTable: "ProgramType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TimeShift_Program",
+                        column: x => x.TimeShiftId,
+                        principalSchema: "Lookup",
+                        principalTable: "TimeShift",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AdmissionSession",
                 schema: "Lookup",
                 columns: table => new
@@ -414,8 +428,8 @@ namespace AMS.DATA.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "date", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "date", nullable: true),
                     AcademicYearId = table.Column<int>(type: "int", nullable: true),
                     ProgramId = table.Column<int>(type: "int", nullable: true),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
@@ -443,175 +457,6 @@ namespace AMS.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Address",
-                schema: "Domain",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StreetAddress = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    Province = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    District = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    PostalCode = table.Column<int>(type: "int", nullable: false),
-                    AddressTypeEid = table.Column<int>(type: "int", nullable: false),
-                    ApplicantId = table.Column<int>(type: "int", nullable: false),
-                    InsertedBy = table.Column<int>(type: "int", nullable: true),
-                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Address", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Address_Applicant",
-                        column: x => x.ApplicantId,
-                        principalSchema: "Domain",
-                        principalTable: "Applicant",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ApplicantDegree",
-                schema: "Domain",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    InstituteName = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    BorardOrUniversityName = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    FromYear = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ToYear = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    MajorSubject = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    RollNo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    GradingTypeEid = table.Column<int>(type: "int", nullable: false),
-                    ExamTypeEid = table.Column<int>(type: "int", nullable: false),
-                    TranscriptUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalMarks = table.Column<decimal>(type: "decimal(8,2)", nullable: true),
-                    ObtainedMarks = table.Column<decimal>(type: "decimal(8,2)", nullable: true),
-                    Percentage = table.Column<decimal>(type: "decimal(6,2)", nullable: true),
-                    ApplicantId = table.Column<int>(type: "int", nullable: true),
-                    DegreeDetailId = table.Column<int>(type: "int", nullable: true),
-                    InsertedBy = table.Column<int>(type: "int", nullable: true),
-                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicantDegree", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ApplicantDegree_PreviousDegreeDetail_DegreeDetailId",
-                        column: x => x.DegreeDetailId,
-                        principalSchema: "Lookup",
-                        principalTable: "PreviousDegreeDetail",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Degree_Applicant",
-                        column: x => x.ApplicantId,
-                        principalSchema: "Domain",
-                        principalTable: "Applicant",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EmergencyContact",
-                schema: "Domain",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ContactNO = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Relation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    ApplicantId = table.Column<int>(type: "int", nullable: false),
-                    InsertedBy = table.Column<int>(type: "int", nullable: true),
-                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmergencyContact", x => x.Id);
-                    table.ForeignKey(
-                        name: "Fk_Applicant_EmergencyContact",
-                        column: x => x.ApplicantId,
-                        principalSchema: "Domain",
-                        principalTable: "Applicant",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Guardian",
-                schema: "Domain",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Occupation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Relation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    TotalPerMonthIncome = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    TotalPerMonthExpenses = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    PhoneNo = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    ApplicantId = table.Column<int>(type: "int", nullable: false),
-                    InsertedBy = table.Column<int>(type: "int", nullable: true),
-                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Guardian", x => x.Id);
-                    table.ForeignKey(
-                        name: "Fk_Applicant_Guardian",
-                        column: x => x.ApplicantId,
-                        principalSchema: "Domain",
-                        principalTable: "Applicant",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ParentInfo",
-                schema: "Domain",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FatherName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    MotherName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    FatherContact = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    FatherOccupation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    FatherCNIC = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
-                    IsFatherDeceased = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((0))"),
-                    ApplicantId = table.Column<int>(type: "int", nullable: false),
-                    InsertedBy = table.Column<int>(type: "int", nullable: true),
-                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ParentInfo", x => x.Id);
-                    table.ForeignKey(
-                        name: "Fk_Applicant_ParentInfo",
-                        column: x => x.ApplicantId,
-                        principalSchema: "Domain",
-                        principalTable: "Applicant",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ApplicationForm",
                 schema: "Domain",
                 columns: table => new
@@ -619,11 +464,10 @@ namespace AMS.DATA.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SessionId = table.Column<int>(type: "int", nullable: false),
-                    ApplicantId = table.Column<int>(type: "int", nullable: true),
-                    InfoConsent = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))"),
+                    InfoConsent = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
                     StatusEid = table.Column<int>(type: "int", nullable: true),
                     SubmissionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsSubmitted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((0))"),
+                    IsSubmitted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
                     InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -634,16 +478,56 @@ namespace AMS.DATA.Migrations
                 {
                     table.PrimaryKey("PK_ApplicationForm", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Applicant_ApplicationForm",
-                        column: x => x.ApplicantId,
-                        principalSchema: "Domain",
-                        principalTable: "Applicant",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_SessionApplicationForms",
                         column: x => x.SessionId,
                         principalSchema: "Lookup",
                         principalTable: "AdmissionSession",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Applicant",
+                schema: "Domain",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CNIC = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
+                    IsDisabled = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))"),
+                    DisablitityDetails = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
+                    DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    WhatsappNo = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
+                    NextOfKinName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    NextOfKinRelation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    DomicileDistrict = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    DomicileProvince = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    ApplicationUserId = table.Column<int>(type: "int", nullable: false),
+                    ApplicationFormId = table.Column<int>(type: "int", nullable: false),
+                    Religion = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Gender = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    BloodGroup = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Applicant", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Applicant_User_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalSchema: "Auth",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationForm_Applicant",
+                        column: x => x.ApplicationFormId,
+                        principalSchema: "Domain",
+                        principalTable: "ApplicationForm",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -705,10 +589,178 @@ namespace AMS.DATA.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProgramApplied_Program",
+                        name: "FK_ProgramApplied_Programs",
                         column: x => x.ProgramId,
                         principalSchema: "Lookup",
                         principalTable: "Program",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Address",
+                schema: "Domain",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StreetAddress = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
+                    Province = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    District = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    PostalCode = table.Column<int>(type: "int", nullable: false),
+                    AddressTypeEid = table.Column<int>(type: "int", nullable: false),
+                    ApplicantId = table.Column<int>(type: "int", nullable: false),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Address_Applicant",
+                        column: x => x.ApplicantId,
+                        principalSchema: "Domain",
+                        principalTable: "Applicant",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicantDegree",
+                schema: "Domain",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    InstituteName = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
+                    BorardOrUniversityName = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
+                    FromYear = table.Column<int>(type: "int", nullable: false),
+                    ToYear = table.Column<int>(type: "int", nullable: false),
+                    MajorSubject = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    RollNo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    TranscriptUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalMarks = table.Column<int>(type: "int", nullable: true),
+                    ObtainedMarks = table.Column<int>(type: "int", nullable: true),
+                    Percentage = table.Column<decimal>(type: "decimal(4,2)", precision: 4, scale: 2, nullable: true),
+                    ApplicantId = table.Column<int>(type: "int", nullable: true),
+                    DegreeTypeId = table.Column<int>(type: "int", nullable: true),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicantDegree", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Degree_Applicant",
+                        column: x => x.ApplicantId,
+                        principalSchema: "Domain",
+                        principalTable: "Applicant",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Degree_DegreeType",
+                        column: x => x.DegreeTypeId,
+                        principalSchema: "Lookup",
+                        principalTable: "PreviousDegreeDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmergencyContact",
+                schema: "Domain",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ContactNO = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
+                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Relation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    ApplicantId = table.Column<int>(type: "int", nullable: false),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmergencyContact", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Applicant_EmergencyContact",
+                        column: x => x.ApplicantId,
+                        principalSchema: "Domain",
+                        principalTable: "Applicant",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Guardian",
+                schema: "Domain",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Occupation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Relation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalPerMonthIncome = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    TotalPerMonthExpenses = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    PhoneNo = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
+                    ApplicantId = table.Column<int>(type: "int", nullable: false),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Guardian", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Applicant_Guardian",
+                        column: x => x.ApplicantId,
+                        principalSchema: "Domain",
+                        principalTable: "Applicant",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ParentInfo",
+                schema: "Domain",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FatherName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    MotherName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    FatherContact = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
+                    FatherOccupation = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    FatherCNIC = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
+                    IsFatherDeceased = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    ApplicantId = table.Column<int>(type: "int", nullable: false),
+                    InsertedBy = table.Column<int>(type: "int", nullable: true),
+                    InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParentInfo", x => x.Id);
+                    table.ForeignKey(
+                        name: "Fk_Applicant_ParentInfo",
+                        column: x => x.ApplicantId,
+                        principalSchema: "Domain",
+                        principalTable: "Applicant",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -725,7 +777,7 @@ namespace AMS.DATA.Migrations
                     SubmissionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DocumentUrl = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
                     FeeChallanId = table.Column<int>(type: "int", nullable: false),
-                    IsSubmitted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((0))"),
+                    IsSubmitted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     InsertedBy = table.Column<int>(type: "int", nullable: true),
                     InsertedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -763,6 +815,13 @@ namespace AMS.DATA.Migrations
                 column: "ProgramId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Applicant_ApplicationFormId",
+                schema: "Domain",
+                table: "Applicant",
+                column: "ApplicationFormId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Applicant_ApplicationUserId",
                 schema: "Domain",
                 table: "Applicant",
@@ -775,24 +834,22 @@ namespace AMS.DATA.Migrations
                 column: "ApplicantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApplicantDegree_DegreeDetailId",
+                name: "IX_ApplicantDegree_DegreeTypeId",
                 schema: "Domain",
                 table: "ApplicantDegree",
-                column: "DegreeDetailId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApplicationForm_ApplicantId",
-                schema: "Domain",
-                table: "ApplicationForm",
-                column: "ApplicantId",
-                unique: true,
-                filter: "[ApplicantId] IS NOT NULL");
+                column: "DegreeTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationForm_SessionId",
                 schema: "Domain",
                 table: "ApplicationForm",
                 column: "SessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Department_FaculityId",
+                schema: "Lookup",
+                table: "Department",
+                column: "FaculityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmergencyContact_ApplicantId",
@@ -848,6 +905,12 @@ namespace AMS.DATA.Migrations
                 column: "ProgramTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Program_TimeShiftId",
+                schema: "Lookup",
+                table: "Program",
+                column: "TimeShiftId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProgramApplied_ApplicationFormId",
                 schema: "Domain",
                 table: "ProgramApplied",
@@ -857,8 +920,7 @@ namespace AMS.DATA.Migrations
                 name: "IX_ProgramApplied_ProgramId",
                 schema: "Domain",
                 table: "ProgramApplied",
-                column: "ProgramId",
-                unique: true);
+                column: "ProgramId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -971,6 +1033,10 @@ namespace AMS.DATA.Migrations
                 schema: "Domain");
 
             migrationBuilder.DropTable(
+                name: "Applicant",
+                schema: "Domain");
+
+            migrationBuilder.DropTable(
                 name: "Role",
                 schema: "Auth");
 
@@ -979,20 +1045,16 @@ namespace AMS.DATA.Migrations
                 schema: "Lookup");
 
             migrationBuilder.DropTable(
-                name: "ApplicationForm",
-                schema: "Domain");
+                name: "User",
+                schema: "Auth");
 
             migrationBuilder.DropTable(
-                name: "Applicant",
+                name: "ApplicationForm",
                 schema: "Domain");
 
             migrationBuilder.DropTable(
                 name: "AdmissionSession",
                 schema: "Lookup");
-
-            migrationBuilder.DropTable(
-                name: "User",
-                schema: "Auth");
 
             migrationBuilder.DropTable(
                 name: "AcademicYear",
@@ -1008,6 +1070,14 @@ namespace AMS.DATA.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProgramType",
+                schema: "Lookup");
+
+            migrationBuilder.DropTable(
+                name: "TimeShift",
+                schema: "Lookup");
+
+            migrationBuilder.DropTable(
+                name: "Faculity",
                 schema: "Lookup");
         }
     }

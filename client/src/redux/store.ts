@@ -1,7 +1,7 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./features/apiSlice";
-import authSlice from "./features/auth/authSlice";
+import userSlice from "./features/auth/userSlice";
 // import { counterSlice } from "./features/counter/counterSlice";
 // import { quotesApiSlice } from "./features/quotes/quotesApiSlice";
 
@@ -18,7 +18,7 @@ export const makeStore = () => {
     return configureStore({
         reducer: {
             [apiSlice.reducerPath]: apiSlice.reducer,
-            auth: authSlice
+            auth: userSlice
         },
         devTools: false,
         // Adding the api middleware enables caching, invalidation, polling,

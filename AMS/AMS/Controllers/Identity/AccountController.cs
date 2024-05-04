@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace AMS.Controllers.Identity
 {
 
-    public class AccountsController : BaseApiController
+    public class AccountController : BaseApiController
     {
         private readonly IUserService _userService;
-        public AccountsController(
+        public AccountController(
             IUserService userService    
             )
         {

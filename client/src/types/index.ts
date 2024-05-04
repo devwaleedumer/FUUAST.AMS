@@ -12,10 +12,9 @@ export interface NavItem {
 }
 
 export interface ApplicationForm {
-    wizardStep1?: WizardStep1,
-    wizardStep2?: WizardStep2,
-    wizardStep3?: WizardStep3
-    completed: boolean
+    step1?: WizardStep1,
+    step2?: WizardStep2,
+    step3?: WizardStep3
 }
 // step#1 program information
 export interface ProgramInfo {
@@ -39,9 +38,18 @@ export interface PersonalInformation {
     nextOfKinName?: string,
     nextOfKinRelation?: string,
     domicileDistrict: string,
-    domicileProvince: string
-    parentInfo: ParentInfo,
-    guardian: Guardian,
+    domicileProvince: string,
+    fatherName: string,
+    fatherOccupation: string,
+    motherName: string,
+    FatherCnic: string,
+    IsFatherDeceased: boolean,
+    name: string,
+    occupation: string,
+    relation: string,
+    totalIncome: number,
+    totalExpense: number,
+    phoneNumber: string,
 
 }
 
@@ -52,37 +60,19 @@ export interface EmergencyContactAndAddress {
 
 export interface WizardStep1 {
     personalInformation: PersonalInformation,
-    completed: boolean,
 }
 
 export interface WizardStep2 {
     emergencyContactAndAddress: EmergencyContactAndAddress,
-    completed: boolean
 }
 
 export interface WizardStep3 {
     degrees: Degree[],
-    completed: boolean
 
 }
 
 
-export interface ParentInfo {
-    fatherName: string,
-    fatherOccupation: string,
-    motherName: string,
-    FatherCnic: string,
-    IsFatherDeceased: boolean
-}
 
-export interface Guardian {
-    name: string,
-    occupation: string,
-    relation: string,
-    totalIncome: number,
-    totalExpense: number,
-    phoneNumber: string,
-}
 
 export interface EmergencyContact {
     name: string,
@@ -100,8 +90,8 @@ export interface Address {
 }
 
 export interface Degree {
-    degreeLevel: number,
-    degreeName: string,
+    degreeLevelId: number,
+    degreeNameId: number,
     MajorSubject: string,
     instituteName: string,
     BoardOrUniversityName: string,
@@ -112,12 +102,11 @@ export interface Degree {
     examType: number,
     totalMarks: number,
     obtainedMarks: number,
-    percentage: number,
 }
 
 // initialize application form
 export const initializeApplicationForm: ApplicationForm = {
-    wizardStep1: {
+    step1: {
         personalInformation: {
             fullName: "",
             religion: "",
@@ -131,25 +120,22 @@ export const initializeApplicationForm: ApplicationForm = {
             domicileProvince: "",
             nextOfKinName: "",
             nextOfKinRelation: "",
-            parentInfo: {
-                fatherName: "",
-                motherName: "",
-                fatherOccupation: "",
-                FatherCnic: "",
-                IsFatherDeceased: false,
-            },
-            guardian: {
-                name: "",
-                relation: "",
-                phoneNumber: "",
-                occupation: "",
-                totalExpense: 0,
-                totalIncome: 0,
-            },
+
+            fatherName: "",
+            motherName: "",
+            fatherOccupation: "",
+            FatherCnic: "",
+            IsFatherDeceased: false,
+            name: "",
+            relation: "",
+            phoneNumber: "",
+            occupation: "",
+            totalExpense: 0,
+            totalIncome: 0,
+
         },
-        completed: false,
     },
-    wizardStep2: {
+    step2: {
         emergencyContactAndAddress: {
             emergencyContact: {
                 name: "",
@@ -174,13 +160,10 @@ export const initializeApplicationForm: ApplicationForm = {
                 },
             ],
         },
-        completed: false,
     },
-    wizardStep3: {
+    step3: {
         degrees: [],
-        completed: false
     },
-    completed: false,
 }
 
 export interface FormContextType {
@@ -195,4 +178,10 @@ export interface FormContextType {
     step3Answered: boolean,
     stepData: ApplicationForm
 
+}
+
+interface wizardSteps {
+    id: string,
+    name: string,
+    fields: []
 }

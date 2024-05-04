@@ -2,7 +2,6 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useState } from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

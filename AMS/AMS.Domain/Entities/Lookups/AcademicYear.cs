@@ -13,13 +13,12 @@ namespace AMS.DOMAIN.Entities.Lookups
         {
             Sessions = new HashSet<AdmissionSession>();
         }
-        public int Id { get; set; }
+        public int Id { get; set; } 
         public required string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
         public virtual ICollection<AdmissionSession> Sessions { get; set; }
-
 
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }

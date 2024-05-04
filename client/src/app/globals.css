@@ -56,3 +56,14 @@
       @apply bg-background text-foreground;
     }
   }
+    /*Removing default Styles of Number input  */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+/* FireFox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

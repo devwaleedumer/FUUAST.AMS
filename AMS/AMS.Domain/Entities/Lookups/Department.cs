@@ -15,8 +15,9 @@ namespace AMS.DOMAIN.Entities.Lookups
         }
         public int Id { get; set; }
         public required string Name { get; set; }
+        public int FaculityId { get; set; }
+        public virtual Faculity? Faculity { get; set; }
         public virtual ICollection<Program>? Programs { get; set; }
-
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace AMS.Controllers.Identity
 {
 
-    public class TokensController : BaseApiController
+    public class TokenController : BaseApiController
     {
         private readonly ITokenService _tokenService;
 
-        public TokensController(ITokenService tokenService) => _tokenService = tokenService;
+        public TokenController(ITokenService tokenService) => _tokenService = tokenService;
 
         /// <summary>
         /// Generate Jwt Tokens after authentication 
@@ -33,7 +33,7 @@ namespace AMS.Controllers.Identity
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
         [Produces("application/json")]
-        public async Task<IActionResult> GetTokenAsync(TokenRequest request, CancellationToken cancellation)
+        public async Task<IActionResult> GetTokenAsync([FromBody]TokenRequest request, CancellationToken cancellation)
         {
             return Ok(await _tokenService.GetTokenAsync(request, GetIpAddress()!, cancellation));
         }

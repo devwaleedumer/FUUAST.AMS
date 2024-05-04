@@ -99,7 +99,7 @@ namespace AMS.SERVICES.Identity.Services
             var user = new ApplicationUser
             {
                 Email = request.Email,
-                UserName = request.FullName,
+                UserName = GenerateUserName(request.FullName),
                 FullName = request.FullName,
                 IsActive = true,
             };  
@@ -152,6 +152,10 @@ namespace AMS.SERVICES.Identity.Services
             verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.Code, code);
             return verificationUri;
         }
+
+        private string GenerateUserName(string fullName)
+            => $"{fullName.Replace(" ", "")}{Guid.NewGuid()}";
+        
 
         public async Task<string> ConfirmEmailAsync(int userId, string code, CancellationToken cancellationToken)
         {

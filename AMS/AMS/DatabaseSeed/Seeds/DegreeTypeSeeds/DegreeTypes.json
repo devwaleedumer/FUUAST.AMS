@@ -1,0 +1,130 @@
+[
+  {
+    "DegreeName": "Science",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "Arts",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "Computer Science",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "O-Levels",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "Matric Tech",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "Matric Dars-e-Nizami",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "Matric Sanwia Aama",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "Matric (Other)",
+    "DegreeLevelId": 1
+  },
+  {
+    "DegreeName": "F.Sc Pre-medical",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.Sc Pre-engginering",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.Sc (other)",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "ICS (MATH,ECO,CS)",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "ICS (PHY,MATH,CS)",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "ICS (ECO,MATH,CS)",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "ICS (STATS,MATH,CS)",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "I.Com",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "A-Levels",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A Physical Education",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A Civics",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A Economics",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A Fine Arts",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A English Literature",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A Home Economics",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A Islamiyat Elective",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "F.A Arabic",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "Other 12 years Education",
+    "DegreeLevelId": 2
+  },
+  {
+    "DegreeName": "B.Sc",
+    "DegreeLevelId": 3
+  },
+  {
+    "DegreeName": "ADP",
+    "DegreeLevelId": 3
+  },
+  {
+    "DegreeName": "M.Sc",
+    "DegreeLevelId": 4
+  },
+  {
+    "DegreeName": "BS",
+    "DegreeLevelId": 4
+  },
+  {
+    "DegreeName": "MS/M.Phil",
+    "DegreeLevelId": 5
+  }
+]

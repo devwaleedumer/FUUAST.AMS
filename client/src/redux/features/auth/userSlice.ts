@@ -1,3 +1,4 @@
+import { removeSessionCookies } from "@/lib/auth/tokenCookies";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 
@@ -7,24 +8,22 @@ const initialState = {
     user: ""
 }
 
-const authSlice = createSlice({
+const userSlice = createSlice({
     name: "auth",
     initialState: initialState,
     reducers: {
-        // storing jwt token that was generated for verifying opt
-        userRegistration: (state, action: PayloadAction<{ token: string }>) => {
-            state.token = action.payload.token
-        },
+
         userLoggedIn: (state, action: PayloadAction<{ accessToken: string, user: string }>) => {
             state.token = action.payload.accessToken;
             state.user = action.payload.user
         },
         userLoggedOut: (state) => {
             state.token = "";
-            state.user = ""
+            state.user = "";
+            removeSessionCookies()
         }
     }
 })
 
-export const { userRegistration, userLoggedIn, userLoggedOut } = authSlice.actions;
-export default authSlice.reducer;
+export const { userLoggedIn, userLoggedOut } = userSlice.actions;
+export default userSlice.reducer;

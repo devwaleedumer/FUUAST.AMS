@@ -16,8 +16,8 @@ namespace AMS.DOMAIN.Entities.AMS
         public int PriorityEid { get; set; }
 
         public virtual ApplicationForm? ApplicationForm { get; set; }
-
         public virtual Program? Program { get; set; }
+
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

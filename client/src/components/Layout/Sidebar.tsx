@@ -11,7 +11,9 @@ export default function Sidebar() {
         <div className="px-3 py-2">
           <div className="space-y-1">
             <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
-              Overview
+              FUUAST AMS
+              {/* <Image src={FUUASTIconOne} alt="Fuuast logo" className=" w-full h-full  object-cover" /> */}
+
             </h2>
             <DashboardNav items={navItems} />
           </div>

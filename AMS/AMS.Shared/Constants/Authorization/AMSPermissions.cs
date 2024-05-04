@@ -21,14 +21,12 @@ namespace AMS.SHARED.Constants.Authorization
 
     public static class AMSResource
     {
-        public const string Tenants = nameof(Tenants);
         public const string Dashboard = nameof(Dashboard);
-        public const string Hangfire = nameof(Hangfire);
         public const string Users = nameof(Users);
         public const string UserRoles = nameof(UserRoles);
         public const string Roles = nameof(Roles);
         public const string RoleClaims = nameof(RoleClaims);
-        public const string Products = nameof(Products);
+        public const string ApplicationForms = nameof(ApplicationForms);
         public const string Brands = nameof(Brands);
     }
 
@@ -37,7 +35,6 @@ namespace AMS.SHARED.Constants.Authorization
         private static readonly AMSPermission[] _all = new AMSPermission[]
         {
         new("View Dashboard", AMSAction.View, AMSResource.Dashboard),
-        new("View Hangfire", AMSAction.View, AMSResource.Hangfire),
         new("View Users", AMSAction.View, AMSResource.Users),
         new("Search Users", AMSAction.Search, AMSResource.Users),
         new("Create Users", AMSAction.Create, AMSResource.Users),
@@ -52,19 +49,13 @@ namespace AMS.SHARED.Constants.Authorization
         new("Delete Roles", AMSAction.Delete, AMSResource.Roles),
         new("View RoleClaims", AMSAction.View, AMSResource.RoleClaims),
         new("Update RoleClaims", AMSAction.Update, AMSResource.RoleClaims),
-        new("View Products", AMSAction.View, AMSResource.Products, IsBasic: true),
-        new("Search Products", AMSAction.Search, AMSResource.Products, IsBasic: true),
-        new("Create Products", AMSAction.Create, AMSResource.Products),
-        new("Update Products", AMSAction.Update, AMSResource.Products),
-        new("Delete Products", AMSAction.Delete, AMSResource.Products),
-        new("Export Products", AMSAction.Export, AMSResource.Products),
-        new("View Brands", AMSAction.View, AMSResource.Brands, IsBasic: true),
-        new("Search Brands", AMSAction.Search, AMSResource.Brands, IsBasic: true),
-        new("Create Brands", AMSAction.Create, AMSResource.Brands),
-        new("Update Brands", AMSAction.Update, AMSResource.Brands),
-        new("Delete Brands", AMSAction.Delete, AMSResource.Brands),
-        new("Generate Brands", AMSAction.Generate, AMSResource.Brands),
-        new("Clean Brands", AMSAction.Clean, AMSResource.Brands),
+        new("View ApplicationForms", AMSAction.View, AMSResource.ApplicationForms, IsBasic: true),
+        new("Search ApplicationForms", AMSAction.Search, AMSResource.ApplicationForms),
+        new("Create ApplicationForms", AMSAction.Create, AMSResource.ApplicationForms),
+        new("Update ApplicationForms", AMSAction.Update, AMSResource.ApplicationForms,IsBasic: true),
+        new("Delete ApplicationForms", AMSAction.Delete, AMSResource.ApplicationForms),
+        new("Export ApplicationForms", AMSAction.Export, AMSResource.ApplicationForms),
+   
         };
 
         public static IReadOnlyList<AMSPermission> All { get; } = new ReadOnlyCollection<AMSPermission>(_all);
