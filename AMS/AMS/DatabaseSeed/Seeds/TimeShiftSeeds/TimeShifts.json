@@ -1,0 +1,10 @@
+[
+  {
+    "Name": "Morning",
+    "Description": "Shift From 9:00 AM to 4:00 PM"
+  },
+  {
+    "Name": "Evening",
+    "Description": "Shift From 9:00 AM to 4:00 PM"
+  }
+]

@@ -11,15 +11,13 @@ namespace AMS.DOMAIN.Entities.AMS
     public class Address : IBaseEntity
     {
         public int Id { get; set; }
-        public string StreetAddress { get; set; }
-        public string Province { get; set; }
-        public string District { get; set; }
+        public required string StreetAddress { get; set; }
+        public required string Province { get; set; }
+        public required string District { get; set; }
         public int PostalCode { get; set; }
         public int AddressTypeEid { get; set; }
-
         public int ApplicantId { get; set; }
-        public Applicant? Applicant { get; set; }
-
+        public virtual Applicant? Applicant { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

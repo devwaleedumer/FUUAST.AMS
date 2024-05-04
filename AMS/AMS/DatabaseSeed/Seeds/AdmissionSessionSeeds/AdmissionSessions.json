@@ -1,0 +1,30 @@
+[
+  {
+    "Name": "Spring",
+    "StartDate": "2024-03-01",
+    "EndDate": "2025-07-31",
+    "AcademicYearId": 1
+
+  },
+  {
+    "Name": "Autmn",
+    "StartDate": "2024-09-01",
+    "EndDate": "2025-02-28",
+    "AcademicYearId": 1
+
+  },
+  {
+    "Name": "Spring",
+    "StartDate": "2025-03-01",
+    "EndDate": "2026-07-31",
+    "AcademicYearId": 2
+
+  },
+  {
+    "Name": "Autmn",
+    "StartDate": "2025-09-01",
+    "EndDate": "2026-02-28",
+    "AcademicYearId": 2
+
+  }
+]

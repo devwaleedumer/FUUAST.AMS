@@ -26,6 +26,7 @@ namespace AMS.DOMAIN.Entities.AMS
 
         [ForeignKey("ApplicationUser")]
         public int ApplicationUserId { get; set; }
+        public int ApplicationFormId { get; set; }
         public required string Religion { get; set; }
         public required string Gender { get; set; }
         public required string BloodGroup { get; set; }
@@ -34,11 +35,10 @@ namespace AMS.DOMAIN.Entities.AMS
         public virtual ParentInfo? ParentInfo { get; set; }
         public virtual EmergencyContact? ContactInfo { get; set; }
         public virtual ApplicationForm? ApplicationForm { get; set; }
-
         public virtual ApplicationUser? ApplicationUser { get; set; }
 
         public virtual ICollection<Address>? Addresses { get; set; }
-        public virtual ICollection<ApplicantDegree> Degrees { get; set; }
+        public virtual ICollection<ApplicantDegree>? Degrees { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

@@ -75,8 +75,9 @@ namespace AMS.Services.MailService
                 email.Body = builder.ToMessageBody();
 
                 using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls, cancellationToken);
-                await smtp.AuthenticateAsync(_settings.UserName, _settings.Password, cancellationToken);
+                await smtp.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.None, cancellationToken);
+                // uncomment if real smtp server is avilable
+                //await smtp.AuthenticateAsync(_settings.UserName, _settings.Password, cancellationToken);
                 await smtp.SendAsync(email, cancellationToken);
                 await smtp.DisconnectAsync(true, cancellationToken);
             }

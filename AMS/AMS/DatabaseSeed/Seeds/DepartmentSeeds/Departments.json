@@ -1,0 +1,66 @@
+[
+  {
+    "Name": "English",
+    "FaculityId": 1
+  },
+  {
+    "Name": "Internatnational Relations",
+    "FaculityId": 1
+  },
+  {
+    "Name": "Urdu",
+    "FaculityId": 1
+  },
+  {
+    "Name": "Mass Communication",
+    "FaculityId": 1
+  },
+  {
+    "Name": "Business Administration",
+    "FaculityId": 2
+  },
+  {
+    "Name": "Commerce",
+    "FaculityId": 2
+  },
+  {
+    "Name": "Ecnomics",
+    "FaculityId": 2
+  },
+  {
+    "Name": "Electrical Engineering",
+    "FaculityId": 3
+  },
+  {
+    "Name": "Maa'rif-e-Islamia",
+    "FaculityId": 4
+  },
+  {
+    "Name": "Applied Physics",
+    "FaculityId": 5
+  },
+  {
+    "Name": "Mathemtics",
+    "FaculityId": 5
+  },
+  {
+    "Name": "Computer Science",
+    "FaculityId": 5
+  },
+  {
+    "Name": "Software Engineering",
+    "FaculityId": 5
+  },
+  {
+    "Name": "Statistics",
+    "FaculityId": 5
+  },
+  {
+    "Name": "B.Ed",
+    "FaculityId": 1
+  },
+  {
+    "Name": "Pharm.D",
+    "FaculityId": 6
+  }
+]

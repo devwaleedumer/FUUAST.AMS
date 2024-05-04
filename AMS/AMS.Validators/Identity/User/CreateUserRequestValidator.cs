@@ -1,5 +1,6 @@
 ﻿using AMS.MODELS.Identity.User;
 using AMS.SERVICES.Identity.Interfaces;
+using AMS.SERVICES.Identity.Services;
 using AMS.SHARED.Validator;
 using FluentValidation;
 
@@ -9,26 +10,14 @@ namespace AMS.VALIDATORS.Identity.User
 {
     public class CreateUserRequestValidator : CustomValidator<CreateUserRequest>
     {
+        private readonly IUserService _userService;
         public CreateUserRequestValidator(IUserService userService)
         {
+            _userService = userService;
             RuleFor(u => u.Email).Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .EmailAddress()
-                    .WithMessage("Invalid Email Address.")
-                .MustAsync(async (email, _) => !await userService.ExistsWithEmailAsync(email))
-                    .WithMessage((_, email) => $"Email {email} is already registered.");
-
-            RuleFor(u => u.UserName).Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .MinimumLength(6)
-                .MustAsync(async (name, _) => !await userService.ExistsWithNameAsync(name))
-                    .WithMessage((_, name) => $"Username {name} is already taken.");
-
-            RuleFor(u => u.PhoneNumber).Cascade(CascadeMode.Stop)
-                .MustAsync(async (phone, _) => !await userService.ExistsWithPhoneNumberAsync(phone!))
-                    .WithMessage((_, phone) => $"Email {phone!} is already registered.")
-                    .Unless(u => string.IsNullOrWhiteSpace(u.PhoneNumber));
-
+                    .WithMessage("Invalid Email Address.");
             RuleFor(p => p.FullName).Cascade(CascadeMode.Stop)
                 .NotEmpty();
 

@@ -1,10 +1,6 @@
 ﻿using AMS.DOMAIN.Base;
 using AMS.DOMAIN.Entities.AMS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AMS.DOMAIN.Entities.Lookups
 {
@@ -21,7 +17,6 @@ namespace AMS.DOMAIN.Entities.Lookups
         public int? AcademicYearId { get; set; }
         public virtual ICollection<ApplicationForm>? ApplicationForms { get; set; }
         public AcademicYear? AcademicYear { get; set; }
-
         public virtual Program? Program { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
