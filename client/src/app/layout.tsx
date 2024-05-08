@@ -5,6 +5,8 @@ import { StoreProvider } from "@/providers/storeProvider/StoreProvider";
 import { ThemeProvider } from "@/providers/themeProvider/NextThemesProvider";
 import Heading from "@/components/shared/Heading";
 
+
+// yes it
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
