@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace AMS.Authorization.Permissons
 {
-
+    // Mechanism for Validating Permission
     public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {
         private readonly IUserService _userService;

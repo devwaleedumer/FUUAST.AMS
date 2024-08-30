@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { AppLogo, UniversityPhoto2 } from "@/utils/icons/AppIcons";
 import Link from "next/link";
 import { AuthRoutes } from "@/utils/routes/Routes";
+import { InputShowHide } from "@/components/ui/input-show-hide";
 
 type SignupProps = {};
 
@@ -113,7 +114,7 @@ const Signup: FC<SignupProps> = ({}) => {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
+                        <InputShowHide
                           placeholder="Password"
                           type={!showPassword ? "password" : "text"}
                           {...field}
@@ -134,7 +135,7 @@ const Signup: FC<SignupProps> = ({}) => {
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input
+                        <InputShowHide
                           type={!showCPassword ? "password" : "text"}
                           isPassword
                           setShowPassword={setShowCPassword}

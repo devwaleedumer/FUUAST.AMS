@@ -16,74 +16,72 @@ export const profileSchema = z.object({
             message: "Start date should be in the format YYYY-MM-DD",
         }),
     contactNo: z.coerce.number({
-        invalid_type_error: "contact can be only number 😻",
+        invalid_type_error: "contact no  can be only number 😻.",
     })
-        .min(11, "Contact no. must  contains at least 11 digits")
-        .max(11, "Contact no.  contains maximum 11 digits")
+        .min(11, "Contact no. must  contains at least 11 digits.")
+    // .max(11, "Contact no.  contains maximum 11 digits.")
+    ,
+    fatherName: z.string().min(1, "Father name is required.")
+        .trim()
+        .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
+            message: "Full Name must contain only alphabets."
+        }),
+    permanentAddress: z.string().trim().min(1, "Address  is required 😊."),
+    cnic: z.coerce.number({
+        invalid_type_error: "Only digits are allowed"
+    }).refine((number) => number.toString().length === 13, "must contains 13 digits")
 
     ,
-    cnic: z.coerce.number()
-        .min(13, "CNIC must  contains at least 13 digits")
-        .max(13, "CNIC   contains maximum 13 digits"),
-    isFatherDeceased: z.coerce.boolean().default(false).optional(),
-    fatherName: z.string().max(30, "name cannot exceed 30 chars 🥴")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed"),
-    motherName: z.string().max(30, "name cannot exceed 30 chars ")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed"),
-    fatherOccupation: z.string().max(20, "max 20 chars are allowed"),
-    fatherContact: z.coerce.number({
-        invalid_type_error: "only digits are allowed 🤭"
-    })
-        .min(11, "Contact no. must  contains at least 11 digits")
-        .max(11, "Contact no.  contains maximum 11 digits")
-        .int("only digits are allowed 🤭"),
-    nextOfKin: z.string().min(1, "Next of kin name is required")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed"),
-    nextOfKinRelation: z.string().min(1, "Next of kin relation is required")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed"),
+
     guardianName: z.string().min(1, "guardian name is required")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed 😊"),
-    isFatherGuardian: z.coerce.boolean().default(false).optional(),
-    guardianRelation: z.string().min(1, "guardian relation  is required 😊")
+        .trim()
+        .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
+            message: "Guardian Name must contain only alphabets."
+        }),
+    guardianRelation: z.string().min(1, "Guardian relation  is required 😊")
         .regex(/^[a-zA-Z]+$/, "only alphabets are allowed"),
-    guardianOccupation: z.string().min(1, "Occupation is required 😊"),
+    guardianPermanentAddress: z.string().min(1, "Guardian address  is required 😊"),
     guardianContact: z.coerce.number()
         .min(11, "Contact no. must  contains at least 11 digits 🤨")
-        .max(11, "Contact no.  contains maximum 11 digits 🤨")
-        .int("only digits are allowed 🤭"),
-
-    guardianTotalIncome: z.coerce.number({
-        invalid_type_error: "Only numbers are allowed"
-    })
-        .positive("Please specify valid range 🙂")
-        .int("decimals are not allowed 🤭"),
-
-    guardianTotalExpenses: z.coerce.number({
-        invalid_type_error: "Only numbers are allowed"
-    })
-        .positive("Please specify valid range 🙂")
-        .int("decimals are not allowed 🤭")
-    , emergencyCName: z.string().min(1, " name is required")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed 😊"),
+    // .int("only digits are allowed 🤭")
+    ,
+    emergencyCName: z.string().min(3, " Name is required")
+        .trim()
+        .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
+            message: "Emergency Name must contain only alphabets."
+        }),
     emergencyCRelation: z.string().min(1, " relation  is required 😊")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed"),
-    emergencyCContact: z.coerce.number()
-        .min(11, "Contact no. must  contains at least 11 digits 🤨")
-        .max(11, "Contact no.  contains maximum 11 digits 🤨")
-        .int("only digits are allowed 🤭"),
-    addresses: z.array(z.object({
-        streetAddress: z.string().min(5, "Street address must contain  at least 5 chars"),
-        addressProvince: z.string().min(1, { message: "Please select a Province" }),
-        addressDistrict: z.string().min(1, { message: "Please select a District" }),
-        addressId: z.number(),
-        addressPostalCode: z.number().int("only digits are allowed 🤭").positive("enter valid postal code").max(5, "Postal code contains max 5 digits"),
-    })),
+    ,
+    emergencyCContact: z.coerce.number({
+        required_error: "Only digits required"
+    }).min(11, "Contact no. must  contains at least 11 digits 🤨"),
+    emergencyCPermanentAddress: z.string().min(1, "Address  is required 😊"),
+
     religion: z.string().min(1, { message: "Please select a religion" }),
     gender: z.string().min(1, { message: "Please select a gender" }),
     bloodGroup: z.string().min(1, { message: "Please select a blood group" }),
-    domicileProvince: z.string().min(1, { message: "Please select a Province" }),
-    domicileDistrict: z.string().min(1, { message: "Please select a District" }),
-
+    province: z.string().min(1, { message: "Province is required" })
+        .trim()
+        .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
+            message: "Province must contain only alphabets."
+        }),
+    city: z.string().min(1, { message: "City is required" })
+        .trim()
+        .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
+            message: "City must contain only alphabets."
+        }),
+    country: z.string().min(1, { message: "Country is required" })
+        .trim()
+        .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
+            message: "City must contain only alphabets."
+        }),
+    domicile: z.string().min(1, { message: "Domicile is required" })
+        .trim()
+        .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
+            message: "Domicile must contain only alphabets."
+        }),
+    postalCode: z.coerce.number()
+        .min(11, "Must  contains at least 2 digits 🤨"),
     // jobs array is for the dynamic fields
     degrees: z.array(
         z.object({
@@ -127,16 +125,7 @@ export const profileSchema = z.object({
 
         }),
     ),
-}).superRefine((ref, ctx) => {
-    if (ref.guardianTotalIncome < ref.guardianTotalExpenses) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Expense should not exceed total income 😪",
-            path: ["guardianTotalExpenses"]
-        })
-    }
-    return z.NEVER;
-});
+})
 
 
 

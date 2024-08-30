@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputShowHide } from "@/components/ui/input-show-hide";
 import {
   loginFormSchema,
   loginFormSchemaType,
@@ -82,7 +83,7 @@ const Login: FC<LoginProps> = ({}) => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
+                      <InputShowHide
                         isPassword
                         setShowPassword={setShowPassword}
                         showPassword={showPassword}

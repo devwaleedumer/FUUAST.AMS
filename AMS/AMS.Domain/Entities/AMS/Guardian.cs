@@ -11,11 +11,9 @@ namespace AMS.DOMAIN.Entities.AMS
     {
         public int Id { get; set; }
         public required string Name { get; set; }
-        public required string Occupation { get; set; }
-        public required string  Relation { get; set; }
-        public decimal TotalPerMonthIncome { get; set; }
-        public decimal TotalPerMonthExpenses { get; set; }
-        public required string PhoneNo { get; set; }
+        public required string Relation { get; set; }
+        public required string ContactNo { get; set; }
+        public required string PermanentAddress { get; set; }
         public int ApplicantId { get; set; }
         public virtual Applicant? Applicant { get; set; }
 

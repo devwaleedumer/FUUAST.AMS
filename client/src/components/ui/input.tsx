@@ -5,14 +5,11 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  isPassword?: boolean;
-  showPassword?: boolean;
-  setShowPassword?: (showPassword: boolean) => void;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { className, type, isPassword, showPassword, setShowPassword, ...props },
+    { className, type, ...props },
     ref
   ) => {
     return (
@@ -26,22 +23,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
-        {isPassword &&
-          setShowPassword &&
-          (!showPassword ? (
-            <AiOutlineEyeInvisible
-              className="absolute bottom-3 right-1 z-1 cursor-pointer"
-              size={20}
-              onClick={() => setShowPassword(true)}
-            />
-          ) : (
-            <AiOutlineEye
-              className="absolute bottom-3 right-1 z-1 cursor-pointer"
-              size={20}
-              onClick={() => setShowPassword(false)}
-            />
-          ))}
-      </div>
+            </div>
     );
   }
 );

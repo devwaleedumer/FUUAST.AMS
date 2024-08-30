@@ -19,7 +19,7 @@ using System.Text;
 
 namespace AMS.SERVICES.Identity.Services
 {
-    public class UserService :  IUserService
+    public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -49,21 +49,21 @@ namespace AMS.SERVICES.Identity.Services
         }
 
         public async Task<bool> ExistsWithEmailAsync(string email, int? exceptId = null)
-        
-        =>      await _userManager.FindByEmailAsync(email.Normalize()) is ApplicationUser user && user.Id != exceptId;
-        
+
+        => await _userManager.FindByEmailAsync(email.Normalize()) is ApplicationUser user && user.Id != exceptId;
+
 
         public async Task<bool> ExistsWithNameAsync(string name)
-        
-         =>    await _userManager.FindByNameAsync(name) is not null;
-        
+
+         => await _userManager.FindByNameAsync(name) is not null;
+
 
         public async Task<bool> ExistsWithPhoneNumberAsync(string phoneNumber, int? exceptId = null)
-        =>      await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is ApplicationUser user && user.Id != exceptId;
+        => await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is ApplicationUser user && user.Id != exceptId;
         public async Task<bool> HasPermissionAsync(int userId, string permission, CancellationToken cancellationToken)
         {
             var permissions = await GetPermissionsAsync(userId, cancellationToken);
-        
+
 
             return permissions?.Contains(permission) ?? false;
         }
@@ -85,14 +85,13 @@ namespace AMS.SERVICES.Identity.Services
                     .Select(rc => rc.ClaimValue!)
                     .ToListAsync(cancellationToken));
             }
-
             return permissions.Distinct().ToList();
         }
 
         public async Task<string> CreateAsync(CreateUserRequest request, string origin)
         {
-            var userExists= await _userManager.FindByEmailAsync(request.Email);
-           
+            var userExists = await _userManager.FindByEmailAsync(request.Email);
+
             if (userExists is ApplicationUser) throw new ConflictException("Email already exists!, try differnt email");
 
             // create  user from request
@@ -102,7 +101,7 @@ namespace AMS.SERVICES.Identity.Services
                 UserName = GenerateUserName(request.FullName),
                 FullName = request.FullName,
                 IsActive = true,
-            };  
+            };
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
@@ -132,7 +131,7 @@ namespace AMS.SERVICES.Identity.Services
                //body
                _emailTemplateService.GenerateEmailTemplate("email-confirmation", eMailModel));
                 // fire and forget pattren so that's why we are sending cancellation.none token  
-                 _job.Enqueue(()=>  _mailService.SendAsync(mailRequest, CancellationToken.None));
+                _job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
                 messages.Add($"Please check {user.Email} to verify your account!");
 
             }
@@ -142,9 +141,10 @@ namespace AMS.SERVICES.Identity.Services
         }
 
         //Private helpers
-        private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin) {
+        private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin)
+        {
 
-            string code =  await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.ASCII.GetBytes(code));
             const string route = "api/users/confirm-email/";
             var endpointUri = new Uri(string.Concat($"{origin}/", route));
@@ -155,7 +155,7 @@ namespace AMS.SERVICES.Identity.Services
 
         private string GenerateUserName(string fullName)
             => $"{fullName.Replace(" ", "")}{Guid.NewGuid()}";
-        
+
 
         public async Task<string> ConfirmEmailAsync(int userId, string code, CancellationToken cancellationToken)
         {
@@ -173,12 +173,12 @@ namespace AMS.SERVICES.Identity.Services
         public async Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user is null || !user.EmailConfirmed)  throw new InternalServerException("some error has occured");
+            if (user is null || !user.EmailConfirmed) throw new InternalServerException("some error has occured");
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             const string route = "account/reset-password";
             var endPointUri = new Uri(string.Concat($"{origin}/", route));
             string passwordResetUri = QueryHelpers.AddQueryString(endPointUri.ToString(), "Token", code);
-            var mail = new MailRequest( new List<string> {request.Email},"Reset Password",$"Your Password Reset Token is '{code}'. You can reset your password using the {endPointUri} Endpoint.");
+            var mail = new MailRequest(new List<string> { request.Email }, "Reset Password", $"Your Password Reset Token is '{code}'. You can reset your password using the {endPointUri} Endpoint.");
             return "Password Reset Mail has been sent to your authorized Email.";
         }
         public async Task<string> ResetPasswordAsync(ResetPasswordRequest request)
@@ -209,4 +209,7 @@ namespace AMS.SERVICES.Identity.Services
             }
         }
     }
+
+
+
 }

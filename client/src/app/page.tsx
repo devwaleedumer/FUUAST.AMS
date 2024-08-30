@@ -1,6 +1,5 @@
 "use client";
 import Signup from "@/components/Authentication/Signup/Signup";
-import { FileUpload } from "@/components/Forms/ApplicantForm/ProfileFileUpload";
 import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

@@ -1,4 +1,6 @@
 ﻿using AMS.DOMAIN.Base;
+using AMS.DOMAIN.Entities.AMS;
+using AMS.DOMAIN.Entities.Lookups;
 using AMS.DOMAIN.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,36 +10,41 @@ namespace AMS.DOMAIN.Entities.AMS
     public class Applicant : IBaseEntity
 
     {
+        // Applicant Contains only personal Information
         public Applicant()
         {
             this.Degrees = new HashSet<ApplicantDegree>();
-            this.Addresses = new HashSet<Address>();
         }
         public int Id { get; set; }
-        public string? Cnic { get; set; }
-        public bool? IsDisabled { get; set; }
-        public string? DisablitityDetails { get; set; }
+        public string FatherName { get; set; }
+        public string Cnic { get; set; }
         public DateTime Dob { get; set; }
-        public required string WhatsappNo { get; set; }
-        public string? NextOfKinName { get; set; }
-        public string? NextOfKinRelation { get; set; }
-        public required string DomicileDistrict { get; set; }
-        public required string DomicileProvince { get; set; }
+        public string MobileNo { get; set; }
+        public string Domicile { get; set; }
+        public string Province { get; set; }
+
+        // Required for UG and Optional for PG
+        public int? PostalCode { get; set; }
+        public string PermanentAddress { get; set; }
+        // Required for PG and Optional for UG
+        public string? PostalAddress { get; set; }
+        // Required for PG and Optional for UG
+        public string? EmploymentDetails { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string HeardAboutUniFrom { get; set; }
 
         [ForeignKey("ApplicationUser")]
         public int ApplicationUserId { get; set; }
-        public int ApplicationFormId { get; set; }
         public required string Religion { get; set; }
         public required string Gender { get; set; }
         public required string BloodGroup { get; set; }
 
         public virtual Guardian? Guardian { get; set; }
-        public virtual ParentInfo? ParentInfo { get; set; }
         public virtual EmergencyContact? ContactInfo { get; set; }
         public virtual ApplicationForm? ApplicationForm { get; set; }
         public virtual ApplicationUser? ApplicationUser { get; set; }
-
-        public virtual ICollection<Address>? Addresses { get; set; }
+        public virtual EntranceTestDetail? EntranceTestDetail { get; set; }
         public virtual ICollection<ApplicantDegree>? Degrees { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
@@ -46,3 +53,4 @@ namespace AMS.DOMAIN.Entities.AMS
         public bool? IsDeleted { get; set; }
     }
 }
+

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AMS.DATA
 {
-    public partial class AMSContext :  BaseContext
+    public partial class AMSContext : BaseContext
     {
         private readonly ICurrentUser _currentUser;
 
@@ -26,11 +26,9 @@ namespace AMS.DATA
         #region Domain
         public virtual DbSet<ApplicationForm> ApplicationForms { get; set; } = null!;
         public virtual DbSet<Applicant> Applicants { get; set; } = null!;
-        public virtual DbSet<Address> Addresses { get; set; } = null!;
         public virtual DbSet<EmergencyContact> EmergencyContacts { get; set; } = null!;
-        public virtual DbSet<ParentInfo> ParentInfos { get; set; } = null!;
         public virtual DbSet<Guardian> Guardians { get; set; } = null!;
-        public virtual DbSet<ApplicantDegree> Degrees { get; set; } = null!;
+        public virtual DbSet<ApplicantDegree> ApplicantDegrees { get; set; } = null!;
         public virtual DbSet<FeeChallan> FeeChallans { get; set; } = null!;
         public virtual DbSet<FeeChallanSubmissionDetail> FeeChallanSubmissionDetails { get; set; } = null!;
         public virtual DbSet<ProgramApplied> ProgramsApplied { get; set; } = null!;
@@ -43,9 +41,12 @@ namespace AMS.DATA
         public virtual DbSet<Program> Programs { get; set; } = null!;
         public virtual DbSet<ProgramType> ProgramTypes { get; set; } = null!;
         public virtual DbSet<AdmissionSession> Sessions { get; set; } = null!;
-        public virtual DbSet<DegreeType> DegreeType { get; set; } = null!;
+        public virtual DbSet<DegreeGroup> DegreeGroups { get; set; } = null!;
         public virtual DbSet<DegreeLevel> DegreeLevels { get; set; } = null!;
         public virtual DbSet<TimeShift> TimeShifts { get; set; } = null!;
+        public virtual DbSet<EntranceTestDetail> EntranceTests { get; set; } = null!;
+        public virtual DbSet<TestType> TestTypes { get; set; } = null!;
+
 
         #endregion
 
@@ -153,53 +154,59 @@ namespace AMS.DATA
 
             #region Domain
 
-            modelBuilder.Entity<Applicant>((entity =>
+            modelBuilder.Entity<Applicant>(entity =>
             {
                 entity.ToTable("Applicant", "Domain");
 
                 entity.HasKey(e => e.Id);
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-
                 entity.Property(e => e.Dob).HasColumnType("datetime2")
-                                                    .HasColumnName("DOB");
+                                           .HasColumnName("DOB");
 
-                entity.Property(e => e.WhatsappNo).HasMaxLength(15)
-                                                    .IsUnicode(false);
-
-                entity.Property(e => e.Cnic).HasMaxLength(15)
+                entity.Property(e => e.Cnic).HasMaxLength(13)
                                                     .HasColumnName("CNIC")
                                                     .IsUnicode(false);
 
-                entity.Property(e => e.Gender).HasMaxLength(50)
+                entity.Property(e => e.FatherName).HasMaxLength(13)
+                                                    .IsUnicode(false);
+                // unique constraint 
+                entity.HasAlternateKey(e => e.Cnic);
+
+                entity.Property(e => e.Gender).HasMaxLength(15)
+                                              .IsUnicode(false);
+                
+                entity.Property(e => e.PostalAddress).HasMaxLength(100)
+                                              .IsUnicode(false);
+                
+                entity.Property(e => e.PermanentAddress).HasMaxLength(100)
+                                              .IsUnicode(false);
+
+                entity.Property(e => e.PostalCode);
+
+                entity.Property(e => e.Religion).HasMaxLength(15)
                                                      .IsUnicode(false);
 
-                entity.Property(e => e.Religion).HasMaxLength(50)
-                                                     .IsUnicode(false);
-
-                entity.Property(e => e.IsDisabled).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.DisablitityDetails).HasMaxLength(200)
-                                                          .IsUnicode(false)
-                                                          .IsRequired(false);
-
-
-                entity.Property(e => e.BloodGroup).HasMaxLength(50)
+                entity.Property(e => e.BloodGroup).HasMaxLength(5)
                                                   .IsUnicode(false);
 
-                entity.Property(e => e.DomicileDistrict).HasMaxLength(50)
+                entity.Property(e => e.Domicile).HasMaxLength(20)
                                                   .IsUnicode(false);
 
-                entity.Property(e => e.DomicileProvince)
-                                                  .HasMaxLength(50)
+                entity.Property(e => e.City).HasMaxLength(20)
                                                   .IsUnicode(false);
 
-                entity.Property(e => e.NextOfKinName).HasMaxLength(50)
-                                                  .IsUnicode(false);
+                entity.Property(e => e.Province)
+                                                .HasMaxLength(20)
+                                                .IsUnicode(false);
 
-                entity.Property(e => e.NextOfKinRelation).HasMaxLength(50)
-                                                  .IsUnicode(false);
+                entity.Property(e => e.HeardAboutUniFrom).HasMaxLength(20)
+                                                         .IsUnicode(false);
 
+                entity.Property(e => e.EmploymentDetails).HasMaxLength(50)
+                                                         .IsUnicode(false)
+                                                         .IsRequired(false);
                 entity.HasOne(e => e.ContactInfo)
                       .WithOne(e => e.Applicant)
                       .HasForeignKey<EmergencyContact>(e => e.ApplicantId)
@@ -210,36 +217,37 @@ namespace AMS.DATA
                       .WithOne(e => e.Applicant)
                       .HasForeignKey<Guardian>(e => e.ApplicantId)
                       .OnDelete(DeleteBehavior.Cascade)
-                      .HasConstraintName("FK_Applicant_Guardian");
-
-                entity.HasOne(e => e.ParentInfo)
-                     .WithOne(e => e.Applicant)
-                     .HasForeignKey<ParentInfo>(e => e.ApplicantId)
-                     .OnDelete(DeleteBehavior.Cascade)
-                     .HasConstraintName("Fk_Applicant_ParentInfo");
-            }));
-
-            modelBuilder.Entity<EmergencyContact>(entity =>
-            {
-                entity.ToTable("EmergencyContact", "Domain");
-
-                entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.ContactNO).HasMaxLength(15)
-                                                  .IsUnicode(false);
-
-                entity.Property(e => e.Name).HasMaxLength(50)
-                                                  .IsUnicode(false);
-
-                entity.Property(e => e.Relation).HasMaxLength(50)
-                                                  .IsUnicode(false);
-
-
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                      .HasConstraintName("FK_Applicant_Guardian"); 
+                
+                entity.HasOne(e => e.EntranceTestDetail)
+                      .WithOne(e => e.Applicant)
+                      .HasForeignKey<EntranceTestDetail>(e => e.ApplicantId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_Applicant_EntranceTestDetail");
 
             });
+
+             modelBuilder.Entity<EmergencyContact>(entity =>
+             {
+                 entity.ToTable("EmergencyContact", "Domain");
+
+                 entity.HasKey(e => e.Id);
+
+                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                 entity.Property(e => e.ContactNo).HasMaxLength(11)
+                                                   .IsUnicode(false);
+
+                 entity.Property(e => e.Name).HasMaxLength(30)
+                                                   .IsUnicode(false);
+
+                 entity.Property(e => e.Relation).HasMaxLength(20)
+                                                   .IsUnicode(false);
+
+
+                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+
+             });
 
             modelBuilder.Entity<Guardian>(entity =>
             {
@@ -249,18 +257,15 @@ namespace AMS.DATA
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Name).HasMaxLength(50)
-                                                  .IsUnicode(false);
+                entity.Property(e => e.ContactNo).HasMaxLength(11)
+                                                 .IsUnicode(false);
 
-                entity.Property(e => e.Occupation).HasMaxLength(50)
-                                                  .IsUnicode(false);
+                entity.Property(e => e.Name).HasMaxLength(30)
+                                            .IsUnicode(false);
 
-                entity.Property(e => e.PhoneNo).HasMaxLength(15)
-                                                  .IsUnicode(false);
+                entity.Property(e => e.Relation).HasMaxLength(20)
+                                                .IsUnicode(false);
 
-                entity.Property(e => e.TotalPerMonthExpenses).HasColumnType("decimal").HasPrecision(10, 2);
-
-                entity.Property(e => e.TotalPerMonthIncome).HasColumnType("decimal").HasPrecision(10, 2);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
@@ -272,18 +277,14 @@ namespace AMS.DATA
 
                 entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.BorardOrUniversityName).HasMaxLength(200)
+                entity.Property(e => e.BoardOrUniversityName).HasMaxLength(50)
                                                   .IsUnicode(false);
 
-                entity.Property(e => e.InstituteName).HasMaxLength(200)
-                                                 .IsUnicode(false);
-
-                entity.Property(e => e.MajorSubject).HasMaxLength(50)
+                entity.Property(e => e.Subject).HasMaxLength(30)
                                                   .IsUnicode(false);
 
-                entity.Property(e => e.Percentage).HasColumnType("decimal").HasPrecision(4, 2);
-
-                entity.Property(e => e.RollNo).HasMaxLength(50);
+                entity.Property(e => e.RollNo).HasMaxLength(15)
+                                              .IsUnicode(false);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
@@ -292,35 +293,16 @@ namespace AMS.DATA
                       .HasForeignKey(e => e.ApplicantId)
                       .OnDelete(DeleteBehavior.Cascade)
                       .HasConstraintName("FK_Degree_Applicant");
-
-                entity.HasOne(e => e.DegreeType)
+                 
+                entity.HasOne(e => e.DegreeGroup)
                       .WithMany(e => e.ApplicantDegrees)
                       .OnDelete(DeleteBehavior.Cascade)
-                      .HasConstraintName("FK_Degree_DegreeType");
-
-            });
-
-            modelBuilder.Entity<Address>(entity =>
-            {
-                entity.ToTable("Address", "Domain");
-
-                entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Province).HasMaxLength(50)
-                                                .IsUnicode(false);
-
-                entity.Property(e => e.District).HasMaxLength(50)
-                                                .IsUnicode(false);
-
-                entity.Property(e => e.StreetAddress).HasMaxLength(200)
-                                                .IsUnicode(false);
-
-                entity.HasOne(e => e.Applicant)
-                .WithMany(e => e.Addresses)
-                .HasForeignKey(e => e.ApplicantId)
-                .HasConstraintName("FK_Address_Applicant");
+                      .HasConstraintName("FK_Degree_DegreeGroup");
+                
+                entity.HasOne(e => e.DegreeLevel)
+                      .WithMany(e => e.ApplicantDegrees)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_Degree_DegreeLevel");
             });
 
             modelBuilder.Entity<ApplicationForm>(entity =>
@@ -343,15 +325,9 @@ namespace AMS.DATA
 
                 entity.HasOne(e => e.Applicant)
                         .WithOne(e => e.ApplicationForm)
-                        .HasForeignKey<Applicant>(e => e.ApplicationFormId)
+                        .HasForeignKey<Applicant>(e => e.ApplicationUserId)
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_ApplicationForm_Applicant");
-
-                entity.HasMany(e => e.ProgramsApplied)
-                      .WithOne(e => e.ApplicationForm)
-                      .HasForeignKey(e => e.ApplicationFormId)
-                      .HasConstraintName("FK_ApplicationForm_ProgramsApplied")
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<FeeChallan>(entity =>
@@ -385,27 +361,6 @@ namespace AMS.DATA
                 entity.Property(e => e.SubmissionDate).HasColumnType("datetime2");
             });
 
-            modelBuilder.Entity<ParentInfo>(entity =>
-            {
-                entity.ToTable("ParentInfo", "Domain");
-
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.FatherName).HasMaxLength(50)
-                                            .IsUnicode(false);
-                entity.Property(e => e.MotherName).HasMaxLength(50)
-                                            .IsUnicode(false);
-                entity.Property(e => e.FatherContact).HasMaxLength(15)
-                                            .IsUnicode(false);
-                entity.Property(e => e.FatherCNIC).HasMaxLength(20)
-                                            .IsUnicode(false);
-                entity.Property(e => e.FatherOccupation).HasMaxLength(50)
-                                            .IsUnicode(false);
-                entity.Property(e => e.IsFatherDeceased).HasDefaultValue(false);
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
-
-            });
-
             modelBuilder.Entity<ProgramApplied>(entity =>
             {
                 entity.ToTable("ProgramApplied", "Domain");
@@ -419,15 +374,50 @@ namespace AMS.DATA
                       .OnDelete(DeleteBehavior.Cascade)
                       .HasConstraintName("FK_ProgramApplied_ApplicationForm");
 
-                entity.HasOne(e => e.Program)
-                    .WithMany(e => e.ProgramsApplied)
-                    .HasForeignKey(e => e.ProgramId)
+                entity.HasOne(e => e.Department)
+                    .WithMany(e => e.ProgramApplied)
+                    .HasForeignKey(e => e.DepartmentId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_ProgramApplied_Programs");
             });
             #endregion
 
             #region Lookups
+
+            modelBuilder.Entity<EntranceTestDetail>(entity =>
+            {
+                entity.ToTable("EntranceTestDetail", "Domain");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.TestValideTill).HasColumnType("datetime2");
+
+                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                
+                entity.HasOne(e => e.TestType)
+                   .WithMany(e => e.EntranceTestDetails)
+                   .HasForeignKey(e => e.TestTypeId)
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .HasConstraintName("FK_EntranceTestDetail_TestType");
+
+            });
+            
+            modelBuilder.Entity<TestType>(entity =>
+            {
+                entity.ToTable("EntranceTestDetail", "Domain");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e =>e.Name).HasMaxLength(10);
+
+                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+
+            });
+
             modelBuilder.Entity<AcademicYear>(entity =>
             {
                 entity.ToTable("AcademicYear", "Lookup");
@@ -458,13 +448,17 @@ namespace AMS.DATA
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
-                      .HasMaxLength(50)
+                      .HasMaxLength(20)
                       .IsUnicode(false);
-                entity.Property(e => e.Duration).HasColumnType("decimal").HasPrecision(2,1);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
-                entity.Property(e => e.IsProgramOffered).HasDefaultValue(false);
-            });
+
+                entity.HasOne(e => e.ProgramType)
+                      .WithMany(e => e.Programs)
+                      .HasForeignKey(e => e.ProgramTypeId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_ProgramTypel_Programs");
+                });
 
             modelBuilder.Entity<TimeShift>(entity =>
             {
@@ -481,12 +475,6 @@ namespace AMS.DATA
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasMany(e => e.Programs)
-             .WithOne(e => e.TimeShift)
-             .OnDelete(DeleteBehavior.Cascade)
-             .HasForeignKey(e => e.TimeShiftId)
-             .HasConstraintName("FK_TimeShift_Program");
-
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
             });
 
@@ -500,12 +488,6 @@ namespace AMS.DATA
                 entity.Property(e => e.Name)
                       .HasMaxLength(100)
                       .IsUnicode(false);
-
-                entity.HasMany(e => e.Departments)
-               .WithOne(e => e.Faculity)
-               .OnDelete(DeleteBehavior.Cascade)
-               .HasForeignKey(e => e.FaculityId)
-               .HasConstraintName("FK_Department_Faculity");
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
             });
@@ -521,13 +503,27 @@ namespace AMS.DATA
                       .HasMaxLength(50)
                       .IsUnicode(false);
 
-                entity.HasMany(e => e.Programs)
-               .WithOne(e => e.Department)
-               .HasForeignKey(e => e.DepartmentId)
+                entity.HasOne(e => e.Program)
+               .WithMany(e => e.Departments)
+               .HasForeignKey(e => e.ProgramId)
                .HasConstraintName("FK_Department_Program");
-
+               
+                entity.HasOne(e => e.TimeShift)
+               .WithMany(e => e.Departments)
+               .OnDelete(DeleteBehavior.Cascade)
+               .HasForeignKey(e => e.TimeShiftId)
+               .HasConstraintName("FK_TimeShift_Department");
+               
+                entity.HasOne(e => e.Faculity)
+             .WithMany(e => e.Departments)
+             .OnDelete(DeleteBehavior.Cascade)
+             .HasForeignKey(e => e.FaculityId)
+             .HasConstraintName("FK_Department_Faculity");
+             
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
             });
+
+
 
             modelBuilder.Entity<DegreeLevel>(entity =>
             {
@@ -537,15 +533,15 @@ namespace AMS.DATA
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
-                      .HasMaxLength(50)
+                      .HasMaxLength(30)
                       .IsUnicode(false);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
             });
 
-            modelBuilder.Entity<DegreeType>(entity =>
+            modelBuilder.Entity<DegreeGroup>(entity =>
             {
-                entity.ToTable("PreviousDegreeDetail", "Lookup");
+                entity.ToTable("DegreeGroup", "Lookup");
 
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -554,8 +550,11 @@ namespace AMS.DATA
                       .HasMaxLength(50)
                       .IsUnicode(false);
 
-
-
+                entity.HasOne(e => e.DegreeLevel)
+                      .WithMany(e => e.DegreeGroups)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasForeignKey(e => e.DegreeLevelId)
+                      .HasConstraintName("FK_DegreeGroups_Faculity");
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
             });
@@ -572,7 +571,6 @@ namespace AMS.DATA
                       .IsUnicode(false);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
-
 
                 entity.HasMany(e => e.Programs)
                        .WithOne(e => e.ProgramType)
@@ -603,10 +601,8 @@ namespace AMS.DATA
                       .HasConstraintName("FK_SessionApplicationForms"
                       );
             });
-            OnModelCreatingPartial(modelBuilder);
-
-
             #endregion
+
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

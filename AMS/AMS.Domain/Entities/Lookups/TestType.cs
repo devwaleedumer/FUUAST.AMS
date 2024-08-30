@@ -1,21 +1,22 @@
 ﻿using AMS.DOMAIN.Base;
+
 namespace AMS.DOMAIN.Entities.Lookups
 {
-    public class Program : IBaseEntity
+    public class TestType : IBaseEntity
     {
-        public Program()
+        public TestType()
         {
-            Departments = new List<Department>();
+            EntranceTestDetails =  new HashSet<EntranceTestDetail>();
         }
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public int ProgramTypeId { get; set; }
-        public virtual ProgramType? ProgramType { get; set; }
-        public virtual ICollection<Department>? Departments { get; set; }
+        public string Name { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public bool? IsDeleted { get; set; }
+
+
+        public virtual ICollection<EntranceTestDetail>? EntranceTestDetails { get; set; }
     }
 }

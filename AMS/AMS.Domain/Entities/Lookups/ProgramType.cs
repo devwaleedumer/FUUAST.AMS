@@ -3,7 +3,7 @@
 
 namespace AMS.DOMAIN.Entities.Lookups
 {
-    public class ProgramType: IBaseEntity
+    public class ProgramType : IBaseEntity
     {
         public ProgramType()
         {
@@ -11,7 +11,8 @@ namespace AMS.DOMAIN.Entities.Lookups
         }
         public int Id { get; set; }
         public required string Name { get; set; }
-        public ICollection<Program> Programs { get; set; }
+        // One To Many 
+        public virtual ICollection<Program> Programs { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

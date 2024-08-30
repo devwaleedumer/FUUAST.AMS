@@ -53,7 +53,7 @@ interface ProfileFormType {
   categories: any;
 }
 
-export const CreateProfileOne: React.FC<ProfileFormType> = ({
+export const Application: React.FC<ProfileFormType> = ({
   initialData,
   categories,
 }) => {
@@ -61,12 +61,9 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(false);
-  const title = initialData ? "Edit Information" : "Admission form";
-  const description = initialData
-    ? "Edit a product."
-    : "For processing your application, we first following information about you.";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
+  // const title = initialData ? "Edit Information" : "Admission form";
+  const description = "For processing your application, we first following information about you.";
+  const toastMessage = initialData ? "Information updated." : "Application Submitted.";
   const action = initialData ? "Save changes" : "Create";
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -78,16 +75,16 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
   }, [])
 
   const defaultValues = {
-    addresses: [
-      {
+    // addresses: [
+    //   {
 
-        addressId: 1,
-      },
-      {
-        addressId: 2
-      }
-    ]
-    ,
+    //     addressId: 1,
+    //   },
+    //   {
+    //     addressId: 2
+    //   }
+    // ]
+    // ,
     degrees: [
       {
         degreeName: "",
@@ -103,7 +100,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues,
-    mode: "onBlur",
+    mode: "all",
   });
 
   const {
@@ -118,28 +115,24 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
     name: "degrees",
   });
 
-  const { fields: addressesFields } = useFieldArray({
-    control,
-    name: "addresses",
-  });
+  // const { fields: addressesFields } = useFieldArray({
+  //   control,
+  //   name: "addresses",
+  // });
 
 
 
-  // watch fields
-  const isFatherDeceasedWatch = watch("isFatherDeceased");
-  useEffect(() => {
-    return () => { };
-  }, [isFatherDeceasedWatch]);
 
   const guardianAccordionError =
     errors?.guardianName !== undefined ||
     errors?.guardianContact !== undefined ||
     errors?.guardianRelation !== undefined ||
-    errors?.guardianOccupation !== undefined;
+    errors?.permanentAddress !== undefined;
   const emergencyCAccordionError =
     errors?.emergencyCName !== undefined ||
     errors?.emergencyCContact !== undefined ||
     errors?.emergencyCRelation !== undefined;
+    errors?.permanentAddress !== undefined;
   const onSubmit = async (data: ProfileFormValues) => {
     try {
       setLoading(true);
@@ -150,7 +143,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
         // console.log("product", res);
       }
       router.refresh();
-      router.push(`/dashboard/products`);
+      router.push(`/products`);
     } catch (error: any) {
     } finally {
       setLoading(false);
@@ -189,37 +182,37 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
         "cnic",
         "isFatherDeceased",
         "fatherName",
-        "motherName",
-        "fatherOccupation",
-        "fatherContact",
-        "nextOfKinName",
-        "nextOfKinRelation",
+        // "motherName",
+        // "fatherOccupation",
+        // "fatherContact",
+        // "nextOfKinName",
+        // "nextOfKinRelation",
         "gender",
         "bloodGroup",
         "religion",
-        "isDisabled",
         "disabilityDetail",
-        "domicileProvince",
-        "domicileDistrict",
-        "idDisabled",
-        "disabilityDetail",
+        "domicile",
+        "province",
+        "country",
+        "city",
+        "postalCode",
+        "permanentAddress",
         "guardianName",
-        "isFatherGuardian",
         "guardianRelation",
         "guardianContact",
         "guardianOccupation",
-        "guardianTotalIncome",
-        "guardianTotalExpenses",
+        "emergencyCPermanentAddress",
         "emergencyCName",
         "emergencyCRelation",
         "emergencyCContact",
-        ...addressesFields.map((_, index) => [
-          `addresses.${index}.streetAddress`,
-          `addresses.${index}.addressProvince`,
-          `addresses.${index}.addressDistrict`,
-          `addresses.${index}.addressPostalCode`,
-          `addresses.${index}.addressId`,
-        ]).flat()
+        "guardianPermanentAddress"
+        // ...addressesFields.map((_, index) => [
+        //   `addresses.${index}.streetAddress`,
+        //   `addresses.${index}.addressProvince`,
+        //   `addresses.${index}.addressDistrict`,
+        //   `addresses.${index}.addressPostalCode`,
+        //   `addresses.${index}.addressId`,
+        // ]).flat()
 
       ],
     },
@@ -276,7 +269,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
 
   return (isMounted && (<>
     <div className="flex items-center justify-between">
-      <Heading title={title} description={description} />
+      <Heading title={"Personal Information"} description={description} />
       {initialData && (
         <Button
           disabled={loading}
@@ -288,8 +281,8 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
         </Button>
       )}
     </div>
-    <Separator />
-    <div>
+    {/* <Separator /> */}
+    {/* <div>
       <ul className="flex gap-4">
         {steps.map((step, index) => (
           <li key={step.name} className="md:flex-1">
@@ -321,8 +314,8 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
           </li>
         ))}
       </ul>
-    </div>
-    <Separator />
+    </div> */}
+    {/* <Separator /> */}
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(processForm)}
@@ -383,7 +376,8 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Enter you contact number"
+                        
+                        placeholder="03xxxxxxxxx"
                         disabled={loading}
                         {...field}
                       />
@@ -410,28 +404,6 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                   </FormItem>
                 )}
               />
-              <div className="col-span-3">
-                <FormField
-                  control={form.control}
-                  name="isFatherDeceased"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-x-2 ">
-                      <FormControl>
-                        <Checkbox
-                          disabled={loading}
-                          onCheckedChange={field.onChange}
-                          checked={field.value}
-                          className="mt-2"
-                        />
-                      </FormControl>
-                      <FormLabel className="!space-x-0 !space-y-0">
-                        Father Deceased
-                      </FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <FormField
                 control={form.control}
                 name="fatherName"
@@ -451,14 +423,14 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
               />
               <FormField
                 control={form.control}
-                name="motherName"
+                name="domicile"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Mother Name</FormLabel>
-                    <FormControl>
+                    <FormLabel>Domicile</FormLabel>
+                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Your Mother Name"
+                        placeholder="Domicile"
                         {...field}
                       />
                     </FormControl>
@@ -468,14 +440,14 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
               />
               <FormField
                 control={form.control}
-                name="fatherOccupation"
+                name="province"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Father Occupation</FormLabel>
-                    <FormControl>
+                    <FormLabel>Province</FormLabel>
+                     <FormControl>
                       <Input
-                        disabled={loading || isFatherDeceasedWatch}
-                        placeholder="Occupation"
+                        disabled={loading}
+                        placeholder="Province"
                         {...field}
                       />
                     </FormControl>
@@ -483,16 +455,16 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                   </FormItem>
                 )}
               />
-              <FormField
+                <FormField
                 control={form.control}
-                name="fatherContact"
+                name="postalCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Father Contact</FormLabel>
-                    <FormControl>
+                    <FormLabel>Postal Code</FormLabel>
+                     <FormControl>
                       <Input
-                        disabled={loading || isFatherDeceasedWatch}
-                        placeholder="Contact"
+                        disabled={loading}
+                        placeholder="Postal Code"
                         {...field}
                       />
                     </FormControl>
@@ -500,75 +472,58 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                   </FormItem>
                 )}
               />
-              <FormField
+                <FormField
                 control={form.control}
-                name="domicileProvince"
+                name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Domicile Province</FormLabel>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            defaultValue={field.value}
-                            placeholder="Select a Province"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {/* @ts-ignore  */}
-                        {countries.map((country) => (
-                          <SelectItem key={country.id} value={country.id}>
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>City</FormLabel>
+                     <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="City"
+                        {...field}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
+                <FormField
                 control={form.control}
-                name="domicileDistrict"
+                name="country"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Domicile District</FormLabel>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            defaultValue={field.value}
-                            placeholder="Select a district"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {/* @ts-ignore  */}
-                        {cities.map((city) => (
-                          <SelectItem
-                            key={city.id + "domicileDistrict"}
-                            value={city.id}
-                          >
-                            {city.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Country</FormLabel>
+                     <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Country"
+                        {...field}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+                <FormField
+                control={form.control}
+                name="permanentAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Permanent Address</FormLabel>
+                     <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Permanent Address"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            
               <FormField
                 control={form.control}
                 name="gender"
@@ -675,7 +630,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                   </FormItem>
                 )}
               />
-              <Separator className=" col-span-3 mt-4" />
+              {/* Guardian Accordion */}
               <Accordion type="single" collapsible className="col-span-3 ">
                 <AccordionItem value="gInfo">
                   <AccordionTrigger
@@ -698,28 +653,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                         "md:grid md:grid-cols-3 gap-8 border p-4 rounded-md relative mb-4"
                       )}
                     >
-                      <div className="col-span-3">
-                        <FormField
-                          control={form.control}
-                          name="isFatherGuardian"
-                          render={({ field }) => (
-                            <FormItem className="flex items-center gap-x-2 ">
-                              <FormControl>
-                                <Checkbox
-                                  disabled={loading}
-                                  onCheckedChange={field.onChange}
-                                  checked={field.value}
-                                  className="mt-2"
-                                />
-                              </FormControl>
-                              <FormLabel className="!space-x-0 !space-y-0">
-                                Father is guardian
-                              </FormLabel>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                     
                       <FormField
                         control={form.control}
                         name={`guardianName`}
@@ -755,15 +689,15 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                           </FormItem>
                         )}
                       />
-                      <FormField
+                 <FormField
                         control={form.control}
-                        name={`guardianOccupation`}
+                        name={"guardianPermanentAddress"}
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Guardian Occupation</FormLabel>
+                          <FormItem  >
+                            <FormLabel>Guardian Address</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Occupation"
+                                placeholder="Address"
                                 type="text"
                                 disabled={loading}
                                 {...field}
@@ -777,71 +711,35 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                         control={form.control}
                         name={`guardianContact`}
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem >
                             <FormLabel>Guardian Contact</FormLabel>
                             <FormControl>
                               <Input
-                                type="text"
+                               placeholder="03xxxxxxxxx"
+                                type="number"
                                 disabled={loading}
                                 {...field}
-
                               />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name={`guardianTotalIncome`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Total Income</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="text"
-                                disabled={loading}
-                                {...field}
-                                placeholder="Guardian's income"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`guardianTotalExpenses`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Total Expenses</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="text"
-                                disabled={loading}
-                                {...field}
-                                placeholder="expenses"
-
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                     </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
 
-              <Accordion type="single" collapsible className="col-span-3 ">
-                <AccordionItem value="eCInfo">
+              {/* Emergency Contact Accordion */}
+                <Accordion type="single" collapsible className="col-span-3 ">
+                <AccordionItem value="gInfo">
                   <AccordionTrigger
                     className={cn(
-                      "[&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden relative !no-underline",
+                      "[&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden relative !no-underline ",
                       emergencyCAccordionError && "text-red-700"
                     )}
                   >
-                    Emergency  Information
+                    Emergency Contact Information
                     {emergencyCAccordionError && (
                       <span className="absolute alert right-8">
                         <AlertTriangleIcon className="h-4 w-4   text-red-700" />
@@ -855,10 +753,9 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                         "md:grid md:grid-cols-3 gap-8 border p-4 rounded-md relative mb-4"
                       )}
                     >
-
                       <FormField
                         control={form.control}
-                        name={`emergencyCName`}
+                        name={"emergencyCName"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Contact Name</FormLabel>
@@ -867,7 +764,6 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                                 type="text"
                                 disabled={loading}
                                 {...field}
-                                placeholder="Name of person"
                               />
                             </FormControl>
                             <FormMessage />
@@ -876,13 +772,31 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                       />
                       <FormField
                         control={form.control}
-                        name={`emergencyCRelation`}
+                        name={"emergencyCRelation"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Contact Relation</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Relation with contact"
+                                placeholder="Relation"
+                                type="text"
+                                disabled={loading}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                   <FormField
+                        control={form.control}
+                        name={"emergencyCPermanentAddress"}
+                        render={({ field }) => (
+                          <FormItem  >
+                            <FormLabel>Contact Address</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Address"
                                 type="text"
                                 disabled={loading}
                                 {...field}
@@ -894,413 +808,28 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                       />
                       <FormField
                         control={form.control}
-                        name={`emergencyCContact`}
+                        name={"emergencyCContact"}
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Contact Phone</FormLabel>
+                          <FormItem >
+                            <FormLabel>Contact No.</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Contact phone number"
-                                type="text"
+                               placeholder="03xxxxxxxxx"
+                                type="number"
                                 disabled={loading}
                                 {...field}
+
                               />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </div>
+                     </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-
-              {addressesFields.map((field, index) =>
-                <Accordion type="single" collapsible className="col-span-3 " key={field.id}>
-                  <AccordionItem value="addressInfo">
-                    <AccordionTrigger
-                      className={cn(
-                        "[&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden relative !no-underline",
-                        errors?.addresses?.[index] && "text-red-700"
-                      )}
-                    >
-                      {index === 0 ? "Permanent Address" : "Present Address"}
-                      {errors?.addresses?.[index] && (
-                        <span className="absolute alert right-8">
-                          <AlertTriangleIcon className="h-4 w-4   text-red-700" />
-                        </span>
-                      )}
-                    </AccordionTrigger>
-                    <AccordionContent>
-
-                      <div
-                        className={cn(
-                          "md:grid md:grid-cols-3 gap-8 border p-4 rounded-md relative mb-4"
-                        )}
-                      >
-
-                        <FormField
-                          control={form.control}
-                          name={`addresses.${index}.addressProvince`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Province</FormLabel>
-                              <Select
-                                disabled={loading}
-                                onValueChange={field.onChange}
-                                value={field.value}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue
-                                      defaultValue={field.value}
-                                      placeholder="Select a province"
-                                    />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {/* @ts-ignore  */}
-                                  {countries.map((pvnce) => (
-                                    <SelectItem key={pvnce.id} value={pvnce.id}>
-                                      {pvnce.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`addresses.${index}.addressDistrict`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>District</FormLabel>
-                              <Select
-                                disabled={loading}
-                                onValueChange={field.onChange}
-                                value={field.value}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue
-                                      defaultValue={field.value}
-                                      placeholder="Select a district"
-                                    />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {/* @ts-ignore  */}
-                                  {cities.map((dist) => (
-                                    <SelectItem key={dist.id} value={dist.id}>
-                                      {dist.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`addresses.${index}.streetAddress`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Street Address</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="text"
-                                  disabled={loading}
-                                  {...field}
-                                  placeholder="Street address of locality"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`addresses.${index}.addressPostalCode`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Postal Code</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  disabled={loading}
-                                  {...field}
-                                  placeholder="Postal Area Code"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              )}
             </>
-          )}
-          {currentStep === 1 && (
-            <>
-              {degreeFields?.map((field, index) => (
-                <Accordion
-                  type="single"
-                  collapsible
-                  defaultValue="item-1"
-                  key={field.id}
-                >
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger
-                      className={cn(
-                        "[&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden relative !no-underline",
-                        errors?.degrees?.[index] && "text-red-700"
-                      )}
-                    >
-                      {`Degree ${index + 1}`}
-
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="absolute right-8"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash2Icon className="h-4 w-4 " />
-                      </Button>
-                      {errors?.degrees?.[index] && (
-                        <span className="absolute alert right-8">
-                          <AlertTriangleIcon className="h-4 w-4   text-red-700" />
-                        </span>
-                      )}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div
-                        className={cn(
-                          "md:grid md:grid-cols-3 gap-8 border p-4 rounded-md relative mb-4"
-                        )}
-                      >
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.degreeLevel`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Degree level</FormLabel>
-                              <Select
-                                disabled={loading}
-                                onValueChange={field.onChange}
-                                value={field.value}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue
-                                      defaultValue={field.value}
-                                      placeholder="Select a degree level"
-                                    />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {/* @ts-ignore  */}
-                                  {degreeLevel.map((lvl) => (
-                                    <SelectItem key={lvl.id} value={lvl.id}>
-                                      {lvl.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.degreeName`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Degree </FormLabel>
-                              <Select
-                                disabled={loading}
-                                onValueChange={field.onChange}
-                                value={field.value}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue
-                                      defaultValue={field.value}
-                                      placeholder="Select a degree"
-                                    />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {/* @ts-ignore  */}
-                                  {degreeLevel.map((lvl) => (
-                                    <SelectItem key={lvl.id} value={lvl.id}>
-                                      {lvl.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.degreeMajor`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Major subject</FormLabel>
-                              <FormControl>
-                                <Input disabled={loading} {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.boardOrUniversity`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Board/University</FormLabel>
-                              <FormControl>
-                                <Input disabled={loading} {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.institution`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Institution</FormLabel>
-                              <FormControl>
-                                <Input disabled={loading} {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.startingYear`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Starting year</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  disabled={loading}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.endingYear`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Ending year</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  disabled={loading}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.totalMarks`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Total marks</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  disabled={loading}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`degrees.${index}.obtainedMarks`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Obtained marks</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  disabled={loading}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              ))}
-              <div className="flex justify-center mt-4 ">
-                <Button
-                  type="button"
-                  className="flex justify-center"
-                  size={"lg"}
-                  onClick={() =>
-                    append({
-                      degreeName: "",
-                      degreeMajor: "",
-                      degreeLevel: "",
-                      startingYear: 0,
-                      boardOrUniversity: "",
-                      institution: "",
-                      totalMarks: 0,
-                      obtainedMarks: 0,
-                      endingYear: 0,
-                    })
-                  }
-                >
-                  Add More
-                </Button>
-              </div>
-            </>
-          )}
-          {currentStep === 2 && (
-            <div>
-              <h1>Completed</h1>
-              <pre className="whitespace-pre-wrap">
-                {JSON.stringify(data)}
-              </pre>
-            </div>
           )}
         </div>
 
@@ -1310,7 +839,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
       </form>
     </Form>
     {/* Navigation */}
-    <div className="mt-8 pt-5">
+    {/* <div className="mt-8 pt-5">
       <div className="flex justify-between">
         <button
           type="button"
@@ -1355,7 +884,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
           </svg>
         </button>
       </div>
-    </div>
+    </div> */}
   </>))
 
 };

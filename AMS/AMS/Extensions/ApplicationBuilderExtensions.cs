@@ -12,7 +12,7 @@ using AMS.DatabaseSeed.Seeds.ProgramTypeSeeds;
 using AMS.DatabaseSeed.Seeds.TimeShiftSeeds;
 using AMS.DOMAIN.Identity;
 using AMS.Interfaces.Mail;
-using AMS.Middlewares;   
+using AMS.Middlewares;
 using AMS.MODELS.MODELS.SettingModels.Identity.Jwt;
 using AMS.MODELS.MODELS.SettingModels.Identity.User;
 using AMS.MODELS.SettingModels.AppSettings;
@@ -101,11 +101,11 @@ namespace AMS.Extensions
                 c.IncludeXmlComments(xmlPath);
 
             });
-                return services;
+            return services;
         }
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<ApplicationUser,ApplicationRole>(options =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireDigit = false;
@@ -113,7 +113,7 @@ namespace AMS.Extensions
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.User.RequireUniqueEmail = true;
-                })
+            })
                     .AddEntityFrameworkStores<AMSContext>()
                     .AddDefaultTokenProviders();
 
@@ -133,7 +133,7 @@ namespace AMS.Extensions
         }
         public static IServiceCollection AddDataSeeder(this IServiceCollection services)
         {
-            // should execute sequentionaly
+            // should execute sequentially
             return services
             .AddTransient<ApplicationDbInitializer>()
             .AddTransient<ApplicationDbSeeder>()
@@ -145,7 +145,7 @@ namespace AMS.Extensions
             .AddTransient<ICustomSeeder, AcademicYearSeeds>()
             .AddTransient<ICustomSeeder, TimeShiftSeeds>()
             .AddTransient<ICustomSeeder, AdmissionSessionSeeds>()
-            .AddTransient<ICustomSeeder, DegreeTypeSeeds>()
+            .AddTransient<ICustomSeeder, DegreeGroupSeeds>()
             .AddTransient<CustomSeederRunner>();
         }
         internal static IServiceCollection AddCorsPolicy(this IServiceCollection services, IConfiguration config)
@@ -171,9 +171,9 @@ namespace AMS.Extensions
     app.UseCors("CorsPolicy");
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-             services.AddOptions<SecuritySettings>()
-            .BindConfiguration(nameof(SecuritySettings)); 
-            
+            services.AddOptions<SecuritySettings>()
+           .BindConfiguration(nameof(SecuritySettings));
+
             services.AddOptions<MailSettings>()
                     .BindConfiguration(nameof(MailSettings));
 
@@ -181,7 +181,7 @@ namespace AMS.Extensions
                     .BindConfiguration(nameof(JwtSettings))
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
-           
+
             services.AddOptions<SuperAdminSettings>()
                   .BindConfiguration(nameof(SuperAdminSettings))
                   .ValidateDataAnnotations()
@@ -204,7 +204,7 @@ namespace AMS.Extensions
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ITokenService, TokenService>();
 
- 
+
             return services;
         }
         internal static IApplicationBuilder UseSecurityHeaders(this IApplicationBuilder app, IConfiguration config)
@@ -307,7 +307,7 @@ namespace AMS.Extensions
                     }));
             JobStorage.Current = new SqlServerStorage(connString);
 
-            services.AddTransient<IJobService,HangfireService>();
+            services.AddTransient<IJobService, HangfireService>();
             return services;
         }
         public static IServiceCollection AddServices(this IServiceCollection services, Type interfaceType, ServiceLifetime lifetime)
@@ -323,7 +323,7 @@ namespace AMS.Extensions
                 }));
             foreach (var type in interfaceTypes)
             {
-                services.AddService(type.Service!, type.Implementation, lifetime);   
+                services.AddService(type.Service!, type.Implementation, lifetime);
             }
             return services;
         }
@@ -335,5 +335,5 @@ namespace AMS.Extensions
             _ => throw new ArgumentException("Invalid lifeTime", nameof(lifetime))
 
         };
-   }
+    }
 }

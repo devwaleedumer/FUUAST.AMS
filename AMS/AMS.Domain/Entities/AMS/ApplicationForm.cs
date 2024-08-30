@@ -3,22 +3,30 @@ using AMS.DOMAIN.Entities.Lookups;
 
 namespace AMS.DOMAIN.Entities.AMS
 {
+    /// <summary>
+    ///  ApplicationForm Contains Data related to Application Form
+    /// </summary>
     public class ApplicationForm : IBaseEntity
     {
         public ApplicationForm()
         {
-            ProgramsApplied=new HashSet<ProgramApplied>();
+            ProgramsApplied = new HashSet<ProgramApplied>();
         }
         public int Id { get; set; }
         public int SessionId { get; set; }
-        public bool? InfoConsent { get; set; } 
+        public bool? InfoConsent { get; set; }
         public int? StatusEid { get; set; }
         public DateTime? SubmissionDate { get; set; }
         public bool IsSubmitted { get; set; }
         public virtual Applicant? Applicant { get; set; }
         public virtual FeeChallan? FeeChallan { get; set; }
+        // List of All Applied Programs 
         public virtual ICollection<ProgramApplied>? ProgramsApplied { get; set; }
         public virtual AdmissionSession? Session { get; set; }
+        public EntranceTestDetail? EntranceTest { get; set; }
+        public  bool HaveValidTest { get; set; }
+        public int? ApplicantId { get; set; }
+        public int? EntranceTestId { get; set; }
 
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }

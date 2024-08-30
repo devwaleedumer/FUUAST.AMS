@@ -3,9 +3,9 @@ using AMS.DOMAIN.Entities.AMS;
 
 namespace AMS.DOMAIN.Entities.Lookups
 {
-    public class DegreeType : IBaseEntity
+    public class DegreeGroup : IBaseEntity
     {
-        public DegreeType()
+        public DegreeGroup()
         {
             ApplicantDegrees = new HashSet<ApplicantDegree>();
         }

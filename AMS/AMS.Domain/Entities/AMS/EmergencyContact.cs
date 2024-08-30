@@ -10,12 +10,13 @@ namespace AMS.DOMAIN.Entities.AMS
     public class EmergencyContact : IBaseEntity
     {
         public int Id { get; set; }
-        public required string ContactNO { get; set; }
         public required string Name { get; set; }
         public required string Relation { get; set; }
+        public required string ContactNo { get; set; }
+        public required string PermanentAddress { get; set; }
         public int ApplicantId { get; set; }
         public virtual Applicant? Applicant { get; set; }
-      
+
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }
