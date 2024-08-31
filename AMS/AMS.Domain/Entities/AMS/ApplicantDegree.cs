@@ -15,11 +15,9 @@ namespace AMS.DOMAIN.Entities.AMS
 
         public int? ApplicantId { get; set; }
         public int? DegreeGroupId { get; set; }
-        public int? DegreeLevelId { get; set; }
 
         public virtual Applicant? Applicant { get; set; }
         public virtual DegreeGroup? DegreeGroup { get; set; }
-        public virtual DegreeLevel? DegreeLevel { get; set; }
 
 
         public int? InsertedBy { get; set; }

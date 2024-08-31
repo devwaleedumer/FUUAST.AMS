@@ -7,7 +7,6 @@ using AMS.DOMAIN.Identity;
 using AMS.SHARED.Interfaces.CurrentUser;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
 namespace AMS.DATA
 {
     public partial class AMSContext : BaseContext
@@ -38,6 +37,7 @@ namespace AMS.DATA
         public virtual DbSet<AcademicYear> AcademicYears { get; set; } = null!;
         public virtual DbSet<Faculity> Faculties { get; set; } = null!;
         public virtual DbSet<Department> Departments { get; set; } = null!;
+        public virtual DbSet<ProgramDepartment> ProgramDepartments { get; set; } = null!;
         public virtual DbSet<Program> Programs { get; set; } = null!;
         public virtual DbSet<ProgramType> ProgramTypes { get; set; } = null!;
         public virtual DbSet<AdmissionSession> Sessions { get; set; } = null!;
@@ -298,11 +298,6 @@ namespace AMS.DATA
                       .WithMany(e => e.ApplicantDegrees)
                       .OnDelete(DeleteBehavior.Cascade)
                       .HasConstraintName("FK_Degree_DegreeGroup");
-                
-                entity.HasOne(e => e.DegreeLevel)
-                      .WithMany(e => e.ApplicantDegrees)
-                      .OnDelete(DeleteBehavior.Cascade)
-                      .HasConstraintName("FK_Degree_DegreeLevel");
             });
 
             modelBuilder.Entity<ApplicationForm>(entity =>
@@ -378,7 +373,19 @@ namespace AMS.DATA
                     .WithMany(e => e.ProgramApplied)
                     .HasForeignKey(e => e.DepartmentId)
                     .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_ProgramApplied_Department");
+                
+                entity.HasOne(e => e.Program)
+                    .WithMany(e => e.ProgramApplied)
+                    .HasForeignKey(e => e.ProgramId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_ProgramApplied_Programs");
+                
+                entity.HasOne(e => e.TimeShift)
+                    .WithMany(e => e.ProgramApplied)
+                    .HasForeignKey(e => e.TimeShiftId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_ProgramApplied_TimeShift");
             });
             #endregion
 
@@ -406,7 +413,7 @@ namespace AMS.DATA
             
             modelBuilder.Entity<TestType>(entity =>
             {
-                entity.ToTable("EntranceTestDetail", "Domain");
+                entity.ToTable("TestType", "Domain");
 
                 entity.HasKey(e => e.Id);
 
@@ -448,7 +455,7 @@ namespace AMS.DATA
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
-                      .HasMaxLength(20)
+                      .HasMaxLength(50)
                       .IsUnicode(false);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
@@ -457,7 +464,35 @@ namespace AMS.DATA
                       .WithMany(e => e.Programs)
                       .HasForeignKey(e => e.ProgramTypeId)
                       .OnDelete(DeleteBehavior.Cascade)
-                      .HasConstraintName("FK_ProgramTypel_Programs");
+                      .HasConstraintName("FK_ProgramType_Programs");
+                });
+            
+            modelBuilder.Entity<ProgramDepartment>(entity =>
+            {
+                entity.ToTable("ProgramDepartment", "Lookup");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+
+                entity.HasOne(e => e.Program)
+                      .WithMany(e => e.ProgramDepartments)
+                      .HasForeignKey(e => e.ProgramId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_ProgramDepartment_Programs");
+                
+                entity.HasOne(e => e.Department)
+                      .WithMany(e => e.ProgramDepartments)
+                      .HasForeignKey(e => e.DepartmentId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_ProgramDepartment_Departments");  
+
+                entity.HasOne(e => e.TimeShift)
+                      .WithMany(e => e.ProgramDepartments)
+                      .HasForeignKey(e => e.TimeShiftId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_ProgramDepartment_TimeShifts");
                 });
 
             modelBuilder.Entity<TimeShift>(entity =>
@@ -502,17 +537,6 @@ namespace AMS.DATA
                 entity.Property(e => e.Name)
                       .HasMaxLength(50)
                       .IsUnicode(false);
-
-                entity.HasOne(e => e.Program)
-               .WithMany(e => e.Departments)
-               .HasForeignKey(e => e.ProgramId)
-               .HasConstraintName("FK_Department_Program");
-               
-                entity.HasOne(e => e.TimeShift)
-               .WithMany(e => e.Departments)
-               .OnDelete(DeleteBehavior.Cascade)
-               .HasForeignKey(e => e.TimeShiftId)
-               .HasConstraintName("FK_TimeShift_Department");
                
                 entity.HasOne(e => e.Faculity)
              .WithMany(e => e.Departments)
@@ -533,7 +557,7 @@ namespace AMS.DATA
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
-                      .HasMaxLength(30)
+                      .HasMaxLength(50)
                       .IsUnicode(false);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");

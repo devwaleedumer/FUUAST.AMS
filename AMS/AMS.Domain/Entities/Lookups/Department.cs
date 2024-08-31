@@ -13,16 +13,14 @@ namespace AMS.DOMAIN.Entities.Lookups
         public Department()
         {
             ProgramApplied = new HashSet<ProgramApplied>();
+            ProgramDepartments = new HashSet<ProgramDepartment>();
         }
         public int Id { get; set; }
         public  string Name { get; set; }
         public int FaculityId { get; set; }
-        public int ProgramId { get; set; }
-        public int TimeShiftId { get; set; }
         public virtual Faculity? Faculity { get; set; }
-        public virtual Program? Program { get; set; }
-        public virtual TimeShift? TimeShift { get; set; }
-        public virtual ICollection<ProgramApplied> ProgramApplied { get; set; }
+        public virtual ICollection<ProgramApplied>? ProgramApplied { get; set; }
+        public virtual ICollection<ProgramDepartment>? ProgramDepartments { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

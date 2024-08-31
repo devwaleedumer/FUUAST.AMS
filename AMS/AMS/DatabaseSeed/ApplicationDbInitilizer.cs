@@ -18,6 +18,8 @@ namespace AMS.DatabaseSeed
 
         public async Task InitializeAsync(CancellationToken cancellationToken)
         {
+                _dbContext.Database.EnsureCreated();
+
             if (_dbContext.Database.GetMigrations().Any())
             {
                 if ((await _dbContext.Database.GetPendingMigrationsAsync(cancellationToken)).Any())

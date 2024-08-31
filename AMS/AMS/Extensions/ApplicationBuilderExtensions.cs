@@ -7,6 +7,7 @@ using AMS.DatabaseSeed.Seeds.DegreeLevelSeeds;
 using AMS.DatabaseSeed.Seeds.DepartmentSeeds;
 using AMS.DatabaseSeed.Seeds.FaculitSeeds;
 using AMS.DatabaseSeed.Seeds.PreviousDegreeSeeds;
+using AMS.DatabaseSeed.Seeds.ProgramDepartmentSeeds;
 using AMS.DatabaseSeed.Seeds.ProgramSeeds;
 using AMS.DatabaseSeed.Seeds.ProgramTypeSeeds;
 using AMS.DatabaseSeed.Seeds.TimeShiftSeeds;
@@ -145,7 +146,9 @@ namespace AMS.Extensions
             .AddTransient<ICustomSeeder, AcademicYearSeeds>()
             .AddTransient<ICustomSeeder, TimeShiftSeeds>()
             .AddTransient<ICustomSeeder, AdmissionSessionSeeds>()
+            .AddTransient<ICustomSeeder, ProgramDepartmentSeeds>()
             .AddTransient<ICustomSeeder, DegreeGroupSeeds>()
+            .AddTransient<ICustomSeeder, TestTypeSeeds>()
             .AddTransient<CustomSeederRunner>();
         }
         internal static IServiceCollection AddCorsPolicy(this IServiceCollection services, IConfiguration config)
@@ -254,8 +257,7 @@ namespace AMS.Extensions
 
             return app;
         }
-        public static IServiceCollection AddExceptionMiddleware(this IServiceCollection services) =>
-    services.AddScoped<ExceptionMiddleware>();
+        public static IServiceCollection AddExceptionMiddleware(this IServiceCollection services) => services.AddScoped<ExceptionMiddleware>();
 #pragma warning disable CS0618 // Type or member is obsolete
         public static IServiceCollection AddFluentValidation(this IServiceCollection services)
         {

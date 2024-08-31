@@ -1,17 +1,20 @@
 ﻿using AMS.DOMAIN.Base;
+using AMS.DOMAIN.Entities.AMS;
 namespace AMS.DOMAIN.Entities.Lookups
 {
     public class Program : IBaseEntity
     {
         public Program()
         {
-            Departments = new List<Department>();
+            ProgramDepartments = new HashSet<ProgramDepartment>();
+            ProgramApplied = new HashSet<ProgramApplied>();
         }
         public int Id { get; set; }
         public required string Name { get; set; }
         public int ProgramTypeId { get; set; }
         public virtual ProgramType? ProgramType { get; set; }
-        public virtual ICollection<Department>? Departments { get; set; }
+        public virtual ICollection<ProgramDepartment>? ProgramDepartments { get; set; }
+        public virtual ICollection<ProgramApplied>? ProgramApplied { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }
