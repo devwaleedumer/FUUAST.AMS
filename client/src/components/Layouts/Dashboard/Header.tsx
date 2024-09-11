@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MobileSidebar } from "./MobileSidebar";
 import { cn } from "@/lib/utils";
 import { Navbar } from "./Navbar";
-import ThemeSwitcher from "../shared/ThemeSwitcher";
+import ThemeSwitcher from "../../shared/ThemeSwitcher";
 
 export default function Header() {
   return (

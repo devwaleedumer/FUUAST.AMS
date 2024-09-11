@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+"use client"
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/providers/storeProvider/StoreProvider";
 import { ThemeProvider } from "@/providers/themeProvider/NextThemesProvider";
 import Heading from "@/components/shared/Heading";
+import NextTopLoader from 'nextjs-toploader';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,8 +14,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+ 
   return (
-    <html lang="en">
+    
+    <html lang="en" suppressHydrationWarning>
       <Heading
         title="FUUAST online admission management system"
         description="FUUAST online admission management system, Student can register for any program on the fly while sitting at their home "
@@ -21,12 +25,13 @@ export default function RootLayout({
       />
 
       <body className={inter.className}>
-        {" "}
-        <StoreProvider>
+        <NextTopLoader showSpinner={false} color={"hsl(142.1, 76.2%, 36.3%)"} />
+       <StoreProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
           </ThemeProvider>
         </StoreProvider>
+        
       </body>
     </html>
   );

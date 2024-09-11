@@ -1,28 +1,41 @@
 "use client";
-import Signup from "@/components/Authentication/Signup/Signup";
-import { FormControl } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-export default function Home() {
-  const x = Array.from(Array(100 + 1).keys()).slice(1)
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Select>
-        <SelectTrigger>
-          <SelectValue
 
-            placeholder="Select a degree level"
-          />
-        </SelectTrigger>
-        <SelectContent>
-          {/* @ts-ignore  */}
-          {x.map((id, lvl) => (
-            <SelectItem key={id} value={id.toString()}>
-              {lvl}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </main>
+import Header from "@/components/Layouts/Home/Header";
+import Hero from "@/components/Home/Hero";
+import Heading from "@/components/shared/Heading";
+import ImageGallery from "@/components/shared/ImageGallery";
+import Requirement from "@/components/Home/Requirement";
+
+const images = [
+  // "/UniPhotos/photo1.jpeg",
+  "/UniPhotos/photo4.png",
+  "/UniPhotos/photo2.jpg",
+  "/UniPhotos/photo3.png",
+  "/UniPhotos/photo5.jpeg",
+  "/UniPhotos/photo6.jpeg",
+  "/UniPhotos/photo7.jpeg",
+  "/UniPhotos/photo4.png",
+  "/UniPhotos/photo2.jpg",
+
+]
+
+export default function Home() {
+  return (
+    <>
+    <Heading 
+    title="Home"
+     keywords="FUUAST, FUUAST ISB, FUUAST Islamabad, Admissions, Islamabad Admissions, Admissions, Apply"
+    description="Apply for Federal Urdu University of Arts, Science & Technology Islamabad"
+    />
+    <Header/>
+    <Hero/>
+    <Requirement/>
+    <ImageGallery 
+     title={`Beautiful Campus of FUUAST  ❤️`} 
+     description={`Explore our diverse range of academic programs and find the perfect fit for your educational journey.
+`}
+     images={images}
+     />
+    </>
   );
 }

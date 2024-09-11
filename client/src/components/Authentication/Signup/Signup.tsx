@@ -44,16 +44,16 @@ const Signup: FC<SignupProps> = ({}) => {
   }
 
   return (
-    <main className="w-full h-screen flex px-4">
-      <div className="w-1/2  hidden  h-full">
+    <main className="w-full min-h-screen flex px-4 py-6 lg:py-8 ">
+      {/* <div className="w-1/2    h-full">
         <Image
           src={UniversityPhoto2}
           alt="University Garden"
           className="h-full w-full"
         />
-      </div>
-      <div className="flex w-full  items-center justify-center">
-        <div className="w-full max-w-sm first-line:space-y-3 px-2">
+      </div> */}
+      <div className="flex w-full items-center justify-center">
+        <div className="w-full max-w-md first-line:space-y-3 border rounded-lg p-6 ">
           <div className="text-center pb-4">
             <div className="mt-1">
               <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
@@ -63,7 +63,7 @@ const Signup: FC<SignupProps> = ({}) => {
                 Have already an account?{" "}
                 <Link
                   href={AuthRoutes.Login}
-                  className="font-medium  text-[hsl(var(--primary))] "
+                  className="font-medium text-[hsl(var(--primary))] "
                 >
                   Login
                 </Link>
@@ -150,7 +150,7 @@ const Signup: FC<SignupProps> = ({}) => {
                 />
               </div>
               <Button className="text-center w-full mt-4" type="submit">
-                Submit
+                Register
               </Button>
             </form>
           </Form>
