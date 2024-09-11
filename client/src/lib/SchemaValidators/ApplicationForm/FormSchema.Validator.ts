@@ -2,25 +2,24 @@ import { ACCEPTED_IMAGE_TYPES, IMG_MAX_LIMIT, MAX_FILE_SIZE } from "@/lib/config
 import * as z from "zod";
 
 
-export const personalInfo = z.object({
+export const profileSchema = z.object({
     profileImage: z
-        .instanceof(File, {
-            message: "Image is required"
-        })
+        .instanceof(File)
         .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 4MB.`)
         .refine(
             (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
             "Only .jpg, .jpeg, .png and .webp formats are supported."
         ),
-    dob: z.date
-        ({
-            required_error: "Start date should be in the format YYYY-MM-DD",
+    dob: z
+        .string()
+        .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
+            message: "Start date should be in the format YYYY-MM-DD",
         }),
     contactNo: z.coerce.number({
         invalid_type_error: "contact no  can be only number 😻.",
     })
         .min(11, "Contact no. must  contains at least 11 digits.")
-        .max(11, "Contact no.  contains maximum 11 digits.")
+    // .max(11, "Contact no.  contains maximum 11 digits.")
     ,
     fatherName: z.string().min(1, "Father name is required.")
         .trim()
@@ -84,9 +83,50 @@ export const personalInfo = z.object({
     postalCode: z.coerce.number()
         .min(11, "Must  contains at least 2 digits 🤨"),
     // jobs array is for the dynamic fields
+    degrees: z.array(
+        z.object({
+            degreeLevel: z.string().min(1, { message: "Please select a degree level" }),
+            degreeName: z.string().min(1, { message: "Please Select a degree" }),
+            degreeMajor: z
+                .string()
+                .min(1, { message: "Please enter major subject" }),
+            boardOrUniversity: z
+                .string()
+                .optional(),
+            institution: z
+                .string()
+                .optional(),
+            startingYear: z
+                .coerce
+                .number({
+                    invalid_type_error: "only digits are required",
+                })
+                .positive("please enter a valid digit"),
 
+            endingYear: z.coerce
+                .number({
+                    invalid_type_error: "only digits are required",
+                })
+                .positive("please enter a valid digit"),
+
+
+            totalMarks: z.coerce.number({
+                invalid_type_error: "only digits are required",
+            })
+                .max(4, "Total marks cannot exceed 4 digits")
+                .min(4, "Total marks should be of 4 digits")
+                .positive("please enter a valid digit"),
+            obtainedMarks: z.coerce.number({
+                invalid_type_error: "only digits are required",
+            })
+                .positive("please enter a valid digit")
+                .max(4, "Total marks cannot exceed 4 digits")
+                .min(4, "Total marks should be of 4 digits"),
+
+        }),
+    ),
 })
 
 
 
-export type PersonalInfoValues = z.infer<typeof personalInfo>;
+export type ProfileFormValues = z.infer<typeof profileSchema>;

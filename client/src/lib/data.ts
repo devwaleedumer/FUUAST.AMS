@@ -2,8 +2,8 @@ import { NavItem } from "@/types";
 
 export const navItems: NavItem[] = [
     {
-        title: "Application",
-        href: "/ug-application",
+        title: "Dashboard",
+        href: "/dashboard",
         icon: "dashboard",
         label: "Dashboard",
     },
@@ -21,7 +21,7 @@ export const navItems: NavItem[] = [
     // },
     {
         title: "Profile",
-        href: "/profile",
+        href: "/dashboard/profile",
         icon: "profile",
         label: "profile",
     },
@@ -106,13 +106,3 @@ export const gradingType = [
     { id: "2", name: "CGPA" },
 ]
 
-export const photographRequirements = [
-    "Must be taken recently",
-    "Should be in white or blue background",
-    "Should be in formal dressing (Photograph in T-shirts containing logos and brand names are prohibited)",
-    "Should be clear, sharp, and of good quality",
-    "Full face must be visible (70-80% of the photograph)",
-    "Eye contact with the camera",
-    "Should have natural skin tone",
-    "With natural brightness and contrast"
-];

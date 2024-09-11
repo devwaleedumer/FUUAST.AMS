@@ -1,8 +1,6 @@
 "use client";
-import Header from "@/components/Layouts/Dashboard/Header";
-import Sidebar from "@/components/Layouts/Dashboard/Sidebar";
-import LayoutLoader from "@/components/shared/Loader";
-import { Suspense, useEffect, useState } from "react";
+import Header from "@/components/Layout/Header";
+import Sidebar from "@/components/Layout/Sidebar";
 
 export default function ApplicantDashboardLayout({
   children,
@@ -10,12 +8,12 @@ export default function ApplicantDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-      <>
+    <>
       <Header />
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
-          <main className="w-full pt-16">{children}</main>
+        <main className="w-full pt-16">{children}</main>
       </div>
-     </>
+    </>
   );
 }

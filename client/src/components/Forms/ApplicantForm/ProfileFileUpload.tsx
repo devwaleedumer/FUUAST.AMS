@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
-import { AspectRatio } from "../ui/aspect-ratio";
+import { AspectRatio } from "../../ui/aspect-ratio";
 import Image from "next/image";
 import { FaTrashAlt } from "react-icons/fa";
-import { FileUpload } from "../shared/FileUpload";
+import { FileUpload } from "../../shared/FileUpload";
 
 interface ProfileFileUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value: any;

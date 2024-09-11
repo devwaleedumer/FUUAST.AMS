@@ -60,7 +60,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                     {preview == undefined && (
                         <div
                             className={cn(`${dragging ? "bg-green-200" : ""
-                                } mt-2 relative flex w-full flex-col items-center justify-center rounded-lg border border-dashed border-gray-900/25 px-6 text-center dark:bg-zinc-800 py-2 `, isValid && "border-red-700")}
+                                } mt-2 flex w-full flex-col items-center justify-center rounded-lg border border-dashed border-gray-900/25 px-6 text-center dark:bg-zinc-800 py-2 `, isValid && "border-red-700")}
                         >
                             <input
                                 {...props}
