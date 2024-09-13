@@ -311,6 +311,7 @@ namespace AMS.DATA
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
                 entity.Property(e => e.SubmissionDate).HasColumnType("datetime2");
                 entity.Property(e => e.IsSubmitted).HasDefaultValue(false);
+                entity.Property(e => e.HaveValidTest).HasDefaultValue(false);
 
                 entity.HasOne(e => e.FeeChallan)
                         .WithOne(e => e.ApplicationForm)

@@ -1373,8 +1373,6 @@ namespace AMS.DATA.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationForm");
-
                     b.Navigation("ApplicationUser");
                 });
 
@@ -1673,8 +1671,6 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.ApplicationForm", b =>
                 {
-                    b.Navigation("Applicant");
-
                     b.Navigation("FeeChallan");
 
                     b.Navigation("ProgramsApplied");

@@ -42,7 +42,7 @@ namespace AMS.Middlewares
                         Source = source,
                         Exception = exception.Message.Trim(),
                         ErrorId = errorId,
-                        SupportMessage = String.Format("Provide the ErrorId {0} to the support team for further analysis.", errorId)
+                        SupportMessage = string.Format("Provide the ErrorId {0} to the support team for further analysis.", errorId)
                     };
 
                     if (exception is not CustomException && exception.InnerException != null)

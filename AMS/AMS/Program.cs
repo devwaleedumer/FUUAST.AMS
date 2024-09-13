@@ -1,9 +1,14 @@
 
+using AMS.Authorization.Permissons;
+using AMS.DATA;
+using AMS.DOMAIN.Identity;
 using AMS.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Serilog;
-
-
 
 Log.Information("Server Booting Up...");
 try
@@ -34,7 +39,7 @@ try
         {
             options.InvalidModelStateResponseFactory = context =>
             {
-                return new UnprocessableEntityObjectResult(context.ModelState);
+                return new BadRequestObjectResult(context.ModelState);
             };
         });
 
@@ -45,7 +50,7 @@ try
     var app = builder.Build();
 
     //uncomment the code when data seeding is required
-    //await app.Services.InitializeDatabasesAsync();
+    await app.Services.InitializeDatabasesAsync();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -55,11 +60,13 @@ try
     }
     app.UseCorsPolicy();
 
-    app.UseCurrentUser();
-
     app.UseHttpsRedirection();
+    
+    app.UseAuthentication();
 
     app.UseAuthorization();
+
+    app.UseCurrentUser();
 
     app.MapControllers();
 

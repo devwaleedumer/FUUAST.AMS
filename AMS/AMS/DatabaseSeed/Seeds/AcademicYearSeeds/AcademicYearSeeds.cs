@@ -28,9 +28,7 @@ namespace AMS.DatabaseSeed.Seeds.AcademicYearSeeds
                 var academicYears = JsonConvert.DeserializeObject<List<DOMAIN.Entities.Lookups.AcademicYear>>(academicYeardata);
                 if (academicYears is not null)
                 {
-                    foreach (var academicYear in academicYears)
-                    {
-                        await _db.AcademicYears.AddAsync(academicYear, cancellationToken);
+                        await _db.AcademicYears.AddRangeAsync(academicYears, cancellationToken);
                     }
                 }
                 await _db.SaveChangesAsync(cancellationToken);
@@ -38,4 +36,3 @@ namespace AMS.DatabaseSeed.Seeds.AcademicYearSeeds
             }
         }
     }
-}

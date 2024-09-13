@@ -21,7 +21,9 @@ using AMS.Security;
 using AMS.Services.CurrentUser;
 using AMS.Services.Hangfire;
 using AMS.Services.MailService;
+using AMS.SERVICES.DataService;
 using AMS.SERVICES.EmailTemplateService;
+using AMS.SERVICES.IDataService;
 using AMS.SERVICES.Identity.Interfaces;
 using AMS.SERVICES.Identity.Services;
 using AMS.SERVICES.MailService;
@@ -86,9 +88,9 @@ namespace AMS.Extensions
                     TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact
                     {
-                        Name = "Waleed Umer",
-                        Email = "dev.waleedumer@gmail.com",
-                        Url = new Uri("https://github.com/devwaleedumer"),
+                        Name = "FUUAST Admissions developer's Team",
+                        Email = "dev.admission@fuuastisb.edu.pk",
+                        Url = new Uri("https://github.com/FUUAST.AMS"),
                     },
                     License = new OpenApiLicense
                     {
@@ -118,15 +120,15 @@ namespace AMS.Extensions
                     .AddEntityFrameworkStores<AMSContext>()
                     .AddDefaultTokenProviders();
 
-            services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
 
+            services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
             services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            });
-            services
-          .AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, null!);
+            
+          services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
           .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             //services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
@@ -206,6 +208,9 @@ namespace AMS.Extensions
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IApplicationFormService, ApplicationFormService>();
+            services.AddTransient<IUploadImageService,UploadImageService>();
+
 
 
             return services;
