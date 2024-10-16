@@ -1,11 +1,14 @@
-import { removeSessionCookies } from "@/lib/auth/tokenCookies";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-
+import { IUser } from "../../../types/auth";
 
 // initial state
-const initialState = {
-    token: "",
-    user: ""
+type UserState = {
+    user: Partial<IUser> | null,
+    isAuthenticated: boolean,
+}
+const initialState: UserState = {
+    user: null,
+    isAuthenticated: false
 }
 
 const userSlice = createSlice({
@@ -13,14 +16,13 @@ const userSlice = createSlice({
     initialState: initialState,
     reducers: {
 
-        userLoggedIn: (state, action: PayloadAction<{ accessToken: string, user: string }>) => {
-            state.token = action.payload.accessToken;
-            state.user = action.payload.user
+        userLoggedIn: (state, action: PayloadAction<UserState>) => {
+            state.user = action.payload.user;
+            state.isAuthenticated = true;
         },
         userLoggedOut: (state) => {
-            state.token = "";
-            state.user = "";
-            removeSessionCookies()
+            state.user = null;
+            state.isAuthenticated = false;
         }
     }
 })

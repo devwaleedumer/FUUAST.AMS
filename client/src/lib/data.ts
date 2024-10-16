@@ -3,7 +3,7 @@ import { NavItem } from "@/types";
 export const navItems: NavItem[] = [
     {
         title: "Application",
-        href: "/ug-application",
+        href: "/admission-application",
         icon: "dashboard",
         label: "Dashboard",
     },
@@ -41,13 +41,13 @@ export const navItems: NavItem[] = [
 
 
 export const countries = [
-    { id: "1", name: "Punjab" },
-    { id: "2", name: "KPK" },
-    { id: "3", name: "Balouchistan" },
-    { id: "4", name: "Punjab" },
-    { id: "5", name: "GB" },
-    { id: "6", name: "Kashmir" },
-    { id: "7", name: "Islamabad" },
+    { id: "Punjab", name: "Punjab" },
+    { id: "KPK", name: "KPK" },
+    { id: "Balouchistan", name: "Balouchistan" },
+    { id: "Punjab", name: "Punjab" },
+    { id: "GB", name: "GB" },
+    { id: "Kashmir", name: "Kashmir" },
+    { id: "Islamabad", name: "Islamabad" },
 ];
 export const cities = [
     { id: "1", name: "Islamabad" },
@@ -67,44 +67,54 @@ export const genders = [
 ];
 
 export const bloodGroups = [
-    { id: "1", name: "A+" },
-    { id: "2", name: "A-" },
-    { id: "3", name: "B+" },
-    { id: "4", name: "B-" },
-    { id: "5", name: "O+" },
-    { id: "6", name: "O-" },
-    { id: "7", name: "AB+" },
-    { id: "8", name: "AB-" },
+    { id: "A+", name: "A+" },
+    { id: "A-", name: "A-" },
+    { id: "B+", name: "B+" },
+    { id: "B-", name: "B-" },
+    { id: "O+", name: "O+" },
+    { id: "O-", name: "O-" },
+    { id: "AB+", name: "AB+" },
+    { id: "AB-", name: "AB-" },
 ];
 
 export const religions = [
-    { id: "1", name: "Islam" },
-    { id: "2", name: "Christianity" },
-    { id: "3", name: "Judaism" },
-    { id: "4", name: "Hinduism" },
-    { id: "5", name: "Atheist" },
-    { id: "6", name: "Other" },
+    { id: "Islam", name: "Islam" },
+    { id: "Christianity", name: "Christianity" },
+    { id: "Judaism", name: "Judaism" },
+    { id: "Hinduism", name: "Hinduism" },
+    { id: "Atheist", name: "Atheist" },
+    { id: "Other", name: "Other" },
 ];
 
 
-export const degreeLevel = [
-    { id: "1", name: "SSC" },
-    { id: "2", name: "HSSC" },
-    { id: "3", name: "Diploma 13 years" },
-    { id: "4", name: "ADP or equalient 14 Years" },
-    { id: "5", name: "16 Years" },
-    { id: "6", name: "MS 18 Years" },
-];
+// export const degreeLevel = [
+//     { id: "SSC", name: "SSC" },
+//     { id: "HSSC", name: "HSSC" },
+//     { id: "Diploma 13 years (DAE)", name: "Diploma 13 years (DAE)" },
+//     { id: "4", name: "ADP or equivalent 14 Years" },
+//     { id: "5", name: "16 Years" },
+//     { id: "6", name: "MS 18 Years" },
+// ];
 
-export const examType = [
-    { id: "1", name: "Annual" },
-    { id: "2", name: "Semester" },
-]
+// export const examType = [
+//     { id: "1", name: "Annual" },
+//     { id: "2", name: "Semester" },
+// ]
 
-export const gradingType = [
-    { id: "1", name: "Percentage" },
-    { id: "2", name: "CGPA" },
-]
+// export const gradingType = [
+//     { id: "1", name: "Percentage" },
+//     { id: "2", name: "CGPA" },
+// ]
+
+// export const programsInfo = [
+//     { id: "1", name: "BS" },
+//     { id: "2", name: "APD" },
+//     { id: "3", name: "BPD" },
+//     { id: "4", name: "MBA" },
+//     { id: "5", name: "M.phil" },
+//     { id: "6", name: "MS" },
+//     { id: "7", name: "Phd" },
+// ]
 
 export const photographRequirements = [
     "Must be taken recently",
@@ -116,3 +126,47 @@ export const photographRequirements = [
     "Should have natural skin tone",
     "With natural brightness and contrast"
 ];
+
+export const academicDegreeNamesRecord = {
+    "1": [
+        "Matriculation/OLevels/SCC/Equivalent",
+        "Intermedidate/ALevels/HSSC/DAE/Equivalent",
+    ],
+    "2": [
+        "Matriculation/OLevels/SCC/Equivalent",
+        "Intermedidate/ALevels/HSSC/DAE/Equivalent",
+    ],
+    "3": [
+        "Matriculation/OLevels/SCC/Equivalent",
+        "Intermedidate/ALevels/HSSC/DAE/Equivalent",
+        "Other",
+    ],
+    "4": [
+        "Matriculation/OLevels/SCC/Equivalent",
+        "Intermedidate/ALevels/HSSC/DAE/Equivalent",
+        "BS/M.Sc/16 years education",
+        "Other",
+    ],
+    "5": [
+        "Matriculation/OLevels/SCC/Equivalent",
+        "Intermedidate/ALevels/HSSC/DAE/Equivalent",
+        "BS/M.Sc/16 years education",
+        "MS/M.Phill/MS/18 years education",
+        "Other",
+    ],
+    "6": [
+        "Matriculation/OLevels/SCC/Equivalent",
+        "Intermedidate/ALevels/HSSC/DAE/Equivalent",
+        "BS/M.Sc/16 years education",
+        "Other",
+    ],
+    "7": [
+        "Matriculation/OLevels/SCC/Equivalent",
+        "Intermedidate/ALevels/HSSC/DAE/Equivalent",
+        "BS/M.Sc/16 years education",
+        "Other",
+    ],
+
+} as const
+export type AcademicDegreeNamesRecordParam = "1" | "2" | "3" | "4" | "5" | "6" | "7"
+export type AcademicDegreeNamesRecordType = typeof academicDegreeNamesRecord[AcademicDegreeNamesRecordParam]

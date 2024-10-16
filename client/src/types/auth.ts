@@ -17,7 +17,13 @@ export interface ILoginRequest {
 
 
 export interface ILoginResponse {
-    refreshToken: string,
-    accessToken: string,
     refreshTokenExpiryTime: string
+}
+
+export interface IUser {
+    id: number,
+    userName: string,
+    fullName: string,
+    email: string,
+    profilePictureUrl: string,
 }

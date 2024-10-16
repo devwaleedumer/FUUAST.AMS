@@ -20,9 +20,9 @@ const ImageGallery: FC<Props> = ({ images,title,description }) => {
                 Explore our diverse range of academic programs and find the perfect fit for your educational journey.
               </p>
             </div>
-              <div className="columns-3 md:gap-5 mt-8 mx-auto aspect-square gap-2">
+              <div className="columns-3 mt-8 mx-auto aspect-square  space-y-4 rounded-lg ">
       {images.map((image, index) => (
-        <div key={index + "image"} className=" break-inside-avoid mb-8">
+        <div key={index + "image"} className=" break-inside-avoid">
           <div className="relative overflow-hidden rounded-xl">
             <img
            loading="lazy"

@@ -7,14 +7,14 @@ namespace AMS.DOMAIN.Entities.Lookups
         public Program()
         {
             ProgramDepartments = new HashSet<ProgramDepartment>();
-            ProgramApplied = new HashSet<ProgramApplied>();
+            ApplicationForms = new HashSet<ApplicationForm>();
         }
         public int Id { get; set; }
         public required string Name { get; set; }
         public int ProgramTypeId { get; set; }
         public virtual ProgramType? ProgramType { get; set; }
         public virtual ICollection<ProgramDepartment>? ProgramDepartments { get; set; }
-        public virtual ICollection<ProgramApplied>? ProgramApplied { get; set; }
+        public virtual ICollection<ApplicationForm>? ApplicationForms { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

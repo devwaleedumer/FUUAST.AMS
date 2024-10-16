@@ -58,12 +58,12 @@ namespace AMS.Extensions
                 OnForbidden = _ => throw new ForbiddenException("You are not authorized to access this resource."),
                 OnMessageReceived = context =>
                 {
-                    var accessToken = context.Request.Query["access_token"];
+                    var token = context.Request.Cookies["token"];
 
-                    if (!string.IsNullOrEmpty(accessToken))
+                    if (!string.IsNullOrEmpty(token))
                     {
                         // Read the token out of the query string
-                        context.Token = accessToken;
+                        context.Token = token;
                     }
 
                     return Task.CompletedTask;

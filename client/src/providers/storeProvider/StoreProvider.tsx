@@ -1,5 +1,5 @@
 "use client";
-import { AppStore, makeStore } from "@/redux/store";
+import { store } from "@/redux/store";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { ReactNode, useEffect, useRef } from "react";
 import { Provider } from "react-redux";
@@ -9,11 +9,11 @@ interface Props {
 }
 
 export const StoreProvider = ({ children }: Props) => {
-  const storeRef = useRef<AppStore | null>(null);
+  const storeRef = useRef<any>(null);
 
   if (!storeRef.current) {
     // Create the store instance the first time this renders
-    storeRef.current = makeStore();
+    storeRef.current = store
   }
 
   useEffect(() => {
@@ -25,5 +25,5 @@ export const StoreProvider = ({ children }: Props) => {
     }
   }, []);
 
-  return <Provider store={storeRef.current}>{children}</Provider>;
+  return <Provider store={store}>{children}</Provider>;
 };

@@ -1,4 +1,5 @@
 ﻿using AMS.MODELS.Identity.User;
+using System.Security.Claims;
 
 
 namespace AMS.SERVICES.Identity.Interfaces
@@ -12,6 +13,8 @@ namespace AMS.SERVICES.Identity.Interfaces
         Task<bool> ExistsWithPhoneNumberAsync(string phoneNumber, int? exceptId = null);
 
         //Task<List<UserDetailsDto>> GetListAsync(CancellationToken cancellationToken);
+        Task<ApplicantUserResponse> GetUserFromClaimsAsync(ClaimsPrincipal claims);
+        Task<UserDetailsDto> GetAsync(int userId, CancellationToken cancellationToken);
 
         //Task<int> GetCountAsync(CancellationToken cancellationToken);
 

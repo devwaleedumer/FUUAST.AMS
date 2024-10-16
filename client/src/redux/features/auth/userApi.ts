@@ -1,66 +1,41 @@
-import { ILoginRequest, ILoginResponse } from "@/types/auth";
+import { ILoginRequest, ILoginResponse, IRegisterRequest, IRegisterResponse } from "@/types/auth";
 import { apiSlice } from "../apiSlice";
-import { userLoggedIn, userLoggedOut } from "./userSlice";
-import { createSessionCookies } from "@/lib/auth/tokenCookies";
-import { api } from "@/lib/services/api";
-import { setAuthorizationHeader } from "@/lib/services/interceptor";
+import { userLoggedOut } from "./userSlice";
+import { setRefreshTokenDateTime } from "@/lib/services/authLocalStorageService";
 
-type RegistrationResponse = {
-    message: string;
-    activationToken: string;
-}
-type RegistrationData = {}
 
 export const userApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        register: builder.mutation<RegistrationResponse, RegistrationData>({
+        register: builder.mutation<string, IRegisterRequest>({
             query: (data) => ({
-                url: "registration",
+                url: "accounts/register",
                 method: "POST",
                 body: data,
-                credentials: "include" as const
-            }),
-            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-                try {
-                    const result = await queryFulfilled;
-                    // dispatch(userRegistration({ token: result.data.activationToken }))
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        }),
-        activation: builder.mutation({
-            query: ({ activationToken, activationCode }) => ({
-                url: "activate-user",
-                method: "POST",
-                body: {
-                    activationToken: activationToken,
-                    activationCode: activationCode,
-                }
-            }),
+            })
         }),
         login: builder.mutation<ILoginResponse, ILoginRequest>({
             query: ({ email, password }) => ({
-                url: "get-token",
+                url: "tokens/get-token",
                 method: "POST",
                 body: {
                     email,
                     password
                 },
+                credentials: "include" as const
             }),
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 try {
                     const result = await queryFulfilled;
-                    const { refreshToken, accessToken, refreshTokenExpiryTime } = result.data
-                    createSessionCookies({ refreshToken, refreshTokenExpiryTime, accessToken })
-                    setAuthorizationHeader({ request: api.defaults, accessToken })
+                    const { refreshTokenExpiryTime } = result?.data
+                    apiSlice.endpoints.loadUser.initiate(null);
+                    setRefreshTokenDateTime(refreshTokenExpiryTime)
                 } catch (error) {
                     console.log(error)
                 }
             }
         }),
         logout: builder.query({
-            query: ({ email, password }) => ({
+            query: () => ({
                 url: "logout",
                 method: "GET",
                 credentials: "include" as const
@@ -80,4 +55,4 @@ export const userApi = apiSlice.injectEndpoints({
 
 
 
-export const { useRegisterMutation, useActivationMutation, useLoginMutation, useLogoutQuery } = userApi
+export const { useRegisterMutation, useLoginMutation, useLogoutQuery } = userApi

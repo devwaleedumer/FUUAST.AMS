@@ -1,13 +1,5 @@
-
-using AMS.Authorization.Permissons;
-using AMS.DATA;
-using AMS.DOMAIN.Identity;
 using AMS.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 Log.Information("Server Booting Up...");
@@ -21,10 +13,11 @@ try
 
     builder.Logging.ClearProviders();
     builder.Logging.AddSerilog(Log.Logger);
+    builder.Host.UseSerilog();
     var configuration = builder.Configuration;
-    var envirnoment = builder.Environment;
+    var environment = builder.Environment;
 
-    builder.Services.AddDatabaseServices(envirnoment, configuration);
+    builder.Services.AddDatabaseServices(environment, configuration);
     builder.Services.AddIdentity();
     builder.Services.AddCurrentUserService();
     builder.Services.AddFluentValidation();
@@ -39,18 +32,21 @@ try
         {
             options.InvalidModelStateResponseFactory = context =>
             {
-                return new BadRequestObjectResult(context.ModelState);
+                return new UnprocessableEntityObjectResult(context.ModelState);
             };
         });
-
+    builder.Services.AddProblemDetails();
     builder.Services.AddApplicationServices(configuration);
     builder.Services.AddHangfireServices(configuration);
     builder.Services.AddSwaggerService();
     builder.Services.AddExceptionMiddleware();
+    builder.Services.AddRateLimiter((options) =>
+    {
+    });
     var app = builder.Build();
 
     //uncomment the code when data seeding is required
-    await app.Services.InitializeDatabasesAsync();
+    //await app.Services.InitializeDatabasesAsync();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -58,10 +54,18 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseExceptionMiddleware();
+
+    app.UseSerilogRequestLogging();
+
+    app.UseRateLimiter();
+
     app.UseCorsPolicy();
 
     app.UseHttpsRedirection();
-    
+
+    app.UseStaticFiles();
+
     app.UseAuthentication();
 
     app.UseAuthorization();
@@ -69,8 +73,6 @@ try
     app.UseCurrentUser();
 
     app.MapControllers();
-
-    app.UseExceptionMiddleware();
 
     app.Run();
 

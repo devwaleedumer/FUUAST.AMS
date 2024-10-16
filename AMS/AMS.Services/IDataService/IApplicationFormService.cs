@@ -1,9 +1,11 @@
-﻿using AMS.MODELS.ApplicationForms.Ug;
-using Microsoft.AspNetCore.Http;
+﻿using AMS.MODELS.ApplicationForm;
+
 namespace AMS.SERVICES.IDataService
 {
     public interface IApplicationFormService
     {
-        Task<string> AddApplicationForm(ApplicationRequest request);
+        Task<CreateApplicationFormResponse> CreateApplicationForm(CreateApplicationFormRequest request, CancellationToken ct);
+        Task<string> SubmitApplicationForm(SubmitApplicationFormRequest request, CancellationToken ct);
+
     }
 }

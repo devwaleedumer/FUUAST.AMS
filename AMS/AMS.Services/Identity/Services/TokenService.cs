@@ -5,7 +5,10 @@ using AMS.MODELS.MODELS.SettingModels.Identity.User;
 using AMS.SERVICES.Identity.Interfaces;
 using AMS.SHARED.Constants.Authorization;
 using AMS.SHARED.Exceptions;
+using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -84,6 +87,7 @@ namespace AMS.SERVICES.Identity.Services
 
             return await GenerateTokensAndUpdateUser(user, ipAddress);
         }
+
         /// <summary>
         /// Create Tokens
         /// </summary>
@@ -101,6 +105,7 @@ namespace AMS.SERVICES.Identity.Services
 
             return new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime.Value);
         }
+
         /// <summary>
         ///  Generate JWT security access token Access Token 
         /// </summary>
@@ -109,6 +114,7 @@ namespace AMS.SERVICES.Identity.Services
         /// <returns cref="string"></returns>
         private string GenerateJwt(ApplicationUser user, string ipAddress) =>
             GenerateEncryptedToken(GetSigningCredentials(), GetClaims(user, ipAddress));
+
         /// <summary>
         /// Generate Claims for Application user
         /// </summary>
@@ -138,7 +144,6 @@ namespace AMS.SERVICES.Identity.Services
             return Convert.ToBase64String(randomNumber);
         }
 
-
         /// <summary>
         /// Generates Encrypted Token 
         /// </summary>
@@ -154,6 +159,7 @@ namespace AMS.SERVICES.Identity.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
         }
+
         /// <summary>
         ///  ClaimsPrincipal from expired Access Token
         /// </summary>
@@ -185,6 +191,45 @@ namespace AMS.SERVICES.Identity.Services
             return principal;
         }
 
+      /// <summary>
+      /// Sets Auth token in cookie
+      /// </summary>
+      /// <param name="request">Credentials request</param>
+      /// <param name="ipAddress">Ip Address of remote user</param>
+      /// <param name="cancellationToken"></param>
+      /// <param name="context">HTTPContext for current request</param>
+      /// <returns></returns>
+        public async Task<CookieTokenResponse> SetTokensCookieAsync(TokenRequest request, string ipAddress, CancellationToken cancellationToken, HttpContext context)
+        {
+            var token = await GetTokenAsync(request, ipAddress, cancellationToken);  
+            SetTokensCookie(context, token);
+            return new CookieTokenResponse(token.RefreshTokenExpiryTime);
+        }
+
+        /// <summary>
+        /// Refresh Token cookies
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<CookieTokenResponse> setRefreshTokensCookieAsync(string ipAddress,HttpContext context)
+        {
+            string? refreshToken = context.Request.Cookies["refreshToken"];
+            if ( string.IsNullOrEmpty(refreshToken))
+            {
+                throw new UnauthorizedException("invalid tokens");
+            }
+            var user = await _userManager.Users.FirstOrDefaultAsync(user => user.RefreshToken == refreshToken && user.RefreshTokenExpiryTime > DateTime.UtcNow);
+            if (user is null)
+            {
+                throw new UnauthorizedException("Authentication Failed.");
+            }
+            var tokens =  await GenerateTokensAndUpdateUser(user, ipAddress);
+            SetTokensCookie(context, tokens);
+            return new CookieTokenResponse(tokens.RefreshTokenExpiryTime);
+        }
+
         /// <summary>
         /// Generate Signing Credentials using jwt secrets
         /// </summary>
@@ -193,6 +238,33 @@ namespace AMS.SERVICES.Identity.Services
         {
             byte[] secret = Encoding.UTF8.GetBytes(_jwtSettings.Key);
             return new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256);
+        }
+
+        /// <summary>
+        /// Sets tokens in cookie
+        /// </summary>
+        /// <param name="token">Tokens Object </param>
+        /// <param name="context">HttpContext</param>
+        private void SetTokensCookie(HttpContext context, TokenResponse token)
+        {
+            context.Response.Cookies.Append("token", token.Token,
+             new CookieOptions
+             {
+                 Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.TokenExpirationInMinutes),
+                 HttpOnly = true,
+                 IsEssential = true,
+                 Secure = true,
+                 SameSite = SameSiteMode.None
+             });
+            context.Response.Cookies.Append("refreshToken", token.RefreshToken,
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
+                    HttpOnly = true,
+                    IsEssential = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None
+                });
         }
     }
 }

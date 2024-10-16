@@ -1,5 +1,4 @@
 ﻿using AMS.DOMAIN.Base;
-using AMS.DOMAIN.Entities.AMS;
 using AMS.DOMAIN.Entities.Lookups;
 using AMS.DOMAIN.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -32,7 +31,8 @@ namespace AMS.DOMAIN.Entities.AMS
         public string? EmploymentDetails { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
-        public string HeardAboutUniFrom { get; set; }
+        public string? HeardAboutUniFrom { get; set; }
+        public string? ExpelledFromUni { get; set; }
 
         [ForeignKey("ApplicationUser")]
         public int ApplicationUserId { get; set; }
@@ -41,7 +41,7 @@ namespace AMS.DOMAIN.Entities.AMS
         public required string BloodGroup { get; set; }
 
         public virtual Guardian? Guardian { get; set; }
-        public virtual EmergencyContact? ContactInfo { get; set; }
+        public virtual EmergencyContact? EmergencyContact { get; set; }
         public virtual ApplicationForm? ApplicationForm { get; set; }
         public virtual ApplicationUser? ApplicationUser { get; set; }
         public virtual EntranceTestDetail? EntranceTestDetail { get; set; }

@@ -1,3 +1,4 @@
+import isAuth from '@/components/ApplicantProtected';
 import Profile from '@/components/Profile/Profile';
 import BreadCrumb from '@/components/shared/Breadcrumb'
 import Heading from '@/components/shared/Heading';
@@ -9,7 +10,7 @@ const description  = "You can change your profile"
 type Props = {}
 const breadcrumbItems = [{ title: "Profile", link: "/profile" }];
 
-export default function  Page () {
+ function  Page () {
   return (
    <>
      <Heading title={title} description={description} keywords="Profile,Settings, Profile Settings"/>
@@ -23,3 +24,4 @@ export default function  Page () {
   )
 }
 
+export default isAuth(Page,"optional")

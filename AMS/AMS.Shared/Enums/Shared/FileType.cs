@@ -4,7 +4,7 @@ namespace AMS.SHARED.Enums.Shared
 {
     public enum FileType
     {
-        [Description(".jpg,.png,.jpeg")]
+        [Description("jpg,png,jpeg")]
         Image
     }
 }

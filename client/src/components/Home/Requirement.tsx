@@ -4,7 +4,7 @@ type Props = {}
 
 function Requirement({}: Props) {
   return (
-     <section id="requirements" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+     <section id="requirements" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-green-50 to-emerald-100">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center text-center space-y-4">
               <div className="space-y-2">

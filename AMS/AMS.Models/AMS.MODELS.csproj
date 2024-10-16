@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ApplicationForms\Pg\" />
+    <Compile Remove="ApplicationForm\Pg\**" />
+    <EmbeddedResource Remove="ApplicationForm\Pg\**" />
+    <None Remove="ApplicationForm\Pg\**" />
   </ItemGroup>
 
 </Project>

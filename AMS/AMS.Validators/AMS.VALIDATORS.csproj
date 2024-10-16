@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AMS.Services\AMS.SERVICES.csproj" />
-    <ProjectReference Include="..\AMS.Shared\AMS.SHARED.csproj" />
+    <Compile Remove="ApplicationForms\Pg\**" />
+    <EmbeddedResource Remove="ApplicationForms\Pg\**" />
+    <None Remove="ApplicationForms\Pg\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ApplicationForms\Pg\" />
+    <ProjectReference Include="..\AMS.Services\AMS.SERVICES.csproj" />
+    <ProjectReference Include="..\AMS.Shared\AMS.SHARED.csproj" />
   </ItemGroup>
 
 </Project>

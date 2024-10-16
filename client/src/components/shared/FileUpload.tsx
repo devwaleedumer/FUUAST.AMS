@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
+import { PersonalEditInfoValues, PersonalInfoValues } from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.validator";
 import { cn } from "@/lib/utils";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { UseFormSetValue } from "react-hook-form";
 
 interface FileUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
     value: any;
@@ -9,10 +11,12 @@ interface FileUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
     isValid: boolean
     preview: string | undefined,
     setPreview: Dispatch<SetStateAction<string | undefined>>
+    setValue: UseFormSetValue<any>,
+
 }
 
 const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
-    ({ preview, setPreview, value, sizeDescription, isValid, onChange, ...props }, ref) => {
+    ({ preview, setPreview, value, sizeDescription, isValid, onChange,setValue, ...props }, ref) => {
         {
             const [dragging, setDragging] = useState<boolean>(false);
             // select file from input
@@ -34,8 +38,19 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                     setSelectedFile(undefined);
                     return;
                 }
-                setSelectedFile(e.target.files[0]);
-                onChange(e.target.files[0]);
+                const file = e.target.files?.[0];
+                setSelectedFile(file);
+              if(file){
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                const base64 = reader.result as string;
+                onChange(file);
+                setValue("imageRequest.name",file?.name.split('.').shift());
+                setValue("imageRequest.extension",file?.name?.split('.')?.pop());
+                setValue("imageRequest.data",base64)
+                }
+              }
             };
 
             const handleDragOver = (e: any) => {

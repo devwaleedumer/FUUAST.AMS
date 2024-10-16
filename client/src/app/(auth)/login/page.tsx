@@ -1,4 +1,5 @@
 "use client";
+import isAuth from "@/components/ApplicantProtected";
 import Login from "@/components/Authentication/Login/Login";
 import React from "react";
 
@@ -12,4 +13,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default isAuth(page,"auth");

@@ -1,10 +1,11 @@
 "use client";
+import isAuth from "@/components/ApplicantProtected";
 import Signup from "@/components/Authentication/Signup/Signup";
 import React from "react";
 
 type Props = {};
 
-const page = (props: Props) => {
+const page = () => {
   return (
     <>
       <Signup />
@@ -12,4 +13,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default isAuth(page,"auth");

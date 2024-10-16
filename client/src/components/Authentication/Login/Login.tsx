@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,14 +19,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { InputShowHide } from "@/components/ui/input-show-hide";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/components/ui/use-toast";
 import {
   loginFormSchema,
   loginFormSchemaType,
 } from "@/lib/SchemaValidators/Authentication/Login.Validator";
+import { useLoginMutation } from "@/redux/features/auth/userApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GraduationCap, FileText } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -39,9 +43,20 @@ export default function Login() {
   });
   const {formState:{errors}} = form
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [login, {isLoading,isSuccess}] = useLoginMutation()
+  const {toast} = useToast()
+  useEffect(() => {
+    if (isSuccess) {
+      toast({
+        title:"Success",
+        description: "Sign in successfully"
+      })
+      redirect('/admission-application')
+    }
+  },[isSuccess])
   //  functions
-  function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    console.log(values);
+ async  function onSubmit(values: z.infer<typeof loginFormSchema>) {
+     await login(values)
   }
 
   return (
@@ -134,7 +149,7 @@ export default function Login() {
                       </FormItem>
                     )}
                   />
-                  <Button className="w-full">Log in</Button>
+                  <Button className="w-full" disabled={isLoading}>Log in</Button>
                 </div>
               </form>
             </Form>

@@ -1,10 +1,9 @@
 "use client";
+import isAuth from "@/components/ApplicantProtected";
 import Header from "@/components/Layouts/Dashboard/Header";
 import Sidebar from "@/components/Layouts/Dashboard/Sidebar";
-import LayoutLoader from "@/components/shared/Loader";
-import { Suspense, useEffect, useState } from "react";
 
-export default function ApplicantDashboardLayout({
+ function ApplicantDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -19,3 +18,4 @@ export default function ApplicantDashboardLayout({
      </>
   );
 }
+export default isAuth(ApplicantDashboardLayout,"optional")

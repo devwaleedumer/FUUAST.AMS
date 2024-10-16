@@ -1,3 +1,1 @@
-1) Stepper Form Validation // done
-2) 
-3) Review all Entities, fix and run migrations
+1) Store only date not datetime

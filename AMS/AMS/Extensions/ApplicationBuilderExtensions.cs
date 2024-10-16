@@ -17,6 +17,7 @@ using AMS.Middlewares;
 using AMS.MODELS.MODELS.SettingModels.Identity.Jwt;
 using AMS.MODELS.MODELS.SettingModels.Identity.User;
 using AMS.MODELS.SettingModels.AppSettings;
+using AMS.MODELS.SettingModels.FileStorage;
 using AMS.Security;
 using AMS.Services.CurrentUser;
 using AMS.Services.Hangfire;
@@ -98,6 +99,31 @@ namespace AMS.Extensions
                         Url = new Uri("https://example.com/license"),
                     }
                 });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -127,9 +153,9 @@ namespace AMS.Extensions
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, null!);
-            
-          services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
-          .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
+            .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             //services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
             return services;
@@ -192,6 +218,10 @@ namespace AMS.Extensions
                   .ValidateDataAnnotations()
                   .ValidateOnStart();
 
+            services.AddOptions<OriginOptions>()
+                  .BindConfiguration(nameof(OriginOptions));
+                 
+
 
 
             services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
@@ -199,17 +229,24 @@ namespace AMS.Extensions
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<MailSettings>>().Value);
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<JwtSettings>>().Value);
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<SuperAdminSettings>>().Value);
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<OriginOptions>>().Value);
 
 
             // Add application services like general services.  
             services.AddTransient<IMailService, SmtpMailService>();
             services.AddTransient<IEmailTemplateService, EmailTemplateService>();
 
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<ITokenService, TokenService>();
-            services.AddTransient<IApplicationFormService, ApplicationFormService>();
-            services.AddTransient<IUploadImageService,UploadImageService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IApplicantService, ApplicantService>();
+            services.AddTransient<ILocalFileStorageService, LocalFileStorageService>();
+            services.AddScoped<IProgramService, ProgramService>();
+            services.AddScoped<IDegreeGroupService, DegreeGroupService>();
+            services.AddScoped<IFacultyService, FacultyService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IShiftService, ShiftService>();
+            services.AddScoped<IApplicationFormService, ApplicationFormService>();
 
 
 
@@ -262,7 +299,7 @@ namespace AMS.Extensions
 
             return app;
         }
-        public static IServiceCollection AddExceptionMiddleware(this IServiceCollection services) => services.AddScoped<ExceptionMiddleware>();
+        public static IServiceCollection AddExceptionMiddleware(this IServiceCollection services) => services.AddExceptionHandler<ExceptionHandler>();
 #pragma warning disable CS0618 // Type or member is obsolete
         public static IServiceCollection AddFluentValidation(this IServiceCollection services)
         {
@@ -278,7 +315,7 @@ namespace AMS.Extensions
         }
 #pragma warning restore CS0618 // Type or member is obsolete
         public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder app) =>
-            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseExceptionHandler();
         public static IServiceCollection AddCurrentUserService(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();

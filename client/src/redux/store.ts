@@ -1,7 +1,8 @@
-import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./features/apiSlice";
 import userSlice from "./features/auth/userSlice";
+import wizardSlice from "./features/applicant/applicationWizardSlice";
+import { rtkQueryErrorLogger } from "@/lib/services/rtkErrorMiddleware";
 // import { counterSlice } from "./features/counter/counterSlice";
 // import { quotesApiSlice } from "./features/quotes/quotesApiSlice";
 
@@ -14,28 +15,22 @@ import userSlice from "./features/auth/userSlice";
 // creating unique store instances, which is particularly important for
 // server-side rendering (SSR) scenarios. In SSR, separate store instances
 // are needed for each request to prevent cross-request state pollution.
-export const makeStore = () => {
-    return configureStore({
-        reducer: {
-            [apiSlice.reducerPath]: apiSlice.reducer,
-            auth: userSlice
-        },
-        devTools: false,
-        // Adding the api middleware enables caching, invalidation, polling,
-        // and other useful features of `rtk-query`.
-        middleware: (getDefaultMiddleware) => {
-            return getDefaultMiddleware().concat(apiSlice.middleware);
-        },
-    });
-};
+export const store = configureStore({
+    reducer: {
+        [apiSlice.reducerPath]: apiSlice.reducer,
+        auth: userSlice,
+        wizard: wizardSlice
+    },
+    devTools: false,
+    // Adding the api middleware enables caching, invalidation, polling,
+    // and other useful features of `rtk-query`.
+    middleware: (getDefaultMiddleware) => {
+        return getDefaultMiddleware().concat(rtkQueryErrorLogger).concat(apiSlice.middleware);
+    },
+});
 
-// // Infer the return type of `makeStore`
-export type AppStore = ReturnType<typeof makeStore>;
-// // Infer the `AppDispatch` type from the store itself
-// export type AppDispatch = AppStore["dispatch"];
-// export type AppThunk<ThunkReturnType = void> = ThunkAction<
-//     ThunkReturnType,
-//     RootState,
-//     unknown,
-//     Action
-// >;
+// const initializeApp = async () => await store.dispatch(apiSlice.endpoints.loadUser.initiate(null, { forceRefetch: true }))
+// initializeApp();
+
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch

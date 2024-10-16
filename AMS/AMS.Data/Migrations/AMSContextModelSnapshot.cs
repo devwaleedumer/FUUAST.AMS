@@ -78,9 +78,9 @@ namespace AMS.DATA.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(20)
+                        .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("varchar(30)");
 
                     b.Property<string>("Cnic")
                         .IsRequired()
@@ -108,11 +108,14 @@ namespace AMS.DATA.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("ExpelledFromUni")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FatherName")
                         .IsRequired()
-                        .HasMaxLength(13)
+                        .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(13)");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -121,7 +124,6 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("varchar(15)");
 
                     b.Property<string>("HeardAboutUniFrom")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
@@ -161,9 +163,9 @@ namespace AMS.DATA.Migrations
 
                     b.Property<string>("Religion")
                         .IsRequired()
-                        .HasMaxLength(15)
+                        .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("varchar(30)");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -175,8 +177,7 @@ namespace AMS.DATA.Migrations
 
                     b.HasAlternateKey("Cnic");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Applicant", "Domain");
                 });
@@ -194,9 +195,9 @@ namespace AMS.DATA.Migrations
 
                     b.Property<string>("BoardOrUniversityName")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int?>("DegreeGroupId")
                         .HasColumnType("int");
@@ -258,14 +259,6 @@ namespace AMS.DATA.Migrations
                     b.Property<int?>("ApplicantId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EntranceTestId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("HaveValidTest")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<bool?>("InfoConsent")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -287,10 +280,10 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("SessionId")
+                    b.Property<int?>("ProgramId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusEid")
+                    b.Property<int?>("SessionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("SubmissionDate")
@@ -304,7 +297,11 @@ namespace AMS.DATA.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EntranceTestId");
+                    b.HasIndex("ApplicantId")
+                        .IsUnique()
+                        .HasFilter("[ApplicantId] IS NOT NULL");
+
+                    b.HasIndex("ProgramId");
 
                     b.HasIndex("SessionId");
 
@@ -561,9 +558,6 @@ namespace AMS.DATA.Migrations
                     b.Property<int>("PreferenceNo")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProgramId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TimeShiftId")
                         .HasColumnType("int");
 
@@ -578,8 +572,6 @@ namespace AMS.DATA.Migrations
                     b.HasIndex("ApplicationFormId");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("ProgramId");
 
                     b.HasIndex("TimeShiftId");
 
@@ -1362,20 +1354,11 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.Applicant", b =>
                 {
-                    b.HasOne("AMS.DOMAIN.Entities.AMS.ApplicationForm", "ApplicationForm")
-                        .WithOne("Applicant")
-                        .HasForeignKey("AMS.DOMAIN.Entities.AMS.Applicant", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_ApplicationForm_Applicant");
-
                     b.HasOne("AMS.DOMAIN.Identity.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ApplicationForm");
 
                     b.Navigation("ApplicationUser");
                 });
@@ -1401,18 +1384,27 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.ApplicationForm", b =>
                 {
-                    b.HasOne("AMS.DOMAIN.Entities.Lookups.EntranceTestDetail", "EntranceTest")
-                        .WithMany()
-                        .HasForeignKey("EntranceTestId");
+                    b.HasOne("AMS.DOMAIN.Entities.AMS.Applicant", "Applicant")
+                        .WithOne("ApplicationForm")
+                        .HasForeignKey("AMS.DOMAIN.Entities.AMS.ApplicationForm", "ApplicantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_Applicant_ApplicationForm");
+
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.Program", "Program")
+                        .WithMany("ApplicationForms")
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_ApplicationForms_Programs");
 
                     b.HasOne("AMS.DOMAIN.Entities.Lookups.AdmissionSession", "Session")
                         .WithMany("ApplicationForms")
                         .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("FK_SessionApplicationForms");
 
-                    b.Navigation("EntranceTest");
+                    b.Navigation("Applicant");
+
+                    b.Navigation("Program");
 
                     b.Navigation("Session");
                 });
@@ -1420,7 +1412,7 @@ namespace AMS.DATA.Migrations
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.EmergencyContact", b =>
                 {
                     b.HasOne("AMS.DOMAIN.Entities.AMS.Applicant", "Applicant")
-                        .WithOne("ContactInfo")
+                        .WithOne("EmergencyContact")
                         .HasForeignKey("AMS.DOMAIN.Entities.AMS.EmergencyContact", "ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1481,13 +1473,6 @@ namespace AMS.DATA.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_ProgramApplied_Department");
 
-                    b.HasOne("AMS.DOMAIN.Entities.Lookups.Program", "Program")
-                        .WithMany("ProgramApplied")
-                        .HasForeignKey("ProgramId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_ProgramApplied_Programs");
-
                     b.HasOne("AMS.DOMAIN.Entities.Lookups.TimeShift", "TimeShift")
                         .WithMany("ProgramApplied")
                         .HasForeignKey("TimeShiftId")
@@ -1498,8 +1483,6 @@ namespace AMS.DATA.Migrations
                     b.Navigation("ApplicationForm");
 
                     b.Navigation("Department");
-
-                    b.Navigation("Program");
 
                     b.Navigation("TimeShift");
                 });
@@ -1664,9 +1647,11 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.Applicant", b =>
                 {
-                    b.Navigation("ContactInfo");
+                    b.Navigation("ApplicationForm");
 
                     b.Navigation("Degrees");
+
+                    b.Navigation("EmergencyContact");
 
                     b.Navigation("EntranceTestDetail");
 
@@ -1675,8 +1660,6 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.ApplicationForm", b =>
                 {
-                    b.Navigation("Applicant");
-
                     b.Navigation("FeeChallan");
 
                     b.Navigation("ProgramsApplied");
@@ -1721,7 +1704,7 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Program", b =>
                 {
-                    b.Navigation("ProgramApplied");
+                    b.Navigation("ApplicationForms");
 
                     b.Navigation("ProgramDepartments");
                 });

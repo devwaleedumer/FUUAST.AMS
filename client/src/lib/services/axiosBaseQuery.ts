@@ -37,17 +37,3 @@ const axiosBaseQuery =
                 }
             }
         }
-
-const api = createApi({
-    baseQuery: axiosBaseQuery({
-        baseUrl: 'https://example.com',
-    }),
-    endpoints(build) {
-        return {
-            query: build.query({ query: () => ({ url: '/query', method: 'get' }) }),
-            mutation: build.mutation({
-                query: () => ({ url: '/mutation', method: 'post' }),
-            }),
-        }
-    },
-})

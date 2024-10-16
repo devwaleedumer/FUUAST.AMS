@@ -4,15 +4,18 @@ import { AspectRatio } from "../ui/aspect-ratio";
 import Image from "next/image";
 import { FaTrashAlt } from "react-icons/fa";
 import { FileUpload } from "../shared/FileUpload";
+import { UseFormSetValue } from "react-hook-form";
 
 interface ProfileFileUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value: any;
   onChange: (value: any) => void;
-  isValid: boolean
+  isValid: boolean,
+  setValue?: UseFormSetValue<any>,
+  imageUrl?:string 
 }
-
+ 
 const ProfileFileUpload = React.forwardRef<HTMLInputElement, ProfileFileUploadProps>(
-  ({ isValid, value, onChange, ...props }, ref) => {
+  ({ isValid, value, onChange,setValue, ...props }, ref) => {
     {
       const [preview, setPreview] = useState<string | undefined>();
       return (
@@ -35,7 +38,7 @@ const ProfileFileUpload = React.forwardRef<HTMLInputElement, ProfileFileUploadPr
               </div>
             </div>
           )}
-          <FileUpload onChange={onChange} value={value} sizeDescription="Upload Image of size 4MB" isValid={isValid} preview={preview} setPreview={setPreview} />
+          <FileUpload setValue={setValue!}  onChange={onChange} value={value} sizeDescription="Upload Image of size 4MB" isValid={isValid} preview={preview} setPreview={setPreview} />
         </>
       );
     }

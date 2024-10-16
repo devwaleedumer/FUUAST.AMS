@@ -10,11 +10,14 @@ using AMS.SHARED.Constants.Identity;
 using AMS.SHARED.Exceptions;
 using AMS.SHARED.Extensions;
 using AMS.SHARED.Interfaces.Hangfire;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace AMS.SERVICES.Identity.Services
@@ -48,23 +51,41 @@ namespace AMS.SERVICES.Identity.Services
             _job = job;
         }
 
+        public async Task<UserDetailsDto> GetAsync(int userId, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.Users
+                .AsNoTracking()
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            _ = user ?? throw new NotFoundException("user not found");
+
+            return user.Adapt<UserDetailsDto>();
+        }       
+        
+        public async Task<ApplicantUserResponse> GetUserFromClaimsAsync(ClaimsPrincipal claims)
+        {
+           var user  = await _userManager.GetUserAsync(claims).ConfigureAwait(false);
+            _ = user ?? throw new NotFoundException("User not found");
+            return user.Adapt<ApplicantUserResponse>();
+          
+        }
+
         public async Task<bool> ExistsWithEmailAsync(string email, int? exceptId = null)
 
         => await _userManager.FindByEmailAsync(email.Normalize()) is ApplicationUser user && user.Id != exceptId;
 
-
+       
         public async Task<bool> ExistsWithNameAsync(string name)
 
          => await _userManager.FindByNameAsync(name) is not null;
 
-
+        
         public async Task<bool> ExistsWithPhoneNumberAsync(string phoneNumber, int? exceptId = null)
         => await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber) is ApplicationUser user && user.Id != exceptId;
         public async Task<bool> HasPermissionAsync(int userId, string permission, CancellationToken cancellationToken)
         {
             var permissions = await GetPermissionsAsync(userId, cancellationToken);
-
-
             return permissions?.Contains(permission) ?? false;
         }
 
@@ -106,7 +127,7 @@ namespace AMS.SERVICES.Identity.Services
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
             {
-                throw new InternalServerException("Validation errors occured");
+                throw new AMSException("Validation errors occured");
             }
             // we have currently not seeded any role, will later seed some roles
             //await _userManager.AddToRoleAsync(user,AMSRoles.Basic);
@@ -143,7 +164,6 @@ namespace AMS.SERVICES.Identity.Services
         //Private helpers
         private async Task<string> GetEmailVerificationUriAsync(ApplicationUser user, string origin)
         {
-
             string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.ASCII.GetBytes(code));
             const string route = "api/users/confirm-email/";
@@ -154,26 +174,26 @@ namespace AMS.SERVICES.Identity.Services
         }
 
         private string GenerateUserName(string fullName)
-            => $"{fullName.Replace(" ", "")}{Guid.NewGuid()}";
+            => $"{Regex.Replace(fullName.ToLower(), @"\s+","")}{Random.Shared.NextInt64(9999)}";
 
 
         public async Task<string> ConfirmEmailAsync(int userId, string code, CancellationToken cancellationToken)
         {
             var user = await _userManager.Users.Where(user => user.Id == userId && !user.EmailConfirmed).FirstOrDefaultAsync(cancellationToken);
-            _ = user ?? throw new InternalServerException("An error occured while confirming email");
+            _ = user ?? throw new AMSException("An error occured while confirming email");
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
             var result = await _userManager.ConfirmEmailAsync(user, code);
             return result.Succeeded
            ? string.Format("Account Confirmed for E-Mail {0}.", user.Email)
-           : throw new InternalServerException(string.Format("An error occurred while confirming {0}", user.Email));
+           : throw new AMSException(string.Format("An error occurred while confirming {0}", user.Email));
 
         }
 
         public async Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user is null || !user.EmailConfirmed) throw new InternalServerException("some error has occured");
+            if (user is null || !user.EmailConfirmed) throw new AMSException("some error has occured");
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             const string route = "account/reset-password";
             var endPointUri = new Uri(string.Concat($"{origin}/", route));
@@ -186,13 +206,13 @@ namespace AMS.SERVICES.Identity.Services
             var user = await _userManager.FindByEmailAsync(request.Email?.Normalize()!);
 
             // Don't reveal that the user does not exist
-            _ = user ?? throw new InternalServerException("An Error has occurred!");
+            _ = user ?? throw new AMSException("An Error has occurred!");
 
             var result = await _userManager.ResetPasswordAsync(user, request.Token!, request.Password!);
 
             return result.Succeeded
                 ? "Password Reset Successful!"
-                : throw new InternalServerException("An Error has occurred!");
+                : throw new AMSException("An Error has occurred!");
         }
 
         public async Task ChangePasswordAsync(ChangePasswordRequest model, string userId)
@@ -205,7 +225,7 @@ namespace AMS.SERVICES.Identity.Services
 
             if (!result.Succeeded)
             {
-                throw new InternalServerException("Change password failed", result.GetErrors());
+                throw new AMSException("Change password failed", result.GetErrors());
             }
         }
     }

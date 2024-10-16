@@ -5,6 +5,7 @@ import { StoreProvider } from "@/providers/storeProvider/StoreProvider";
 import { ThemeProvider } from "@/providers/themeProvider/NextThemesProvider";
 import Heading from "@/components/shared/Heading";
 import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from "@/components/ui/toaster";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <NextTopLoader showSpinner={false} color={"hsl(142.1, 76.2%, 36.3%)"} />
        <StoreProvider>
+        <Toaster/>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
           </ThemeProvider>
