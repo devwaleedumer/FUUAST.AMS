@@ -113,7 +113,7 @@ namespace AMS.SERVICES.Identity.Services
         {
             var userExists = await _userManager.FindByEmailAsync(request.Email);
 
-            if (userExists is ApplicationUser) throw new ConflictException("Email already exists!, try differnt email");
+            if (userExists is ApplicationUser) throw new ConflictException("Email already exists!, try different email");
 
             // create  user from request
             var user = new ApplicationUser
@@ -127,7 +127,7 @@ namespace AMS.SERVICES.Identity.Services
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
             {
-                throw new AMSException("Validation errors occured");
+                throw new AMSException("Validation errors occurred");
             }
             // we have currently not seeded any role, will later seed some roles
             //await _userManager.AddToRoleAsync(user,AMSRoles.Basic);
@@ -151,8 +151,9 @@ namespace AMS.SERVICES.Identity.Services
                "Confirm Registration",
                //body
                _emailTemplateService.GenerateEmailTemplate("email-confirmation", eMailModel));
-                // fire and forget pattren so that's why we are sending cancellation.none token  
-                _job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+                // fire and forget pattern so that's why we are sending cancellation.none token  
+                //_job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+                await _mailService.SendAsync(mailRequest, CancellationToken.None);
                 messages.Add($"Please check {user.Email} to verify your account!");
 
             }
@@ -166,8 +167,11 @@ namespace AMS.SERVICES.Identity.Services
         {
             string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.ASCII.GetBytes(code));
-            const string route = "api/users/confirm-email/";
-            var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            //const string route = "api/users/confirm-email/";
+            //var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            //const string route = "api/users/confirm-email/";
+            const string clientOrigin = "http://localhost:3000/verify-email/";
+            var endpointUri = new Uri(clientOrigin);
             string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), QueryStringKeys.UserId, user.Id.ToString());
             verificationUri = QueryHelpers.AddQueryString(verificationUri, QueryStringKeys.Code, code);
             return verificationUri;

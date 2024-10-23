@@ -2,6 +2,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 import React, { FC } from "react";
 import { Button } from "../ui/button";
+import Link from "next/link";
+import { AuthRoutes } from "@/utils/routes/Routes";
 
 type Props = {};
 
@@ -54,7 +56,9 @@ const Hero: FC<Props> = ({}) => {
             </p>
             <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0 lg:justify-start">
               <Button size="lg" className="bg-green-600 text-white hover:bg-green-700 text-lg">
-                Apply Now
+                <Link href={AuthRoutes.SignUp}>
+                  Apply Now
+                </Link>
               </Button>
               <Button 
                 variant="outline" 

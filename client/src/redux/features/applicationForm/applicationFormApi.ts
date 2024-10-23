@@ -1,6 +1,6 @@
 import { apiSlice } from "../apiSlice";
-import { ApplicationFormCreateRequest, ApplicationFormCreateResponse } from "@/types/applicationForm";
-import { admissionSelectionValues } from "@/lib/SchemaValidators/ApplicationForm/AdmissionSelectionsSchema.validator";
+import { ApplicantDashboardResponse, ApplicationFormCreateRequest, ApplicationFormCreateResponse, SubmitApplicationFormResponse } from "@/types/applicationForm";
+import { admissionSelectionValues, editAdmissionSelectionValues } from "@/lib/SchemaValidators/ApplicationForm/AdmissionSelectionsSchema.validator";
 
 export const applicationFormApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -23,8 +23,44 @@ export const applicationFormApi = apiSlice.injectEndpoints({
                 headers: {
                     'Content-Type': 'application/json',
                 },
-            })
-        })
-    })
+                responseHandler: "text",
+            }),
+            invalidatesTags: ["applicationForms"]
+        }),
+        getSubmittedApplication: builder.query<SubmitApplicationFormResponse, null>({
+            query: () => ({
+                url: "/ApplicationForms/submitted-application",
+                method: "GET",
+            }),
+            providesTags: ["applicationForms"]
+        }),
+        editSubmittedApplication: builder.mutation<string, editAdmissionSelectionValues>({
+            query: (data) => ({
+                url: `/ApplicationForms/submitted-application/${data.id}`,
+                method: "PUT",
+                body: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                responseHandler: "text",
+            }),
+            invalidatesTags: ["applicationForms"]
+        }),
+        getApplicantDashboardData: builder.query<ApplicantDashboardResponse, number>({
+            query: (userId) => ({
+                url: `/ApplicationForms/${userId}/applicant-dashboard-status`,
+                method: "GET",
+            }),
+            providesTags: ["applicationForms"],
+        }),
+    }),
+
+    overrideExisting: true
 })
-export const { useCreateApplicationFormMutation, useSubmitApplicationFormMutation } = applicationFormApi;
+export const {
+    useCreateApplicationFormMutation,
+    useSubmitApplicationFormMutation,
+    useGetSubmittedApplicationQuery,
+    useEditSubmittedApplicationMutation,
+    useGetApplicantDashboardDataQuery
+} = applicationFormApi;

@@ -3,7 +3,6 @@ using AMS.DOMAIN.Entities.AMS;
 using AMS.DOMAIN.Identity;
 using AMS.MODELS.ApplicationForm.Applicant;
 using AMS.MODELS.ApplicationForm.ApplicantDegree;
-using AMS.MODELS.Program;
 using AMS.SERVICES.IDataService;
 using AMS.SHARED.Enums.Shared;
 using AMS.SHARED.Exceptions;
@@ -61,21 +60,22 @@ namespace AMS.SERVICES.DataService
                    await UpdateUserProfilePictureAsync(user, request.ImageRequest, cancellationToken);
                 }
                 await _context.SaveChangesAsync(cancellationToken);
-                await transaction.CommitAsync();
+                await transaction.CommitAsync(cancellationToken);
                 var response = applicant.Adapt<UpdateApplicantPSInfoResponse>();
                 response.ProfilePictureUrl = user.ProfilePictureUrl ?? "";
                 return response;
             }
-            catch {
+            catch 
+            {
 
                 await transaction.RollbackAsync(cancellationToken);
                 throw new AMSException("Some thing went wrong, please try again later.");
             }
         }
         #endregion
-
         //Degrees 
-        public async Task<List<CreateApplicantDegreeResponse>> AddApplicantDegrees(CreateApplicantDegreeListRequest request,CancellationToken ct)
+        #region Degrees
+        public async Task<List<CreateApplicantDegreeResponse>> AddApplicantDegrees(CreateApplicantDegreeListRequest request, CancellationToken ct)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
             var applicant = await GetApplicantUtility(ct);
@@ -107,17 +107,18 @@ namespace AMS.SERVICES.DataService
             return degrees.Adapt<List<EditApplicantDegreeResponse>>();
         }
 
-        public async Task<List<ApplicantDegreeResponse>> GetApplicantDegrees(CancellationToken ct) 
-        { 
+        public async Task<List<ApplicantDegreeResponse>> GetApplicantDegrees(CancellationToken ct)
+        {
             var applicant = await GetApplicantUtility(ct);
             var degrees = await _context.ApplicantDegrees
-                                        .Where(applicant => applicant.Id == applicant.Id)
+                                        .AsNoTracking()
+                                        .Where(appDegrees => appDegrees.ApplicantId == applicant.Id)
                                         .ToListAsync(ct)
                                         .ConfigureAwait(false);
             return degrees.Adapt<List<ApplicantDegreeResponse>>();
         }
 
-
+        #endregion
         //Private Methods
         private async Task<Applicant> GetApplicantUtility(CancellationToken cancellationToken)
         {
@@ -125,7 +126,6 @@ namespace AMS.SERVICES.DataService
             var applicant = await _context.Applicants.FirstOrDefaultAsync((a) => a.ApplicationUserId == userId, cancellationToken) ?? throw new NotFoundException("applicant not found"); ;
             return applicant;
         }  
-
         private async Task UpdateUserProfilePictureAsync(ApplicationUser user, FileRequest imageRequest, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
@@ -135,10 +135,6 @@ namespace AMS.SERVICES.DataService
 
             user.ProfilePictureUrl = await _imageStorage.UploadAsync<Applicant>(imageRequest, FileType.Image, cancellationToken);
         }
-
-      
-
-
     }
 }
 

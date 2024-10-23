@@ -8,11 +8,13 @@ namespace AMS.SERVICES.DataService
     public class DepartmentService(AMSContext context) : IDepartmentService
     {
         private readonly AMSContext _context = context;
-        public async Task<List<DeparmentResponse>> GetDepartmentsByFacultyId(int facultyId, CancellationToken ct)
+        public async Task<List<DeparmentResponse>> GetDepartmentsByFacultyId(int facultyId,int programId, CancellationToken ct)
         {
-            var result = await _context.Departments
+            var result = await _context.ProgramDepartments
+                                       .Include((x) => x.Department)
                                        .AsNoTracking()
-                                       .Where(department => department.FaculityId == facultyId)
+                                       .Where(programDepartment => programDepartment.Department!.FaculityId == facultyId && programDepartment.ProgramId == programId )
+                                       .Select(d  => d.Department)
                                        .ToListAsync(ct)
                                        .ConfigureAwait(false);
             return result.Adapt<List<DeparmentResponse>>();

@@ -13,4 +13,4 @@ const page = (props: Props) => {
   );
 };
 
-export default isAuth(page,"auth");
+export default  page;

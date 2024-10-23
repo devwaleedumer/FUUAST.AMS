@@ -12,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../../ui/accordion";
-import {  AlertTriangleIcon, ArrowLeft, ArrowRight, GraduationCap } from "lucide-react";
+import {  AlertTriangleIcon, ArrowLeft, ArrowRight, GraduationCap, LoaderCircle, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Form,
@@ -52,7 +52,6 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
     useEffect(() => {
     if (editIsSuccess) {
         toast({title: "Success",description: "Degrees updated successfully!"})
-        dispatch(nextStep())
     }
     }, [editIsSuccess])
     const form = useForm<DegreeValues>({
@@ -95,8 +94,7 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
                         className={cn(
                           "[&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden relative !no-underline py-3",
                           errors.degrees?.[index] && "text-red-700"
-                        )}
-                      >
+                        )} >
                         <span className="flex items-center">
                           <GraduationCap className="h-[17px]  inline mr-0.5" />
                           <p>{degreeList[index]}</p>
@@ -262,16 +260,26 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
                 </Card>
               </div>
             ))}
-            <div className="flex justify-between mb-3 px-3">
-                 <Button disabled={editIsLoading}  onClick={(e) => dispatch(prevStep())}>
-                <ArrowLeft  className="size-4 mr-1" />
-                Previous
-              </Button>     
-                <Button  disabled={editIsLoading} type="submit">
-                Next
-                <ArrowRight className="size-4 mr-1" />
-              </Button>
-       </div>
+             <div className=" flex justify-between w-full px-3 mb-6">
+                <Button
+                  type="button"
+                  disabled={editIsLoading}
+                  onClick={(e) => dispatch(prevStep())}
+                >
+                  <ArrowLeft className="size-4 mr-1" />
+                  Previous
+                </Button>
+               <div className="space-x-2 flex">
+                <Button disabled={editIsLoading} type="submit">
+                     {!editIsLoading ? <>Update
+                  <Save className="size-4 ml-1" /></> : <LoaderCircle className="size-4 animate-spin"/>} 
+                  </Button>
+                 <Button type="button" disabled={editIsLoading}  onClick={() =>dispatch(nextStep())}  >
+                 Next
+                  <ArrowRight className="size-4 ml-1" /> 
+                </Button>
+               </div>
+               </div>
           </form>
         </Form>
       </Card>

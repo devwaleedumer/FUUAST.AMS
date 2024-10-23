@@ -1,3 +1,5 @@
+"use client"
+import isAuth from "@/components/ApplicantProtected";
 import React, { FC, ReactNode } from "react";
 
 type AuthLayoutProps = {
@@ -8,4 +10,4 @@ const Authlayout: FC<AuthLayoutProps> = ({ children }) => {
   return <>{children}</>;
 };
 
-export default Authlayout;
+export default isAuth(Authlayout,"auth");

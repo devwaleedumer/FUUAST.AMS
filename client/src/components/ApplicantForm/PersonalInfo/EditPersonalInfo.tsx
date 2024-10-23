@@ -75,15 +75,14 @@ import {
   ArrowLeft,
   Asterisk,
   LoaderCircle,
+  SaveAll,
 } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import { AspectRatio } from "../../ui/aspect-ratio";
 import { FaTrashAlt } from "react-icons/fa";
-import PageLoader from "../../shared/Loader";
 import { PersonalInformation } from "@/types/applicant";
 import { toast } from "../../ui/use-toast";
-import { ToastAction } from "../../ui/toast";
 const description =
   "For processing your application, we first following information about you.";
 type EditPersonalInfoProps = {
@@ -113,7 +112,6 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
           description : "Personal data successfully updated",
           variant: "default",
         })
-      dispatch(nextStep());
   }
   },[isSuccess])
   const [loading, setLoading] = useState(false);
@@ -822,10 +820,16 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                   <ArrowLeft className="size-4 mr-1" />
                   Previous
                 </Button>
+               <div className="space-x-2 flex">
                 <Button disabled={isLoading} type="submit">
-                  {!isLoading ? <>Next
-                  <ArrowRight className="size-4 ml-1" /></> : <LoaderCircle className="size-4 animate-spin"/>} 
+                     {!isLoading ? <>Update
+                  <Save className="size-4 ml-1" /></> : <LoaderCircle className="size-4 animate-spin"/>} 
+                  </Button>
+                 <Button type="button" disabled={isLoading}  onClick={() =>dispatch(nextStep())}  >
+                 Next
+                  <ArrowRight className="size-4 ml-1" /> 
                 </Button>
+               </div>
               </div>
             </form>
           </Form>

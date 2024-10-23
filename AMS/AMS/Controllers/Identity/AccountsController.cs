@@ -1,7 +1,5 @@
 ﻿using AMS.MODELS.Identity.User;
 using AMS.SERVICES.Identity.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMS.Controllers.Identity

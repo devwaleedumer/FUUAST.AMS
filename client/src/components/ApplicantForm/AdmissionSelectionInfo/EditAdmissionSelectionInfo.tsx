@@ -1,100 +1,90 @@
-import React, { FC, useEffect, useState } from "react";
-import { Heading } from "../ui/heading";
-import { Card, CardContent } from "../ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { useFieldArray, useForm } from "react-hook-form";
-import {
-  admissionSelectionValidator,
-  admissionSelectionValues,
-} from "@/lib/SchemaValidators/ApplicationForm/AdmissionSelectionsSchema.validator";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "../ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Info, SaveAll, TriangleAlert } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { useGetAllFacultiesQuery, useLazyGetDepartmentsByFacultyIdQuery } from "@/redux/features/faculity/faculityApi";
-import PageLoader from "../shared/Loader";
-import { useLazyGetTimeShiftByDepartmentIdQuery } from "@/redux/features/department/departmentApi";
-import { Checkbox } from "../ui/checkbox";
-import { RootState } from "@/redux/store";
-import { useGetProgramByUserIdQuery } from "@/redux/features/applicant/applicantApi";
-import { useSubmitApplicationFormMutation } from "@/redux/features/applicationForm/applicationFormApi";
-import { toast } from "@/components/ui/use-toast";
+import { Card, CardContent } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { toast } from '@/components/ui/use-toast';
+import { editAdmissionSelectionValidator, editAdmissionSelectionValues } from '@/lib/SchemaValidators/ApplicationForm/AdmissionSelectionsSchema.validator';
+import { useEditSubmittedApplicationMutation } from '@/redux/features/applicationForm/applicationFormApi';
+import { useLazyGetTimeShiftByDepartmentIdQuery } from '@/redux/features/department/departmentApi';
+import { useLazyGetDepartmentsByFacultyIdQuery } from '@/redux/features/faculity/faculityApi';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { ArrowLeft, CheckCircle2, Info, SaveAll, TriangleAlert } from 'lucide-react';
+import React, { FC, useEffect, useState } from 'react'
+import PageLoader from "../../shared/Loader";
 
-type AdmissionSelectionsInfoProps = {};
-const title = "ADMISSION INFORMATION & ORDER OF CHOICE";
-const description =
-  "Choose Discipline (Subject or Department) names and other related information in order of your choice";
-const AdmissionSelectionsInfo: FC<AdmissionSelectionsInfoProps> = () => {
-  const {data: facultyData, isLoading: facultyIsLoading} = useGetAllFacultiesQuery(null)
-  const id = useAppSelector((state : RootState) => state.auth?.user?.id)
-  const {data: programData } = useGetProgramByUserIdQuery(Number(id))
+import { useForm, useFieldArray } from 'react-hook-form';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Faculty } from '@/types/faculty';
+import { Button } from '@/components/ui/button';
+import { SubmitApplicationFormResponse } from '@/types/applicationForm';
+
+type EditAdmissionSelectionInfoProps = {
+    facultyData:Faculty [],
+    data: SubmitApplicationFormResponse
+}
+
+const EditAdmissionSelectionInfo:FC<EditAdmissionSelectionInfoProps> = ({facultyData,data}) => {
+
   const [departmentByFaculty,{isLoading: departmentByFacultyIsLoading}] = useLazyGetDepartmentsByFacultyIdQuery()
   const [timeShiftByDepartmentIdAndProgramId,{isLoading: timeShiftIsLoading}] =  useLazyGetTimeShiftByDepartmentIdQuery()
-  const [submitApplicationForm,{isLoading: submitApplicationFormIsLoading}] = useSubmitApplicationFormMutation()
+  const [editApplicationForm,{isLoading: editApplicationFormIsLoading,isSuccess: editApplicationFormIsSuccess}] = useEditSubmittedApplicationMutation()
    // Track department and shift data for each row
-  const [departments, setDepartments] = useState<(any[] | undefined)[]>([]);
-  const [timeShifts, setTimeShifts] = useState<(any[] | undefined)[]>([]);
-  
-  const handleFacultyChange = async (index: number,id : number) => {
-    const {data}  = await  departmentByFaculty(id);
-    const departmentList = [...departments];
-    departmentList[index] = data;
-    setDepartments(departmentList);
-  }
+  const [departments, setDepartments] = useState<(any[] | undefined)[]>(data.departments);
+  const [timeShifts, setTimeShifts] = useState<(any[] | undefined)[]>(data.shifts);
 
-  const handleDepartmentChange = async (index: number, programId: number, departmentId: number) => {
-    const {data} = await timeShiftByDepartmentIdAndProgramId({programId,departmentId})
-    const timeShiftList = [...timeShifts];
-    timeShiftList[index] = data
-    setTimeShifts(timeShiftList)
-  }
-  const noOfProgramToApply = getSelectedProgramType();
-  const form = useForm<admissionSelectionValues>({
-    resolver: zodResolver(admissionSelectionValidator),
-    defaultValues: {
-      programsApplied: Array.from({ length: noOfProgramToApply }, () => ({})),
-    },
-    mode: "all",
+  const form = useForm<editAdmissionSelectionValues>({
+    resolver: zodResolver(editAdmissionSelectionValidator),
+    values: data as any,
+    mode: "all"
   });
   const {
     control,
     formState: { errors },
     setValue
   } = form;
-  const { append, remove, fields } = useFieldArray({
+  const {  fields } = useFieldArray({
     control,
     name: "programsApplied",
   });
-  const [isMounted, setIsMounted] = useState<boolean>(false);
-    useEffect(() => {setIsMounted(true)},[])
 
-  const processDegreeInfo = async (data: admissionSelectionValues) => {
+  const handleFacultyChange = async (index: number,facultyId : number, programId: number) => {
+    const {data}  = await  departmentByFaculty({programId,facultyId });
+    const departmentList = [...departments];
+    departmentList[index] = data;
+    setDepartments(departmentList)
+    setValue(`programsApplied.${index}.departmentId`,'' as any)
+    setValue(`programsApplied.${index}.timeShiftId`,'' as any);
+} 
+
+    const handleDepartmentChange = async (index: number, programId: number, departmentId: number) => {
+    const {data} = await timeShiftByDepartmentIdAndProgramId({programId,departmentId})
+    const timeShiftList = [...timeShifts];
+    timeShiftList[index] = data
+    setTimeShifts(timeShiftList)
+    setValue(`programsApplied.${index}.timeShiftId`,'' as any)
+
+  }
+  
+  const processDegreeInfo = async (data: editAdmissionSelectionValues) => {
     console.log("data => ", data);
-    await submitApplicationForm(data).unwrap().then((data) => {
-        toast({title: "Submitted",
-        description: `Application submitted with id ${data}`
-       })
+    await editApplicationForm(data).unwrap().then((data) => {
+         toast({
+      title: "Application Updated 🎓!",
+      description: data,
+      action: (
+        <div className="flex items-center">
+          <CheckCircle2 className="mr-2 h-5 w-5 text-green-500" />
+          <span className="font-semibold text-green-500">Success</span>
+        </div>
+      ),
+      className: "bg-white dark:bg-gray-800 border-green-500 border-2",
+      duration: 5000,
+    })
     })
 
   };
   return (
     <>
-      <Heading title={title} description={description} />
-      {!isMounted && facultyIsLoading ?
+      {!data ?
       <PageLoader/>
       :
       <Card >
@@ -201,15 +191,11 @@ const AdmissionSelectionsInfo: FC<AdmissionSelectionsInfoProps> = () => {
                           <Select
                               // disabled={loading}
                             onValueChange={
-                          async   (value) => 
-                            {
-                             await handleFacultyChange(index,Number(value));
-                              setValue(`programsApplied.${index}.departmentId`,'' as any)
-                              setValue(`programsApplied.${index}.timeShiftId`,'' as any)
+                             async (value) => {
+                             await handleFacultyChange(index,Number(value),data.programId);
                               field.onChange(value)
-
                             }}
-                            value={field.value}
+                            value={String(field.value)}
                             defaultValue={field.value}
                           >
                             <FormControl>
@@ -221,8 +207,7 @@ const AdmissionSelectionsInfo: FC<AdmissionSelectionsInfoProps> = () => {
                               >
                                 <SelectValue
                                   defaultValue={field.value}
-                                  placeholder="Select a Faculty"
-                                />
+                                  placeholder="Select a Faculty"/>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -248,15 +233,14 @@ const AdmissionSelectionsInfo: FC<AdmissionSelectionsInfoProps> = () => {
                         <FormItem className="mb-2">
                           <FormLabel>Department</FormLabel>
                           <Select
-                    disabled={!departments[index]}
+                             disabled={!departments[index]}
                             onValueChange={
                            async  (value) => 
                             {
-                           await  handleDepartmentChange(index,Number(programData?.id),Number(value))
-                              setValue(`programsApplied.${index}.timeShiftId`,'' as any)
-                              field.onChange(value)
+                           await  handleDepartmentChange(index,Number(data.programId),Number(value))
+                              field.onChange(Number(value))
                             }}
-                            value={field.value}
+                            value={String(field.value)}
                             defaultValue={field.value}
                           >
                             <FormControl>
@@ -292,7 +276,7 @@ const AdmissionSelectionsInfo: FC<AdmissionSelectionsInfoProps> = () => {
                           <Select
                             disabled={!timeShifts[index]}
                             onValueChange={field.onChange}
-                            value={field.value}
+                            value={String(field.value)}
                             defaultValue={field.value}
                           >
                             <FormControl>
@@ -342,9 +326,12 @@ const AdmissionSelectionsInfo: FC<AdmissionSelectionsInfoProps> = () => {
             </FormItem>
           )}
         />
-                <div className="mt-6 flex items-center justify-center">
-                  <Button disabled={submitApplicationFormIsLoading}>
-                    <SaveAll className="mr-1 h-4 w-4" /> SUBMIT FORM
+               <div className="mt-6 flex items-center justify-between">
+                  <Button className="" disabled={editApplicationFormIsLoading}>
+                    <ArrowLeft className="mr-1 h-4 w-4" /> Back
+                  </Button>
+                  <Button disabled={editApplicationFormIsLoading}>
+                    <SaveAll className="mr-1 h-4 w-4" /> Update FORM
                   </Button>
                 </div>
               </div>
@@ -366,8 +353,5 @@ const AdmissionSelectionsInfo: FC<AdmissionSelectionsInfoProps> = () => {
     </>
   );
 };
-// Todo
-const getSelectedProgramType = (): number => {
-  return 5;
-};
-export default AdmissionSelectionsInfo;
+
+export default EditAdmissionSelectionInfo

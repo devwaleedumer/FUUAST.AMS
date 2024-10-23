@@ -13,6 +13,12 @@ export const userApi = apiSlice.injectEndpoints({
                 body: data,
             })
         }),
+        verifyEmail: builder.query<string, { userId: string, code: string }>({
+            query: ({ userId, code }) => ({
+                url: `users/confirm-email?userId=${userId}&code=${code}`,
+                method: "GET",
+            })
+        }),
         login: builder.mutation<ILoginResponse, ILoginRequest>({
             query: ({ email, password }) => ({
                 url: "tokens/get-token",
@@ -36,17 +42,11 @@ export const userApi = apiSlice.injectEndpoints({
         }),
         logout: builder.query({
             query: () => ({
-                url: "logout",
+                url: "tokens/logout",
                 method: "GET",
                 credentials: "include" as const
             }),
-            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-                try {
-                    dispatch(userLoggedOut())
-                } catch (error) {
-                    console.log(error)
-                }
-            }
+
         }),
 
     })
@@ -55,4 +55,4 @@ export const userApi = apiSlice.injectEndpoints({
 
 
 
-export const { useRegisterMutation, useLoginMutation, useLogoutQuery } = userApi
+export const { useRegisterMutation, useLoginMutation, useLazyLogoutQuery, useLazyVerifyEmailQuery } = userApi

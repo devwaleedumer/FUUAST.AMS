@@ -12,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../../ui/accordion";
-import {  AlertTriangleIcon, ArrowLeft, ArrowRight, GraduationCap } from "lucide-react";
+import {  AlertTriangleIcon, ArrowLeft, ArrowRight, GraduationCap, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Form,
@@ -36,6 +36,7 @@ import { nextStep, prevStep } from "@/redux/features/applicant/applicationWizard
 import { IDegreeGroupWithDegreeLevel } from "@/types/degreeGroup";
 import { useCreateApplicantDegreesMutation } from "@/redux/features/applicant/applicantApi";
 import { toast } from "@/components/ui/use-toast";
+import { BiSolidSave } from "react-icons/bi";
 
 type CreateDegreeProps = {
 appliedProgram: string;
@@ -266,8 +267,8 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                 Previous
               </Button>     
                 <Button disabled={createIsLoading}  type="submit">
-                Next
-                <ArrowRight className="size-4 mr-1" />
+                <Save className="size-4 mr-1" />
+                Save & Next
               </Button>
        </div>
           </form>

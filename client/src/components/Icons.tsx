@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  AppWindowMac,
   ArrowRight,
   Check,
   ChevronLeft,
@@ -60,6 +61,7 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  wizard: FileText  ,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

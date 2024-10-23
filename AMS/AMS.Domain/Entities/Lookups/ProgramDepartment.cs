@@ -10,11 +10,13 @@ namespace AMS.DOMAIN.Entities.Lookups
     public class ProgramDepartment : IBaseEntity
     {
         public int Id { get; set; }
+        public virtual Faculity? Faculity { get; set; }
         public virtual Department? Department { get; set; }
         public virtual Program? Program { get; set; }
         public virtual TimeShift? TimeShift { get; set; }
 
-        public int DepartmentId { get; set; }
+        public int? FaculityId { get; set; }
+        public int? DepartmentId { get; set; }
         public int ProgramId { get; set; }
         public int TimeShiftId { get; set; }
 

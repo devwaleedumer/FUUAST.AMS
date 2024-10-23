@@ -16,7 +16,7 @@ namespace AMS.VALIDATORS.ApplicationForms
 
             RuleFor(x => x.Cnic)
                 .NotEmpty().WithMessage("CNIC is required.")
-                .Matches(@"\d{13}").WithMessage("CNIC must be 13 digits.");
+                .Matches(@"\d{13}$").WithMessage("CNIC must be 13 digits.");
 
             RuleFor(x => x.Dob)
                 .NotEmpty().WithMessage("Date of birth is required.")
@@ -24,7 +24,7 @@ namespace AMS.VALIDATORS.ApplicationForms
 
             RuleFor(x => x.MobileNo)
                 .NotEmpty().WithMessage("Mobile number is required.")
-                .Matches(@"\d{11}").WithMessage("Mobile number must be 11 digits.");
+                .Matches(@"\d{11}$").WithMessage("Mobile number must be 11 digits.");
 
             RuleFor(x => x.Gender)
                 .NotEmpty().WithMessage("Gender is required.");

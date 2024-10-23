@@ -2,23 +2,17 @@ import { NavItem } from "@/types";
 
 export const navItems: NavItem[] = [
     {
-        title: "Application",
-        href: "/admission-application",
+        title: "Dashboard",
+        href: "/dashboard",
         icon: "dashboard",
         label: "Dashboard",
     },
-    // {
-    //     title: "User",
-    //     href: "/dashboard/user",
-    //     icon: "user",
-    //     label: "user",
-    // },
-    // {
-    //     title: "Employee",
-    //     href: "/dashboard/employee",
-    //     icon: "employee",
-    //     label: "employee",
-    // },
+    {
+        title: "Application",
+        href: "/admission-application",
+        icon: "wizard",
+        label: "Application Wizard",
+    },
     {
         title: "Profile",
         href: "/profile",
@@ -31,12 +25,7 @@ export const navItems: NavItem[] = [
         icon: "kanban",
         label: "Challan",
     },
-    {
-        title: "Logout",
-        href: "/",
-        icon: "login",
-        label: "Logout",
-    },
+
 ];
 
 
@@ -86,35 +75,6 @@ export const religions = [
     { id: "Other", name: "Other" },
 ];
 
-
-// export const degreeLevel = [
-//     { id: "SSC", name: "SSC" },
-//     { id: "HSSC", name: "HSSC" },
-//     { id: "Diploma 13 years (DAE)", name: "Diploma 13 years (DAE)" },
-//     { id: "4", name: "ADP or equivalent 14 Years" },
-//     { id: "5", name: "16 Years" },
-//     { id: "6", name: "MS 18 Years" },
-// ];
-
-// export const examType = [
-//     { id: "1", name: "Annual" },
-//     { id: "2", name: "Semester" },
-// ]
-
-// export const gradingType = [
-//     { id: "1", name: "Percentage" },
-//     { id: "2", name: "CGPA" },
-// ]
-
-// export const programsInfo = [
-//     { id: "1", name: "BS" },
-//     { id: "2", name: "APD" },
-//     { id: "3", name: "BPD" },
-//     { id: "4", name: "MBA" },
-//     { id: "5", name: "M.phil" },
-//     { id: "6", name: "MS" },
-//     { id: "7", name: "Phd" },
-// ]
 
 export const photographRequirements = [
     "Must be taken recently",

@@ -60,7 +60,8 @@ namespace AMS.Extensions
                         o.MigrationsAssembly(Assembly.GetAssembly(typeof(AMSContext))!.FullName);
                     });
                     options.EnableSensitiveDataLogging();
-                });
+                });   
+        
             }
             else
             {

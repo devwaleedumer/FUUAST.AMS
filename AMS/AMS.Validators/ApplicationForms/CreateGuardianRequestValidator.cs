@@ -17,7 +17,7 @@ namespace AMS.VALIDATORS.ApplicationForms
 
             RuleFor(x => x.ContactNo)
                     .NotEmpty().WithMessage("Guardian's contact number is required.")
-                    .Matches(@"\d{11}").WithMessage("Contact number must be 11 digits.");
+                    .Matches(@"\d{11}$").WithMessage("Contact number must be 11 digits.");
             RuleFor(x => x.PermanentAddress)
                   .NotNull().WithMessage("Guardian's permanent address is required.");
 

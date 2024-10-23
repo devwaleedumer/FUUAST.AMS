@@ -478,6 +478,12 @@ namespace AMS.DATA
 
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
 
+                entity.HasOne(e => e.Faculity)
+                      .WithMany(e => e.ProgramDepartments)
+                      .HasForeignKey(e => e.FaculityId)
+                      .OnDelete(DeleteBehavior.NoAction)
+                      .HasConstraintName("FK_ProgramDepartment_Faculty");
+                
                 entity.HasOne(e => e.Program)
                       .WithMany(e => e.ProgramDepartments)
                       .HasForeignKey(e => e.ProgramId)
@@ -487,7 +493,7 @@ namespace AMS.DATA
                 entity.HasOne(e => e.Department)
                       .WithMany(e => e.ProgramDepartments)
                       .HasForeignKey(e => e.DepartmentId)
-                      .OnDelete(DeleteBehavior.Cascade)
+                      .OnDelete(DeleteBehavior.SetNull)
                       .HasConstraintName("FK_ProgramDepartment_Departments");
 
                 entity.HasOne(e => e.TimeShift)

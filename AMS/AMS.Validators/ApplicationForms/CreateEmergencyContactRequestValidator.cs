@@ -21,7 +21,7 @@ namespace AMS.VALIDATORS.ApplicationForms
 
             RuleFor(x => x.ContactNo)
                 .NotEmpty().WithMessage("Emergency contact number is required.")
-                .Matches(@"\d{11}").WithMessage("Contact number must be 11 digits.");
+                .Matches(@"\d{11}$").WithMessage("Contact number must be 11 digits.");
         }
     }
 }

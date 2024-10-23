@@ -13,7 +13,6 @@ namespace AMS.SERVICES.DataService
         {
             var result = await _context.ProgramDepartments
                                        .AsNoTracking()
-                                       .Include(x => x.TimeShift)
                                        .Where(pd => pd.DepartmentId == departmentId && pd.ProgramId == programId)
                                        .Select(x => x.TimeShift)
                                        .ToListAsync(ct)

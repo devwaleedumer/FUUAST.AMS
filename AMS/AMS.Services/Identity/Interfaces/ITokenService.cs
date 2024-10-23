@@ -12,5 +12,8 @@ namespace AMS.SERVICES.Identity.Interfaces
         Task<CookieTokenResponse> SetTokensCookieAsync(TokenRequest request, string ipAddress, CancellationToken cancellationToken, HttpContext context);
 
         Task<CookieTokenResponse> setRefreshTokensCookieAsync(string ipAddress, HttpContext context);
+
+        void RemoveCookieTokens(HttpContext context);
+
     }
 }

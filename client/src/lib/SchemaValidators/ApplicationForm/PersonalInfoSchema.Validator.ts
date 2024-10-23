@@ -33,7 +33,7 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
                 message: "Full Name must contain only alphabets."
             }),
         permanentAddress: z.string().trim().min(1, "Address  is required 😊."),
-        cnic: z.string().regex(/^\d{13}/, "only 13 digits are allowed")
+        cnic: z.string().regex(/^\d{13}$/, "only 13 digits are allowed")
         ,
 
         guardian: z.object({
@@ -107,7 +107,7 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
                 message: "Full Name must contain only alphabets."
             }),
         permanentAddress: z.string().trim().min(1, "Address  is required 😊."),
-        cnic: z.string().regex(/^\d{13}/, "only 13 digits are allowed")
+        cnic: z.string().regex(/^\d{13}$/, "only 13 digits are allowed")
         ,
 
         guardian: z.object({

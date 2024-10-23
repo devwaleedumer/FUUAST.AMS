@@ -775,18 +775,10 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                   </Card>
                 </>
               </div>
-              <div className=" flex justify-between w-full">
-                <Button
-                  type="button"
-                  disabled={loading}
-                  onClick={(e) => dispatch(prevStep())}
-                >
-                  <ArrowLeft className="size-4 mr-1" />
-                  Previous
-                </Button>
+              <div className=" flex justify-end w-full space-x-4">
                 <Button disabled={loading} type="submit">
-                  Next
-                  <ArrowRight className="size-4 ml-1" />
+                  <Save className="size-4 mr-1" />
+                  Save & Next
                 </Button>
               </div>
             </form>

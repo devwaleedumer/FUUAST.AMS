@@ -11,9 +11,9 @@ export const facultyAPI = apiSlice.injectEndpoints({
             }),
             providesTags: ["faculty"]
         }),
-        getDepartmentsByFacultyId: builder.query<Array<Department>, number>({
-            query: (facultyId) => ({
-                url: `faculty/${facultyId}/departments`,
+        getDepartmentsByFacultyId: builder.query<Array<Department>, { facultyId: number, programId: number }>({
+            query: ({ facultyId, programId }) => ({
+                url: `faculty/${facultyId}/${programId}/departments`,
                 method: "GET"
             }),
             providesTags: ["faculty"]

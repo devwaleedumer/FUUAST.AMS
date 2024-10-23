@@ -1,270 +1,324 @@
 [
   {
+    "FaculityId": 1,
     "ProgramId": 1,
     "DepartmentId": 1,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 6,
     "ProgramId": 1,
     "DepartmentId": 16,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 1,
     "DepartmentId": 12,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 1,
     "DepartmentId": 12,
     "TimeShiftId": 2
   },
   {
+    "FaculityId": 5,
     "ProgramId": 1,
     "DepartmentId": 13,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 1,
     "DepartmentId": 13,
     "TimeShiftId": 2
   },
   {
+    "FaculityId": 5,
     "ProgramId": 1,
     "DepartmentId": 10,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 1,
     "DepartmentId": 15,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 1,
     "DepartmentId": 4,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 1,
     "DepartmentId": 7,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 1,
     "DepartmentId": 6,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 1,
     "DepartmentId": 5,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 3,
     "ProgramId": 1,
     "DepartmentId": 8,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 1,
     "DepartmentId": 2,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 4,
     "ProgramId": 1,
     "DepartmentId": 9,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 1,
     "DepartmentId": 11,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 1,
     "DepartmentId": 14,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 1,
     "DepartmentId": 3,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 3,
     "DepartmentId": 12,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 3,
     "DepartmentId": 12,
     "TimeShiftId": 2
   },
   {
+    "FaculityId": 5,
     "ProgramId": 3,
     "DepartmentId": 13,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 3,
     "DepartmentId": 13,
     "TimeShiftId": 2
   },
   {
+    "FaculityId": 1,
     "ProgramId": 3,
     "DepartmentId": 4,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 3,
     "DepartmentId": 7,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 3,
     "DepartmentId": 6,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 3,
     "DepartmentId": 2,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 4,
     "ProgramId": 3,
     "DepartmentId": 9,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 3,
     "DepartmentId": 14,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 3,
     "DepartmentId": 3,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 3,
     "DepartmentId": 1,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 3,
     "DepartmentId": 11,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 3,
     "DepartmentId": 5,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 2,
     "DepartmentId": 10,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 2,
     "DepartmentId": 11,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 2,
     "DepartmentId": 3,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 2,
     "DepartmentId": 12,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 2,
     "DepartmentId": 12,
     "TimeShiftId": 2
   },
   {
+    "FaculityId": 1,
     "ProgramId": 2,
     "DepartmentId": 4,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 2,
     "DepartmentId": 7,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 2,
     "DepartmentId": 6,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 2,
     "DepartmentId": 2,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 4,
     "ProgramId": 2,
     "DepartmentId": 9,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 4,
     "DepartmentId": 5,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 4,
     "DepartmentId": 10,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 4,
     "DepartmentId": 12,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 3,
     "ProgramId": 4,
     "DepartmentId": 8,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 6,
     "DepartmentId": 7,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 4,
     "ProgramId": 6,
     "DepartmentId": 9,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 1,
     "ProgramId": 6,
     "DepartmentId": 3,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 7,
     "DepartmentId": 5,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 5,
     "ProgramId": 5,
     "DepartmentId": 12,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 3,
     "ProgramId": 5,
     "DepartmentId": 8,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 5,
     "DepartmentId": 7,
     "TimeShiftId": 1
   },
   {
+    "FaculityId": 2,
     "ProgramId": 5,
     "DepartmentId": 3,
     "TimeShiftId": 1

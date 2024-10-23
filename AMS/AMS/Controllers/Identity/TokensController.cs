@@ -35,7 +35,6 @@ namespace AMS.Controllers.Identity
         [Produces("application/json")]
         public async Task<IActionResult> GetTokenAsync([FromBody]TokenRequest request, CancellationToken cancellation)
            =>  Ok(await _tokenService.SetTokensCookieAsync(request, GetIpAddress()!, cancellation, HttpContext));
-      
 
         /// <summary>
         /// Verify refresh token and generate new tokens 
@@ -49,7 +48,6 @@ namespace AMS.Controllers.Identity
         ///       "RefreshToken": "xxxxxxx",     
         ///     }
         /// </remarks>
-        /// <param name="request"></param>
         /// <returns>Refresh Token Response</returns>
         /// <response code="200" >Returns  success</response>
         /// <response code="401" >Invalid Request</response>    
@@ -59,9 +57,19 @@ namespace AMS.Controllers.Identity
         [Produces("application/json")]
         public async Task<IActionResult> Refresh()
             =>  Ok(await _tokenService.setRefreshTokensCookieAsync(GetIpAddress()!,HttpContext));
-        
 
-        
+        /// <summary>
+        /// Logout Successfully logout user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("logout")]
+        [ProducesResponseType(200)]
+        public IActionResult RemoveTokens()
+        {
+            _tokenService.RemoveCookieTokens(HttpContext);
+            return Ok();
+        }
+
         // helper function
         private string? GetIpAddress() =>
        Request.Headers.ContainsKey("X-Forwarded-For")

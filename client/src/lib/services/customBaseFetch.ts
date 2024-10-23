@@ -21,7 +21,7 @@ const customFetchBaseQuery: BaseQueryFn<
     FetchBaseQueryError
 > = async (args, api, extraOptions) => {
     const refreshTokenExpiryTime = getRefreshTokenDateTime()
-    if (window.location.href.includes("login") && !api.endpoint.includes("loadUser"))
+    if (window.location.href.includes("sign-up") || window.location.href.includes("login") && !api.endpoint.includes("loadUser"))
         return await baseQuery(args, api, extraOptions)
 
     if (refreshTokenExpiryTime == null) {

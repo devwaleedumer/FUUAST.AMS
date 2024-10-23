@@ -33,40 +33,35 @@ export default function isAuth(Component: any,routeRole: RouteRole) {
   const {redirect} = useParams()
   const currentPath = usePathname()
   const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated)
-  const { isLoading, isFetching,data:user } = apiSlice.endpoints.loadUser.useQuery(null, {
+  const { isLoading, isFetching,data:user,error } = apiSlice.endpoints.loadUser.useQuery(null, {
     skip: isAuthenticated || routeRole == "auth",
     refetchOnMountOrArgChange: true,
   });
   const loading = isLoading || isFetching;
-
  useEffect(() => {
       // If loading, prevent any redirection until data is fetched
       if (loading) return;
 
-      if (!isAuthenticated) {
-        if (!user) {
-          if (routeRole !== 'auth' && routeRole !== 'optional') {
-            router.replace(`${AuthRoutes.Login}?redirect=${currentPath}`);
-          }
+      if (!isAuthenticated || error) {
+        if (routeRole === "optional") {
+          router.replace(AuthRoutes.Login)
+          return 
+        }
           if(routeRole === "auth") 
               return
-          if (routeRole === "optional") {
-            router.replace(AuthRoutes.Login)
-            return 
-          }
-        }
+        // }
       } else if (isAuthenticated) {
         if (routeRole === "auth") {
           if (redirect) {
             router.replace(redirect as string);
           } else {
-            router.replace("admission-application");
+            router.replace("/dashboard");
           }
         }
       }
     }, [user, loading, isAuthenticated]);
 
   
-  return isLoading ? <LayoutLoader/> : <Component {...props} /> ;
+  return isLoading ? <LayoutLoader/> : <Component {...props} />  ;
   };
 }

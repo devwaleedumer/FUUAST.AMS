@@ -7,10 +7,13 @@ namespace AMS.DOMAIN.Entities.Lookups
         public Faculity()
         {
             Departments = new HashSet<Department>();
+            ProgramDepartments = new HashSet<ProgramDepartment>();
+
         }
         public int Id { get; set; }
         public required string Name { get; set; }
         public virtual ICollection<Department>? Departments { get; set; }
+        public virtual ICollection<ProgramDepartment>? ProgramDepartments { get; set; }
 
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }

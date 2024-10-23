@@ -48,7 +48,7 @@ const Signup: FC<SignupProps> = ({}) => {
   }
    useEffect(() => {
     if(isSuccess){
-      toast({title: "Success",description: data})
+      toast({title: "Success",description: data},)
       redirect("/login")
     }
     
@@ -172,4 +172,4 @@ const Signup: FC<SignupProps> = ({}) => {
   );
 };
 
-export default isAuth(Signup,"auth");
+export default Signup;

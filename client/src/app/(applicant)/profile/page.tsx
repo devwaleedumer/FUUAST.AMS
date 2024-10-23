@@ -24,4 +24,4 @@ const breadcrumbItems = [{ title: "Profile", link: "/profile" }];
   )
 }
 
-export default isAuth(Page,"optional")
+export default Page

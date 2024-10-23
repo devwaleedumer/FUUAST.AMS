@@ -4,7 +4,7 @@ const getCharacterValidationError = (str: string) => {
 };
 export const signUpFormSchema = z.object({
     fullName: z.string().min(5, "Full name must contain at least 5 character(s)")
-        .regex(/^[a-zA-Z]+$/, "only alphabets are allowed in name"),
+    ,
 
     email: z.string().min(5, "Email must contain at least 5 character(s)").email(),
     password: z.string()

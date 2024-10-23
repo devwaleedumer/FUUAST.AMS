@@ -13,8 +13,8 @@ namespace AMS.Controllers
         public async Task<IActionResult> GetAllFaculities(CancellationToken ct)
                  => Ok(await _faculityService.GetAllFaculties(ct));
 
-        [HttpGet("{faculityId}/departments")]
-        public async Task<IActionResult> GetDepartmentsByFacultyId(int faculityId, CancellationToken ct)
-                => Ok(await _departmentService.GetDepartmentsByFacultyId(faculityId, ct));
+        [HttpGet("{facultyId}/{programId}/departments")]
+        public async Task<IActionResult> GetDepartmentsByFacultyId(int facultyId,int programId, CancellationToken ct)
+                => Ok(await _departmentService.GetDepartmentsByFacultyId(facultyId, programId, ct));
     }
 }

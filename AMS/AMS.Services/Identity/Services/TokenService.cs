@@ -8,6 +8,7 @@ using AMS.SHARED.Exceptions;
 using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -228,6 +229,13 @@ namespace AMS.SERVICES.Identity.Services
             var tokens =  await GenerateTokensAndUpdateUser(user, ipAddress);
             SetTokensCookie(context, tokens);
             return new CookieTokenResponse(tokens.RefreshTokenExpiryTime);
+        }
+
+        public void RemoveCookieTokens(HttpContext context)
+        {
+            context.Response.Cookies.Delete("refreshToken");
+            context.Response.Cookies.Delete("token");
+
         }
 
         /// <summary>

@@ -20,11 +20,13 @@ import { Input } from "@/components/ui/input";
 import { InputShowHide } from "@/components/ui/input-show-hide";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { useAppDispatch } from "@/hooks/reduxHooks";
 import {
   loginFormSchema,
   loginFormSchemaType,
 } from "@/lib/SchemaValidators/Authentication/Login.Validator";
 import { useLoginMutation } from "@/redux/features/auth/userApi";
+import { userLoggedOut } from "@/redux/features/auth/userSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GraduationCap, FileText } from "lucide-react";
 import Link from "next/link";
@@ -51,7 +53,7 @@ export default function Login() {
         title:"Success",
         description: "Sign in successfully"
       })
-      redirect('/admission-application')
+      redirect('/dashboard')
     }
   },[isSuccess])
   //  functions

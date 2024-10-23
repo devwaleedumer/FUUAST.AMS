@@ -924,7 +924,10 @@ namespace AMS.DATA.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FaculityId")
                         .HasColumnType("int");
 
                     b.Property<int?>("InsertedBy")
@@ -953,6 +956,8 @@ namespace AMS.DATA.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("FaculityId");
 
                     b.HasIndex("ProgramId");
 
@@ -1566,9 +1571,14 @@ namespace AMS.DATA.Migrations
                     b.HasOne("AMS.DOMAIN.Entities.Lookups.Department", "Department")
                         .WithMany("ProgramDepartments")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
+                        .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_ProgramDepartment_Departments");
+
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.Faculity", "Faculity")
+                        .WithMany("ProgramDepartments")
+                        .HasForeignKey("FaculityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("FK_ProgramDepartment_Faculty");
 
                     b.HasOne("AMS.DOMAIN.Entities.Lookups.Program", "Program")
                         .WithMany("ProgramDepartments")
@@ -1585,6 +1595,8 @@ namespace AMS.DATA.Migrations
                         .HasConstraintName("FK_ProgramDepartment_TimeShifts");
 
                     b.Navigation("Department");
+
+                    b.Navigation("Faculity");
 
                     b.Navigation("Program");
 
@@ -1700,6 +1712,8 @@ namespace AMS.DATA.Migrations
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Faculity", b =>
                 {
                     b.Navigation("Departments");
+
+                    b.Navigation("ProgramDepartments");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Program", b =>
