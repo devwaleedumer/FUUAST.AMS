@@ -3,67 +3,70 @@ import { useState, useEffect } from 'react'
 import { Loader2, CheckCircle, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useLazyVerifyEmailQuery } from '@/redux/features/auth/userApi'
-import { useRouter } from 'next/router'
+import { useVerifyEmailQuery } from '@/redux/features/auth/userApi'
+import {  useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 type VerificationState = 'verifying' | 'success' | 'error'
 
 export default function VerifyEmail() {
   const [state, setState] = useState<VerificationState>('verifying')
   const [message, setMessage] = useState<string>()
-  const router = useRouter()
-  const {userId,code} = router.query;
-  const [verifyEmail,{isSuccess}] = useLazyVerifyEmailQuery();
+  const params = useSearchParams()
+  const userId = params.get('userId')
+  const code = params.get('code')
+  const {isSuccess,data,error,isLoading} = useVerifyEmailQuery({userId: String(userId),code: String(code)});
   useEffect(() => {
-    if (userId && code) {
-     verifyEmail({userId: userId as string, code: code as string }).unwrap().then( (data) => {
-      setMessage(data);
-      setState(isSuccess ? 'success' : 'error');
-    }).catch((error) => {
-        if ("data" in error) {
-            setMessage(error.data.detail)
-        }
-    });
-    }
-  }, [userId,code])
 
-  const getContent = () => {
-    switch (state) {
-      case 'verifying':
-        return {
+  },[state])
+  useEffect(() => {
+     if (isSuccess) {
+       setMessage(data);
+      setState(isSuccess ? 'success' : 'error');
+     }
+     if (error) {
+       if ("data" in error ) {
+        const errorData = error.data as any ;
+            setMessage(errorData.detail)
+        }
+     }
+  },[isSuccess,data,error])
+ 
+
+  const content =  {
+       'verifying':
+         {
           icon: <Loader2 className="w-8 h-8 animate-spin text-primary" />,
           title: 'Verifying your email',
           description: 'Please wait while we verify your email address...'
-        }
-      case 'success':
-        return {
+        },
+       'success':
+         {
           icon: <CheckCircle className="w-8 h-8 text-green-500" />,
           title: 'Email Verified',
           description: message ? message :'Your email has been successfully verified. You can now close this window.'
-        }
-      case 'error':
-        return {
+        },
+       'error':
+         {
           icon: <XCircle className="w-8 h-8 text-red-500" />,
           title: 'Verification Failed',
           description: message ? message : 'We couldn\'t verify your email. The link may have expired or is invalid.'
         }
-    }
   }
 
-  const content = getContent()
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md transition-all duration-300 ease-in-out">
         <CardHeader>
           <div className="flex justify-center mb-4">
-            {content.icon}
+            {isLoading ?  content["verifying"].icon : data || isSuccess ? content["success"].icon :content["error"].icon}
           </div>
-          <CardTitle className="text-center">{content.title}</CardTitle>
-          <CardDescription className="text-center">{content.description}</CardDescription>
+          <CardTitle className="text-center">{isLoading ?  content["verifying"].title : data || isSuccess ? content["success"].title :content["error"].title}</CardTitle>
+          <CardDescription className="text-center">{isLoading ?  content["verifying"].description : isSuccess || data ? content["success"].description :content["error"].description}</CardDescription>
         </CardHeader>
         <CardContent>
-          {state === 'error' && (
+          {error && (
             <Button 
               className="w-full mt-4"
               onClick={() => window.location.reload()}
@@ -71,13 +74,14 @@ export default function VerifyEmail() {
               Try Again
             </Button>
           )}
-          {state === 'success' && (
+          {data && (
+           <Link href={"/login"}>
             <Button 
               className="w-full mt-4"
-              onClick={() => router.replace("/login")}
             >
               Login
             </Button>
+           </Link>
           )}
         </CardContent>
       </Card>

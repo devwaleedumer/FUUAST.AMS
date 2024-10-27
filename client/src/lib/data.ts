@@ -87,6 +87,16 @@ export const photographRequirements = [
     "With natural brightness and contrast"
 ];
 
+export const importantNotesAdmissionSelection = [
+    "Order of choice of the disciplines once submitted Should not be changed under any circumstances.",
+    "You can add more programs by clicking on Add more button.",
+    "You can remove program by clicking on bin or remove icon.",
+    "Applying for 1 program will cost a challan of 2000 (default)",
+    "Note: Applying for more then one program will be charged 2000 each.",
+    "i.e Applying for three programs will cost. 3*2000 = Rs. 6000",
+    "For any Further query contact on 03359055577"
+]
+
 export const academicDegreeNamesRecord = {
     "1": [
         "Matriculation/OLevels/SCC/Equivalent",
@@ -99,32 +109,32 @@ export const academicDegreeNamesRecord = {
     "3": [
         "Matriculation/OLevels/SCC/Equivalent",
         "Intermedidate/ALevels/HSSC/DAE/Equivalent",
-        "Other",
+        // "Other",
     ],
     "4": [
         "Matriculation/OLevels/SCC/Equivalent",
         "Intermedidate/ALevels/HSSC/DAE/Equivalent",
         "BS/M.Sc/16 years education",
-        "Other",
+        // "Other",
     ],
     "5": [
         "Matriculation/OLevels/SCC/Equivalent",
         "Intermedidate/ALevels/HSSC/DAE/Equivalent",
         "BS/M.Sc/16 years education",
         "MS/M.Phill/MS/18 years education",
-        "Other",
+        // "Other",
     ],
     "6": [
         "Matriculation/OLevels/SCC/Equivalent",
         "Intermedidate/ALevels/HSSC/DAE/Equivalent",
         "BS/M.Sc/16 years education",
-        "Other",
+        // "Other",
     ],
     "7": [
         "Matriculation/OLevels/SCC/Equivalent",
         "Intermedidate/ALevels/HSSC/DAE/Equivalent",
         "BS/M.Sc/16 years education",
-        "Other",
+        // "Other",
     ],
 
 } as const

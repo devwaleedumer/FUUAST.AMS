@@ -76,6 +76,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Asterisk,
+  Loader,
 } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -87,11 +88,12 @@ type CreatePersonalInfoProps = {
 
 const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
   const dispatch = useAppDispatch();
-  const [create, ] =
+  const [create, {isLoading: createIsLoading}] =
     useCreateApplicantPersonalInformationMutation();
 //  useEffect(() => {
  
 //   }, [isSuccess])  
+  const [isOpen, setIsOpen] = useState(false);
   const form = useForm<PersonalInfoValues>({
     resolver: zodResolver( personalInfo ),
     mode: "all",
@@ -125,7 +127,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
       />
       <Card>
         <CardContent>
-          <List className="p-5" list={photographRequirements} />
+          <List className="p-5" list={photographRequirements} title="Physical Attributes of Photograph" />
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(processPersonalInfoForm, (error) => {
@@ -213,7 +215,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                           DOB{" "}
                           <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
                         </FormLabel>
-                        <Popover>
+                        <Popover open={isOpen} onOpenChange={setIsOpen}>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -235,8 +237,12 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                               mode="single"
+                              captionLayout="dropdown"
+                              fromYear={2015} toYear={2025}
                               selected={(field.value as any) !== typeof(Date) ? new Date(field.value) : field.value }
                               onSelect={field.onChange}
+                              onDayClick={() => setIsOpen(false)}
+                              defaultMonth={field.value}
                               disabled={(date) =>
                                 date > new Date() ||
                                 date < new Date("1900-01-01")
@@ -556,6 +562,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                                   </FormLabel>
                                   <FormControl>
                                     <Input
+                                      placeholder="Name"
                                       type="text"
                                       error={errors.guardian?.name?.message}
                                       disabled={loading}
@@ -577,7 +584,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                                   </FormLabel>
                                   <FormControl>
                                     <Input
-                                      placeholder=""
+                                      placeholder="Relation"
                                       type="text"
                                       error={errors.guardian?.relation?.message}
                                       disabled={loading}
@@ -680,7 +687,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                                   </FormLabel>
                                   <FormControl>
                                     <Input
-                                      placeholder="Contact Name"
+                                      placeholder="Name"
                                       error={
                                         errors.emergencyContact?.name?.message
                                       }
@@ -776,9 +783,14 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                 </>
               </div>
               <div className=" flex justify-end w-full space-x-4">
-                <Button disabled={loading} type="submit">
+                <Button disabled={createIsLoading} type="submit">
+                  {createIsLoading ? <Loader className="h-4 animate-spin"/> :
+                  <>
                   <Save className="size-4 mr-1" />
-                  Save & Next
+                  {"Create & Next"}
+                  </>
+                    
+                  }
                 </Button>
               </div>
             </form>

@@ -152,14 +152,11 @@ namespace AMS.SERVICES.Identity.Services
                //body
                _emailTemplateService.GenerateEmailTemplate("email-confirmation", eMailModel));
                 // fire and forget pattern so that's why we are sending cancellation.none token  
-                //_job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
-                await _mailService.SendAsync(mailRequest, CancellationToken.None);
+                _job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+                //await _mailService.SendAsync(mailRequest, CancellationToken.None);
                 messages.Add($"Please check {user.Email} to verify your account!");
-
             }
             return string.Join(Environment.NewLine, messages);
-
-
         }
 
         //Private helpers

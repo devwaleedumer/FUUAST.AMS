@@ -28,6 +28,7 @@ export const rtkQueryErrorLogger: Middleware =
                                 'data' in errorPayload
                                     ? (errorPayload.data as { detail: string })?.detail || (errorPayload.data as { message: string })?.message
                                     : "some thing went wrong",
+                            variant: "destructive"
                         })
                         break;
                     case HttpStatusCode.NotFound:

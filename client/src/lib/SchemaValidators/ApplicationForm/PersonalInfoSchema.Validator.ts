@@ -193,7 +193,7 @@ export const personalInfo = z.object({
             message: "Full Name must contain only alphabets."
         }),
     permanentAddress: z.string().trim().min(1, "Address  is required 😊."),
-    cnic: z.string().regex(/^\d{13}/, "only 13 digits are allowed")
+    cnic: z.string().regex(/^\d{13}$/, "only 13 digits are allowed")
     ,
 
     guardian: z.object({

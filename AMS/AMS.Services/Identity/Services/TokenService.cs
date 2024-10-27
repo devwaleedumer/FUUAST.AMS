@@ -258,7 +258,8 @@ namespace AMS.SERVICES.Identity.Services
             context.Response.Cookies.Append("token", token.Token,
              new CookieOptions
              {
-                 Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.TokenExpirationInMinutes),
+                 // Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.TokenExpirationInMinutes),
+                 Expires = DateTimeOffset.UtcNow.AddMinutes(2),
                  HttpOnly = true,
                  IsEssential = true,
                  Secure = true,
@@ -267,7 +268,8 @@ namespace AMS.SERVICES.Identity.Services
             context.Response.Cookies.Append("refreshToken", token.RefreshToken,
                 new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
+                    // Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(20),
                     HttpOnly = true,
                     IsEssential = true,
                     Secure = true,

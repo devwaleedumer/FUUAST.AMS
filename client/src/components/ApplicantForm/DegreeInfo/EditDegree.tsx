@@ -57,12 +57,12 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
     const form = useForm<DegreeValues>({
     resolver: zodResolver(editDegreeValidator),
     defaultValues: {
-      degrees: Array.from({ length: degreeList?.length }, () => ({})), },
+      degrees: Array.from({ length: editData.length}, () => ({})), },
     mode: "all",
     values:{degrees:editData as any}
   });
   const { control,formState:{errors} } = form;
-  const { fields } = useFieldArray({
+  const { fields,append,remove } = useFieldArray({
     control,
     name: "degrees",
   });
@@ -97,7 +97,7 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
                         )} >
                         <span className="flex items-center">
                           <GraduationCap className="h-[17px]  inline mr-0.5" />
-                          <p>{degreeList[index]}</p>
+                          <p>{typeof degreeList[index] ==  "undefined" ? "Other" : degreeList[index]}</p>
                         </span>
                         { errors.degrees?.[index] && (
                             <span className="absolute alert right-8">
@@ -107,7 +107,7 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
                       </AccordionTrigger>
                       <AccordionContent>
                      <div className=" space-y-2 border p-4 rounded-md">
-            <div className={cn( "sm:grid md:grid-cols-3 gap-4 rounded-md relative")}
+            <div className={cn( "sm:grid gap-4 rounded-md relative",typeof degreeList[index] ==  "undefined" ? "md:grid-cols-2" : "md:grid-cols-3")}
                         >
                           <FormField
                             control={form.control}
@@ -131,7 +131,7 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
                             control={form.control}
                             name={`degrees.${index}.degreeGroupId`}
                             render={({ field }) => (
-                              <FormItem className="mb-2">
+                              <FormItem className={cn(`mb-2`,typeof degreeList[index] ==  "undefined" && "hidden")}>
                                 <FormLabel>Group</FormLabel>
                                 <Select
                                   defaultValue={field.value}

@@ -11,18 +11,23 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 namespace AMS.SERVICES.DataService
 {
-    public sealed class ApplicantService(AMSContext _context, ICurrentUser _currentUser, ILocalFileStorageService _imageStorage) : IApplicantService
+    public sealed class ApplicantService(AMSContext context, ICurrentUser currentUser, ILocalFileStorageService imageStorage) : IApplicantService
     {
+        private readonly AMSContext _context = context;
+        private readonly ICurrentUser _currentUser = currentUser;
+        private readonly ILocalFileStorageService _imageStorage = imageStorage;
         #region Personal Details Methods
         public async Task<CreateApplicantPSInfoResponse> AddApplicantPersonalInformation(CreateApplicantPSInfoRequest request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
+            var isCnicUnique = await _context.Applicants.AnyAsync((applicant) => applicant.Cnic == request.Cnic,cancellationToken);
+            if (isCnicUnique) throw new BadRequestException("CNIC already exists"); 
             var userId = _currentUser.GetUserId() ?? throw new UnauthorizedException("User is not login");
-            var user = await _context.Users.FindAsync(userId) ?? throw new NotFoundException("user not found");
+            var user = await _context.Users.FindAsync(new object[] { userId },cancellationToken) ?? throw new NotFoundException("user not found");
             var applicant = request.Adapt<Applicant>();
-            user.ProfilePictureUrl = await _imageStorage.UploadAsync<Applicant>(request.ImageRequest, FileType.Image, cancellationToken); ;
             applicant.ApplicationUserId = userId;
             await _context.Applicants.AddAsync(applicant, cancellationToken);
+            user.ProfilePictureUrl = await _imageStorage.UploadAsync<Applicant>(request.ImageRequest, FileType.Image, cancellationToken); ;
             await _context.SaveChangesAsync(cancellationToken);
             var response = applicant.Adapt<CreateApplicantPSInfoResponse>();
             response.ProfileImageUrl = user.ProfilePictureUrl;
@@ -31,7 +36,7 @@ namespace AMS.SERVICES.DataService
         public async Task<ApplicantPSInfoResponse> GetApplicantPersonalInformation(CancellationToken cancellationToken)
         {
             var userId = _currentUser.GetUserId() ?? throw new UnauthorizedException("User is not login");
-            var user = await _context.Users.FindAsync(userId, cancellationToken) ?? throw new NotFoundException("user not found");
+            var user = await _context.Users.FindAsync(new object[] { userId },cancellationToken) ?? throw new NotFoundException("user not found");
             var applicant = await _context.Applicants
                                           .AsNoTracking()
                                           .Include((applicant) => applicant.Guardian)

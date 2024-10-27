@@ -105,7 +105,7 @@ const ProgramInfo : FC<ProgramInfoProps> = ({}) => {
                 Previous
               </Button>
               <div className='flex'>
-                <Button type="submit">
+                <Button type="submit" disabled={createApplicationLoading}>
                     <SaveAll className="mr-1 size-4" /> Save & Next
                   </Button>
                

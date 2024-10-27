@@ -95,9 +95,10 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
   const form = useForm<  PersonalEditInfoValues>({
     resolver: zodResolver( personalInfoEditSchema ),
     defaultValues:  {...personalInfoDefaults,isImageChanged:false},
-    mode: "all",
+    mode: "onBlur",
     values: personalInformationData as any ,
   });
+
   const [edit,{isLoading,isSuccess}] =  useEditApplicantPersonalInformationMutation();
     useEffect(() => {
     if (personalInformationData) {
@@ -136,7 +137,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
       />
       <Card>
         <CardContent>
-          <List className="p-5" list={photographRequirements} />
+          <List className="p-5" list={photographRequirements} title="Physical Attributes of Photograph"/>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(processPersonalInfoForm, (error) => {

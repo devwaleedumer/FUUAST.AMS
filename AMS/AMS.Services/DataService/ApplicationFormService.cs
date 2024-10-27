@@ -1,18 +1,24 @@
 ﻿using AMS.DATA;
 using AMS.DOMAIN.Entities.AMS;
+using AMS.Interfaces.Mail;
 using AMS.MODELS.ApplicationForm;
 using AMS.MODELS.Dashboard;
+using AMS.MODELS.Models.Mail;
 using AMS.SERVICES.IDataService;
 using AMS.SHARED.Exceptions;
 using AMS.SHARED.Interfaces.CurrentUser;
+using AMS.SHARED.Interfaces.Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 namespace AMS.SERVICES.DataService
 {
-    public class ApplicationFormService(AMSContext context, ICurrentUser currentUser) : IApplicationFormService
+    public class ApplicationFormService(AMSContext context, ICurrentUser currentUser,IEmailTemplateService emailTemplateService,IJobService job,IMailService mailService) : IApplicationFormService
     {
         private readonly AMSContext _context = context;
         private readonly ICurrentUser _currentUser = currentUser;
+        private readonly IJobService _job = job;
+        private readonly IMailService _mailService = mailService;
+        private readonly IEmailTemplateService _emailTemplateService = emailTemplateService;
 
         public async Task<CreateApplicationFormResponse> CreateApplicationForm(CreateApplicationFormRequest request, CancellationToken ct)
         {
@@ -22,7 +28,7 @@ namespace AMS.SERVICES.DataService
             {
                 ApplicantId = applicant.Id,
                 ProgramId = request.programId,
-                SessionId = 6
+                SessionId = 1
             };
             await _context.ApplicationForms.AddAsync(applicationForm, ct);
             await _context.SaveChangesAsync(ct);
@@ -50,7 +56,20 @@ namespace AMS.SERVICES.DataService
             applicationForm.IsSubmitted = true;
             applicationForm.ProgramsApplied = programsApplied;
             await _context.SaveChangesAsync(ct);
-            return $"Application submitted with id {applicationForm.Id} successfully";
+
+            var email = _currentUser.GetUserEmail();
+            var userName = _currentUser.Name;
+            var emailModel = new ConfirmApplicationEmail(userName!, applicationForm.Id,applicationForm.SubmissionDate.Value);
+            var mailRequest = new MailRequest(
+               // To user mail
+               new List<string> { email! },
+            //subject
+               "Application Confirmation",
+            //body
+               _emailTemplateService.GenerateEmailTemplate("admission-confirmation", emailModel));
+            // fire and forget pattern so that's why we are sending cancellation.none token  
+            _job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+            return "Application submitted with successfully";
         }
         public async Task<string> EditSubmittedApplication(EditSubmitApplicationFormRequest request, CancellationToken ct)
         {
@@ -80,7 +99,7 @@ namespace AMS.SERVICES.DataService
             catch 
             {
                 await transaction.RollbackAsync(ct);
-                throw new AMSException("Application form cann't be updated");
+                throw new AMSException("Application form can't be updated");
             }
         }
         public async Task<SubmitApplicationResponse> GetSubmittedApplication(CancellationToken ct)

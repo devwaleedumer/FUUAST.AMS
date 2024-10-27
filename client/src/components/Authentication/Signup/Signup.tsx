@@ -49,7 +49,7 @@ const Signup: FC<SignupProps> = ({}) => {
    useEffect(() => {
     if(isSuccess){
       toast({title: "Success",description: data},)
-      redirect("/login")
+      // redirect("/login")
     }
     
   },[isSuccess])

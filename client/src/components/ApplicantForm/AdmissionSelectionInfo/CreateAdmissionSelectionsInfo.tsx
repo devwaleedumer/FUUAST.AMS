@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { ArrowLeft, CheckCircle2, Info, SaveAll, TriangleAlert } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Info, Plus, SaveAll, TriangleAlert } from "lucide-react";
 import { useGetAllFacultiesQuery, useLazyGetDepartmentsByFacultyIdQuery } from "@/redux/features/faculity/faculityApi";
 import PageLoader from "../../shared/Loader";
 import { useLazyGetTimeShiftByDepartmentIdQuery } from "@/redux/features/department/departmentApi";
@@ -32,6 +32,10 @@ import { toast } from "@/components/ui/use-toast";
 import { Faculty } from "@/types/faculty";
 import  confetti from "canvas-confetti"
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/hooks/reduxHooks";
+import { prevStep } from "@/redux/features/applicant/applicationWizardSlice";
+import List from "@/components/shared/List";
+import { importantNotesAdmissionSelection } from "@/lib/data";
 
 type CreateAdmissionSelectionsInfoProps = {
   facultyData:Faculty [],
@@ -58,10 +62,14 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
     timeShiftList[index] = data
     setTimeShifts(timeShiftList)
   }
+  const dispatch = useAppDispatch()
+  const handleNext = () => {
+    dispatch(prevStep())
+  }
   const form = useForm<admissionSelectionValues>({
     resolver: zodResolver(admissionSelectionValidator),
     defaultValues: {
-      programsApplied: Array.from({ length: [1,2,3].includes(programId) ? 5: 1 }, () => ({})),
+      programsApplied: Array.from({ length:  1 }, () => ({})),
     },
     mode: "all",
   });
@@ -100,8 +108,6 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
     setTimeout(() => {
        router.push("/dashboard")
     },2000)
-   
-
   })
   };
   return (
@@ -113,12 +119,12 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(processDegreeInfo)}>
-              <div className="bg-blue-100 p-4 my-6 rounded text-sm text-blue-800 md:flex gap-0.5  ">
-                <strong className="flex gap-[2px]">
-                  <Info className="size-[17px]" /> IMPORTANT:
+              <div className="bg-blue-50 p-4 my-6 rounded text-sm text-blue-800 md:flex gap-0.5 flex-col items-center  justify-center ">
+                <strong className="flex gap-[2px] justify-center items-center">
+                  <Info className="size-[17px]" />  <p>IMPORTANT:</p>
                 </strong>{" "}
-                Order of choice of the disciplines once submitted Should not be
-                changed under any circumstances.
+                          <List className="p-5 self-start" list={importantNotesAdmissionSelection} title="Important notes before selecting programs." />
+
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
                 <FormField
@@ -334,6 +340,21 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
 
                   </div>
                 ))}
+              {
+            [1,2,3].includes(programId) &&  <div className="mt-4 flex justify-center">
+                  <Button
+                    type="button"
+                    className="flex justify-center"
+                    size={'sm'}
+                    onClick={() =>
+                      append({} as any)
+                    }
+                  >
+                  <Plus className="size-4 mr-1" />  Add More
+                  </Button>
+                  </div>
+
+              }
            <FormField
                 control={form.control}
                 name="infoConsent"
@@ -355,10 +376,10 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
           )}
         />
                 <div className="mt-6 flex items-center justify-between">
-                  <Button className="" disabled={submitApplicationFormIsLoading}>
+                  <Button  type="button" onClick={handleNext}   disabled={submitApplicationFormIsLoading}>
                     <ArrowLeft className="mr-1 h-4 w-4" /> Back
                   </Button>
-                  <Button disabled={submitApplicationFormIsLoading}>
+                  <Button type="submit"  disabled={submitApplicationFormIsLoading}>
                     <SaveAll className="mr-1 h-4 w-4" /> SUBMIT FORM
                   </Button>
                 </div>
