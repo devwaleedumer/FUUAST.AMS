@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Successful Admission Application Submission - FUUAST Islamabad</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background:
+                linear-gradient(45deg, #ffffff 25%, transparent 25%) 0 0,
+                linear-gradient(-45deg, #ffffff 25%, transparent 25%) 0 0;
+            background-size: 20px 20px;
+            background-color: #4CAF50;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header h2 {
+            margin: 10px 0 0;
+            font-size: 18px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 30px 20px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #666666;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eeeeee;
+        }
+        @("@")media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admission Application Submitted Successfully</h1>
+            <h2>Federal Urdu University of Arts, Sciences & Technology, Islamabad</h2>
+        </div>
+        <div class="content">
+            <p>Dear @Model.ApplicantName,</p>
+            <p>We are pleased to confirm that your admission application to FUUAST Islamabad has been successfully submitted.</p>
+            <p>Here are the details of your submission:</p>
+            <ul>
+                <li>Application ID: @Model.ApplicationFormId</li>
+                <li>Date Submitted: @Model.SubmissionDate</li>
+            </ul>
+
+            <p>If you have any questions or need to update your application, please don't hesitate to contact our admissions office at admissions@fuuastisb.edu.pk or call us at 051-9252860-64 Between 9:00 AM to 5:00 PM.</p>
+            <p>Thank you for choosing FUUAST Islamabad for your higher education. We wish you the best of luck with your application!</p>
+            <p>Best regards,<br>Admissions Office<br>FUUAST Islamabad</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message. Please do not reply to this email.</p>
+            <p>© 2024 Federal Urdu University of Arts, Sciences & Technology, Islamabad. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

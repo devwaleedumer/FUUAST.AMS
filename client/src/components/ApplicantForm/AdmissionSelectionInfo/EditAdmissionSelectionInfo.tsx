@@ -7,7 +7,7 @@ import { useLazyGetTimeShiftByDepartmentIdQuery } from '@/redux/features/departm
 import { useLazyGetDepartmentsByFacultyIdQuery } from '@/redux/features/faculity/faculityApi';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { ArrowLeft, CheckCircle2, Info, SaveAll, TriangleAlert } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, FileText, Info, SaveAll, TriangleAlert } from 'lucide-react';
 import React, { FC, useEffect, useState } from 'react'
 import PageLoader from "../../shared/Loader";
 
@@ -16,6 +16,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Faculty } from '@/types/faculty';
 import { Button } from '@/components/ui/button';
 import { SubmitApplicationFormResponse } from '@/types/applicationForm';
+import { useAppDispatch } from '@/hooks/reduxHooks';
+import { prevStep } from '@/redux/features/applicant/applicationWizardSlice';
 
 type EditAdmissionSelectionInfoProps = {
     facultyData:Faculty [],
@@ -30,7 +32,10 @@ const EditAdmissionSelectionInfo:FC<EditAdmissionSelectionInfoProps> = ({faculty
    // Track department and shift data for each row
   const [departments, setDepartments] = useState<(any[] | undefined)[]>(data.departments);
   const [timeShifts, setTimeShifts] = useState<(any[] | undefined)[]>(data.shifts);
-
+  const dispatch = useAppDispatch()
+    const handleNext = () => {
+    dispatch(prevStep())
+  }
   const form = useForm<editAdmissionSelectionValues>({
     resolver: zodResolver(editAdmissionSelectionValidator),
     values: data as any,
@@ -326,13 +331,18 @@ const EditAdmissionSelectionInfo:FC<EditAdmissionSelectionInfoProps> = ({faculty
             </FormItem>
           )}
         />
-               <div className="mt-6 flex items-center justify-between">
-                  <Button className="" disabled={editApplicationFormIsLoading}>
+               <div className="mt-6 flex items-center justify-between gap-x-2">
+                  <Button onClick={handleNext}   className="" type='button'  disabled={editApplicationFormIsLoading}>
                     <ArrowLeft className="mr-1 h-4 w-4" /> Back
                   </Button>
-                  <Button disabled={editApplicationFormIsLoading}>
-                    <SaveAll className="mr-1 h-4 w-4" /> Update FORM
+                  <div  className='space-x-2 flex'>
+                    <Button  type="button">
+                    <SaveAll className="mr-1 h-4 w-4"  />  Challan
+                    </Button>
+                    <Button type='submit'  disabled={editApplicationFormIsLoading}>
+                    <FileText className="mr-1 h-4 w-4" /> Update
                   </Button>
+                  </div>
                 </div>
               </div>
               

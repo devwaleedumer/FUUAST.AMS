@@ -1,4 +1,5 @@
 using AMS.Extensions;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -10,7 +11,6 @@ try
     Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
-
     builder.Logging.ClearProviders();
     builder.Logging.AddSerilog(Log.Logger);
     builder.Host.UseSerilog();
@@ -28,13 +28,7 @@ try
         //opt.Filters.Add<ApiValidationFilter>();
         //opt.ModelValidatorProviders.Clear();
     })
-        .ConfigureApiBehaviorOptions(options =>
-        {
-            options.InvalidModelStateResponseFactory = context =>
-            {
-                return new UnprocessableEntityObjectResult(context.ModelState);
-            };
-        });
+        .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context =>new UnprocessableEntityObjectResult(context.ModelState) );
     builder.Services.AddProblemDetails();
     builder.Services.AddApplicationServices(configuration);
     builder.Services.AddHangfireServices(configuration);
@@ -54,6 +48,8 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseHangfireDashboard();
+
     app.UseExceptionMiddleware();
 
     app.UseSerilogRequestLogging();

@@ -1,10 +1,12 @@
 ﻿using AMS.MODELS.ApplicationForm;
 using AMS.SERVICES.IDataService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace AMS.Controllers
 {
+    [Authorize]
     public class ApplicationFormsController (IApplicationFormService applicationFormService) : BaseApiController
     {
         private readonly IApplicationFormService _applicationFormService = applicationFormService;

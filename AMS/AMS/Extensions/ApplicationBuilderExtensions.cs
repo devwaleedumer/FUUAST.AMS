@@ -43,6 +43,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using AMS.SERVICES.Dapper;
 
 namespace AMS.Extensions
 {
@@ -60,8 +61,9 @@ namespace AMS.Extensions
                         o.MigrationsAssembly(Assembly.GetAssembly(typeof(AMSContext))!.FullName);
                     });
                     options.EnableSensitiveDataLogging();
-                });   
-        
+                });
+                services.AddScoped<IDapperService, DapperService>();
+
             }
             else
             {
@@ -75,6 +77,8 @@ namespace AMS.Extensions
                 });
             }
             //services.AddTransient<IInitialDataSeeder, InitialDataSeeder>();
+            services.AddScoped<IDapperService, DapperService>();
+
             return services;
         }
         public static IServiceCollection AddSwaggerService(this IServiceCollection services)
@@ -349,7 +353,7 @@ namespace AMS.Extensions
                         QueuePollInterval = TimeSpan.Zero,
                         UseRecommendedIsolationLevel = true,
                         DisableGlobalLocks = true
-                    }));
+                    })).AddHangfireServer();
             JobStorage.Current = new SqlServerStorage(connString);
 
             services.AddTransient<IJobService, HangfireService>();

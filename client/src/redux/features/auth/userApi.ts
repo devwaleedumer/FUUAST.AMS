@@ -11,17 +11,20 @@ export const userApi = apiSlice.injectEndpoints({
                 url: "accounts/register",
                 method: "POST",
                 body: data,
-            })
+            }),
+
         }),
         verifyEmail: builder.query<string, { userId: string, code: string }>({
             query: ({ userId, code }) => ({
                 url: `users/confirm-email?userId=${userId}&code=${code}`,
                 method: "GET",
+                responseHandler: "text"
+
             })
         }),
         login: builder.mutation<ILoginResponse, ILoginRequest>({
             query: ({ email, password }) => ({
-                url: "tokens/get-token",
+                url: "tokens/get-token-cookie",
                 method: "POST",
                 body: {
                     email,
@@ -42,17 +45,16 @@ export const userApi = apiSlice.injectEndpoints({
         }),
         logout: builder.query({
             query: () => ({
-                url: "tokens/logout",
+                url: "tokens/logout-cookie",
                 method: "GET",
                 credentials: "include" as const
             }),
-
         }),
-
-    })
+    }),
+    overrideExisting: true
 })
 
 
 
 
-export const { useRegisterMutation, useLoginMutation, useLazyLogoutQuery, useLazyVerifyEmailQuery } = userApi
+export const { useRegisterMutation, useLoginMutation, useLazyLogoutQuery, useVerifyEmailQuery } = userApi

@@ -14,7 +14,7 @@ export const degreeValidator = z.object({
                 .string({
                     required_error: "Board or University is required",
                     invalid_type_error: "enter valid name"
-                }),
+                }).min(1, { message: "Please enter value" }),
             passingYear: z.coerce
                 .number({
                     invalid_type_error: "only digits are required",
@@ -23,8 +23,7 @@ export const degreeValidator = z.object({
             rollNo: z
                 .string({
                     required_error: "Roll no. is required"
-                })
-            ,
+                }).min(1, { message: "Please enter Roll No." }),
             totalMarks: z.coerce.number({
                 invalid_type_error: "only digits are required",
             })
@@ -58,7 +57,7 @@ export const editDegreeValidator = z.object({
                 .string({
                     required_error: "Board or University is required",
                     invalid_type_error: "enter valid name"
-                }),
+                }).min(1, "Please enter value").trim(),
             passingYear: z.coerce
                 .number({
                     invalid_type_error: "only digits are required",
@@ -67,7 +66,7 @@ export const editDegreeValidator = z.object({
             rollNo: z
                 .string({
                     required_error: "Roll no. is required"
-                })
+                }).min(1)
             ,
             totalMarks: z.coerce.number({
                 invalid_type_error: "only digits are required",

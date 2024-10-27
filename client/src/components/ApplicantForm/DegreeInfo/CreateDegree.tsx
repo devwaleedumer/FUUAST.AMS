@@ -12,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../../ui/accordion";
-import {  AlertTriangleIcon, ArrowLeft, ArrowRight, GraduationCap, Save } from "lucide-react";
+import {  AlertTriangleIcon, ArrowLeft, ArrowRight, GraduationCap, Plus, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Form,
@@ -53,7 +53,6 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
         dispatch(nextStep())
     }
     }, [createIsSuccess])
-    
     const form = useForm<DegreeValues>({
     resolver: zodResolver(degreeValidator),
     defaultValues: {
@@ -61,7 +60,7 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
     mode: "all",
   });
   const { control,formState:{errors} } = form;
-  const { fields } = useFieldArray({
+  const { fields,append,remove } = useFieldArray({
     control,
     name: "degrees",
   });
@@ -75,7 +74,7 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
         <Form {...form}>
           <form onSubmit={form.handleSubmit(processDegreeInfo,(error) => console.log(error))}>
             {fields?.map((field, index) => (
-              <div key={"degreeInfo" + index} className="first:p-5 last:pb-5 px-3 pb-3">
+              <div key={"degreeInfo" + index} className="first:pt-5 last:pb-5 px-3 pb-3">
                 <Card className="col-span-3 px-3 shadow-none">
                   <Accordion
                     type="single"
@@ -94,7 +93,7 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                       >
                         <span className="flex items-center">
                           <GraduationCap className="h-[17px]  inline mr-0.5" />
-                          <p>{degreeList[index]}</p>
+                          <p>{typeof degreeList[index] ==  "undefined" ? "other" : degreeList[index]}</p>
                         </span>
                         { errors.degrees?.[index] && (
                             <span className="absolute alert right-8">
@@ -104,7 +103,7 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                       </AccordionTrigger>
                       <AccordionContent>
                      <div className=" space-y-2 border p-4 rounded-md">
-            <div className={cn( "sm:grid md:grid-cols-3 gap-4 rounded-md relative")}
+            <div className={cn( "sm:grid gap-4 rounded-md relative",typeof degreeList[index] ==  "undefined" ? "md:grid-cols-2" : "md:grid-cols-3")}
                         >
                           <FormField
                             control={form.control}
@@ -124,11 +123,11 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                               </FormItem>
                             )}
                           />
-                          <FormField
+                           <FormField
                             control={form.control}
                             name={`degrees.${index}.degreeGroupId`}
                             render={({ field }) => (
-                              <FormItem className="mb-2">
+                              <FormItem className={cn(`mb-2`,typeof degreeList[index] ==  "undefined" && "hidden")}>
                                 <FormLabel>Group</FormLabel>
                                 <Select
                                   //   disabled={loading}
@@ -155,6 +154,9 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                               </FormItem>
                             )}
                           />
+
+                       
+                        
                           <FormField
                             control={form.control}
                             name={`degrees.${index}.subject`}
@@ -261,6 +263,26 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                 </Card>
               </div>
             ))}
+             <div className="mt-4 flex justify-center">
+                  <Button
+                    type="button"
+                    className="flex justify-center"
+                    size={'sm'}
+                    onClick={() =>
+                      append({
+                        degreeGroupId: 1002,
+                        subject: "",
+                        boardOrUniversityName: "",
+                        rollNo: "",
+                        passingYear: 0,
+                        totalMarks:0,
+                        obtainedMarks: 0
+                      })
+                    }
+                  > <Plus className="size-4 mr-1" />
+                    Add More
+                  </Button>
+                </div>
             <div className="flex justify-between mb-3 px-3">
                  <Button disabled={createIsLoading}  onClick={(e) => dispatch(prevStep())}>
                 <ArrowLeft  className="size-4 mr-1" />

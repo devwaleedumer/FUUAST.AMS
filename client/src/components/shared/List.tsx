@@ -4,16 +4,17 @@ import React from "react";
 
 type ListProps = {
     list: string[];
+    title: string
   };
 
 const List = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLParagraphElement> & ListProps 
->(({ className, list, ...props }, ref) => {
+>(({ className, title,list, ...props }, ref) => {
   return (
     <div className={cn(className, "py-5 mx-0")} {...props} ref={ref}>
       <h2 className="mb-2  tracking-tighter  font-semibold  text-gray-900 dark:text-white">
-        Physical Attributes of Photograph
+        {title}
       </h2>
       <ul className="max-w-md space-y-1 text-muted-foreground list-inside dark:text-gray-400">
         {list &&

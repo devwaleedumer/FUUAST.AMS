@@ -23,7 +23,7 @@ export const applicantApi = apiSlice.injectEndpoints({
                 },
                 body: data
             }),
-            invalidatesTags: ["applicant/personal-information"]
+            invalidatesTags: ["applicant/personal-information", "user"]
         }),
         editApplicantPersonalInformation: builder.mutation<PersonalInformation, PersonalEditInfoValues>({
             query: (data) => ({
@@ -34,7 +34,7 @@ export const applicantApi = apiSlice.injectEndpoints({
                 },
                 body: data
             }),
-            invalidatesTags: ["applicant/personal-information"]
+            invalidatesTags: ["applicant/personal-information", "user"]
         }),
         createApplicantDegrees: builder.mutation<Degree, DegreeValues>({
             query: (data) => ({
@@ -45,7 +45,7 @@ export const applicantApi = apiSlice.injectEndpoints({
                 },
                 body: data
             }),
-            invalidatesTags: ["applicant/degrees"]
+            invalidatesTags: ["applicant/degrees",]
         }),
         editApplicantDegrees: builder.mutation<Degree, DegreeValues>({
             query: (data) => ({

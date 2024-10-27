@@ -76,8 +76,9 @@ namespace AMS.Services.MailService
             using var client = new SmtpClient();
             try
             {
-                await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls, ct);
-                await client.AuthenticateAsync(_settings.UserName, _settings.Password, ct);
+                // for fake smtp this false because ssl can't be validated there
+                await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.None, ct);
+                //await client.AuthenticateAsync(_settings.UserName, _settings.Password, ct);
                 await client.SendAsync(email, ct);
             }
             catch (Exception ex)
