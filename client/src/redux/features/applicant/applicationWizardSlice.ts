@@ -25,7 +25,7 @@ const wizardSlice = createSlice({
     reducers: {
         // Move to the next step
         nextStep: (state) => {
-            if (state.currentStep <= 4) {
+            if (state.currentStep <= 3) {
                 state.currentStep += 1;
                 setCurrentStepId(state.currentStep)
             }

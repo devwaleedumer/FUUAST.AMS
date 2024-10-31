@@ -10,6 +10,7 @@ import EditDegree from "./EditDegree";
 import { ApplicantDegrees, Degree } from "@/types/applicant";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/redux/store";
+import PageLoader from "@/components/shared/Loader";
 
 type DegreeInfoProps = {};
 const title = "Academic Degrees";
@@ -26,7 +27,7 @@ const DegreeInfo: FC<DegreeInfoProps> = () => {
   const isLoading = degreeGroupIsLoading || applicantIsLoading || programIsLoading;
 const degreesNameList = useMemo(() => academicDegreeNamesRecord[String(programData?.id) as AcademicDegreeNamesRecordParam], [programData])
   return (
-   (isMounted && !isLoading) && 
+   (isMounted && !isLoading) ? 
    <>
       <Heading title={title} description={description} />
       { editIsSuccess && editData?.length > 0  ?  
@@ -43,6 +44,7 @@ const degreesNameList = useMemo(() => academicDegreeNamesRecord[String(programDa
          degreeGroupData={data as IDegreeGroupWithDegreeLevel}/>
           }     
     </>
+       : <PageLoader/>
   );
 };
 //todo

@@ -127,7 +127,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
       />
       <Card>
         <CardContent>
-          <List className="p-5" list={photographRequirements} title="Physical Attributes of Photograph" />
+          {/*<List className="p-5" list={photographRequirements} title="Physical Attributes of Photograph" />*/}
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(processPersonalInfoForm, (error) => {
@@ -144,7 +144,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                         render={({ field }) => (
                           <FormItem className="mb-2">
                             <FormLabel className="relative">
-                              Profile{" "}
+                              Photo{" "}
                               <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
                             </FormLabel>
                             <FormControl>
@@ -786,7 +786,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                 <Button disabled={createIsLoading} type="submit">
                   {createIsLoading ? <Loader className="h-4 animate-spin"/> :
                   <>
-                  <Save className="size-4 mr-1" />
+                  <Save className="size-4" />
                   {"Create & Next"}
                   </>
                     
