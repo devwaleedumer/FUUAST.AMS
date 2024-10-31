@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { LayoutService } from '../../@core/services/layout.service';
+import {LayoutService} from '../../@core/services/layout/layout.service';
 
 @Component({
   selector: 'app-header',

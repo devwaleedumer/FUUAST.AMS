@@ -279,17 +279,17 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                         obtainedMarks: 0
                       })
                     }
-                  > <Plus className="size-4 mr-1" />
-                    Add More
+                  > <Plus className="size-4" />
+                    Add
                   </Button>
                 </div>
             <div className="flex justify-between mb-3 px-3">
-                 <Button disabled={createIsLoading}  onClick={(e) => dispatch(prevStep())}>
-                <ArrowLeft  className="size-4 mr-1" />
+                 <Button disabled={createIsLoading} size={"sm"}  onClick={(e) => dispatch(prevStep())}>
+                <ArrowLeft  className="size-4" />
                 Previous
-              </Button>     
-                <Button disabled={createIsLoading}  type="submit">
-                <Save className="size-4 mr-1" />
+              </Button >     
+                <Button disabled={createIsLoading} size={"sm"}  type="submit">
+                <Save className="size-4 " />
                 Save & Next
               </Button>
        </div>

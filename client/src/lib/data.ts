@@ -1,32 +1,34 @@
+// import { NavItem } from "@/types";
+
 import { NavItem } from "@/types";
 
-export const navItems: NavItem[] = [
-    {
-        title: "Dashboard",
-        href: "/dashboard",
-        icon: "dashboard",
-        label: "Dashboard",
-    },
-    {
-        title: "Application",
-        href: "/admission-application",
-        icon: "wizard",
-        label: "Application Wizard",
-    },
-    {
-        title: "Profile",
-        href: "/profile",
-        icon: "profile",
-        label: "profile",
-    },
-    {
-        title: "Challan",
-        href: "/dashboard/Challan",
-        icon: "kanban",
-        label: "Challan",
-    },
+// export const navItems: NavItem[] = [
+//     {
+//         title: "Dashboard",
+//         href: "/dashboard",
+//         icon: "dashboard",
+//         label: "Dashboard",
+//     },
+//     {
+//         title: "Application",
+//         href: "/admission-application",
+//         icon: "wizard",
+//         label: "Application Wizard",
+//     },
+//     {
+//         title: "Profile",
+//         href: "/profile",
+//         icon: "profile",
+//         label: "profile",
+//     },
+//     {
+//         title: "Challan",
+//         href: "/dashboard/Challan",
+//         icon: "kanban",
+//         label: "Challan",
+//     },
 
-];
+// ];
 
 
 export const countries = [
@@ -85,6 +87,56 @@ export const photographRequirements = [
     "Eye contact with the camera",
     "Should have natural skin tone",
     "With natural brightness and contrast"
+];
+
+export const navItems: NavItem[] = [
+    {
+        title: 'Dashboard',
+        url: '/dashboard/overview',
+        icon: 'dashboard',
+        isActive: false,
+        items: [] // Empty array as there are no child items for Dashboard
+    },
+    {
+        title: 'Employee',
+        url: '/dashboard/employee',
+        icon: 'user',
+        isActive: false,
+        items: [] // No child items
+    },
+    {
+        title: 'Product',
+        url: '/dashboard/product',
+        icon: 'userPen',
+        isActive: false,
+        items: [] // No child items
+    },
+    {
+        title: 'Account',
+        url: '#', // Placeholder as there is no direct link for the parent
+        icon: 'billing',
+        isActive: true,
+
+        items: [
+            {
+                title: 'Profile',
+                url: '/dashboard/profile',
+                icon: 'userPen'
+            },
+            {
+                title: 'Login',
+                url: '/',
+                icon: 'login'
+            }
+        ]
+    },
+    {
+        title: 'Kanban',
+        url: '/dashboard/kanban',
+        icon: 'kanban',
+        isActive: false,
+        items: [] // No child items
+    }
 ];
 
 export const importantNotesAdmissionSelection = [

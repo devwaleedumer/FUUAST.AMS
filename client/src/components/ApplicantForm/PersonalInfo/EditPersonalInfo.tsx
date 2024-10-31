@@ -137,13 +137,13 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
       />
       <Card>
         <CardContent>
-          <List className="p-5" list={photographRequirements} title="Physical Attributes of Photograph"/>
-          <Form {...form}>
+          {/*<List className="p-5" list={photographRequirements} title="Physical Attributes of Photograph"/>*/}
+          <Form {...form} >
             <form
               onSubmit={form.handleSubmit(processPersonalInfoForm, (error) => {
                 console.log(error);
               })}
-              className="space-y-4 w-full"
+              className="space-y-4 w-full pt-5"
             >
               <div className={cn("md:grid md:grid-cols-3 gap-x-3 ")}>
                 <>
@@ -152,7 +152,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                     {/* // Image remain unchanged */}
           { isImageChanged ==false ? 
                      <div className=" col-span-3">
-                      <FormLabel>Profile</FormLabel>
+                      <FormLabel>Photo</FormLabel>
                       <div className=" flex justify-center items-center">
                         <div
                           className={`border relative md:mb-4  size-24 md:size-32  rounded-full overflow-hidden ring-2 ring-primary hover:opacity-70 transition-opacity duration-100 ease-in-out`}
@@ -179,7 +179,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                         render={({ field }) => (
                           <FormItem className="mb-2">
                             <FormLabel className="relative">
-                              Profile{" "}
+                              Photo{" "}
                               <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
                             </FormLabel>
                             <FormControl>
@@ -817,18 +817,19 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                   type="button"
                   disabled={isLoading}
                   onClick={(e) => dispatch(prevStep())}
+                  size={"sm"}
                 >
-                  <ArrowLeft className="size-4 mr-1" />
+                  <ArrowLeft className="size-4 " />
                   Previous
                 </Button>
                <div className="space-x-2 flex">
-                <Button disabled={isLoading} type="submit">
+                <Button disabled={isLoading} type="submit" size={"sm"} >
                      {!isLoading ? <>Update
-                  <Save className="size-4 ml-1" /></> : <LoaderCircle className="size-4 animate-spin"/>} 
+                  <Save className="size-4 " /></> : <LoaderCircle className="size-4 animate-spin"/>} 
                   </Button>
-                 <Button type="button" disabled={isLoading}  onClick={() =>dispatch(nextStep())}  >
+                 <Button type="button" disabled={isLoading} size={"sm"}  onClick={() =>dispatch(nextStep())}  >
                  Next
-                  <ArrowRight className="size-4 ml-1" /> 
+                  <ArrowRight className="size-4 " /> 
                 </Button>
                </div>
               </div>

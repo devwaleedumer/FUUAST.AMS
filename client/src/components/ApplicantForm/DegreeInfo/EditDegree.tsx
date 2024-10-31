@@ -265,18 +265,19 @@ const EditDegree: FC<EditDegreeProps> = ({appliedProgram,degreeList,degreeGroupD
                   type="button"
                   disabled={editIsLoading}
                   onClick={(e) => dispatch(prevStep())}
+                  size={"sm"}
                 >
-                  <ArrowLeft className="size-4 mr-1" />
+                  <ArrowLeft className="size-4" />
                   Previous
                 </Button>
                <div className="space-x-2 flex">
-                <Button disabled={editIsLoading} type="submit">
+                <Button disabled={editIsLoading} type="submit" size={"sm"}>
                      {!editIsLoading ? <>Update
-                  <Save className="size-4 ml-1" /></> : <LoaderCircle className="size-4 animate-spin"/>} 
+                  <Save className="size-4" /></> : <LoaderCircle className="size-4 animate-spin"/>} 
                   </Button>
-                 <Button type="button" disabled={editIsLoading}  onClick={() =>dispatch(nextStep())}  >
+                 <Button size={"sm"} type="button" disabled={editIsLoading}  onClick={() =>dispatch(nextStep())}  >
                  Next
-                  <ArrowRight className="size-4 ml-1" /> 
+                  <ArrowRight className="size-4" /> 
                 </Button>
                </div>
                </div>
