@@ -1,9 +1,11 @@
 ﻿using AMS.DATA;
+using AMS.DOMAIN.Entities.Lookups;
 using AMS.MODELS.Faculity;
 using AMS.SERVICES.IDataService;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using AMS.MODELS.Filters;
+using AMS.SHARED.Exceptions;
 using AMS.SHARED.Extensions;
 
 namespace AMS.SERVICES.DataService
@@ -34,14 +36,35 @@ namespace AMS.SERVICES.DataService
                     .LazySearch(request.GlobalFilter,"Name")
                     .ToListAsync(ct)
                     .ConfigureAwait(false);
-                
                 return new PaginationResponse<FaculityResponse>
                 {
                     Data = result.Adapt<List<FaculityResponse>>(),
                     Total = await query.CountAsync(ct),
                 };
-                
-        
+        }
+        public async Task<CreateFacultyResponse> CreateFaculty(CreateFacultyRequest facultyRequest,
+            CancellationToken ct)
+        {
+            ArgumentNullException.ThrowIfNull(facultyRequest);
+            var entity = new Faculity { Name = facultyRequest.Name };
+            await _context.Faculties.AddAsync(entity,ct);
+            await _context.SaveChangesAsync(ct);
+            return entity.Adapt<CreateFacultyResponse>();
+        }
+        public async Task<UpdateFacultyResponse> UpdateFaculty(UpdateFacultyRequest facultyRequest,
+            CancellationToken ct)
+        {
+            ArgumentNullException.ThrowIfNull(facultyRequest);
+             var faculty =await _context.Faculties.FindAsync(facultyRequest.Id) ?? throw new NotFoundException($"Faculty doesn't exist with id: {facultyRequest.Id}");
+             faculty.Name = facultyRequest.Name;
+             await _context.SaveChangesAsync(ct);
+             return faculty.Adapt<UpdateFacultyResponse>();
+        }
+        public async Task DeleteFaculty( int facultyId, CancellationToken ct)
+        {
+            var faculty =await _context.Faculties.FindAsync(facultyId) ?? throw new NotFoundException($"Faculty doesn't exist with id: {facultyId}");
+            _context.Faculties.Remove(faculty);
+            await _context.SaveChangesAsync(ct);
         }
     }
 }

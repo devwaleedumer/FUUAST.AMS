@@ -7,6 +7,10 @@ namespace AMS.SERVICES.IDataService
     {
         Task<List<FaculityResponse>> GetAllFaculties(CancellationToken ct);
         Task<PaginationResponse<FaculityResponse>> GetFacultiesByFilter(LazyLoadEvent request, CancellationToken ct);
+        Task<CreateFacultyResponse> CreateFaculty(CreateFacultyRequest facultyRequest, CancellationToken ct);
+        Task<UpdateFacultyResponse> UpdateFaculty(UpdateFacultyRequest facultyRequest, CancellationToken ct);
+        Task DeleteFaculty(int facultyId, CancellationToken ct);
+
 
     }
 }
