@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { Product } from '../../../@core/api/dashboard/product';
@@ -13,17 +13,22 @@ import autoTable from 'jspdf-autotable';
 })
 export class FacultyComponent implements OnInit {
 
-  productDialog: boolean = false;
+  // Reference to the PrimeNG table
+  @ViewChild('dt') table!: Table;
 
-  deleteProductDialog: boolean = false;
+  facultyDialog: boolean = false;
 
-  deleteProductsDialog: boolean = false;
+  editFacultyDialog: boolean = false;
+
+  deleteFacultyDialog: boolean = false;
+
+  deleteFacultiesDialog: boolean = false;
 
   faculties: Faculty[] = [];
 
-  product: Product = {};
+  faculty: Partial<Faculty> = {};
 
-  selectedProducts: Product[] = [];
+  selectedFaculty: Partial<Faculty> = {};
 
   submitted: boolean = false;
 
@@ -37,108 +42,87 @@ export class FacultyComponent implements OnInit {
   totalRecords: number = 0;
 
   rowsPerPageOptions = [5, 10, 20];
+  isLoading : boolean = false;
 
   constructor(private facultyService: FacultyService, private messageService: MessageService) { }
 
   ngOnInit() {
-    // this.loadFacultyData();
-
     this.cols = [
       { field: 'id', header: 'Faculty ID' },
       { field: "name", header: "Name" },
 
     ];
-
-    this.statuses = [
-      { label: 'INSTOCK', value: 'instock' },
-      { label: 'LOWSTOCK', value: 'lowstock' },
-      { label: 'OUTOFSTOCK', value: 'outofstock' }
-    ];
     this.exportColumns = this.cols.map(col => (col.header));
-
-  }
-  loadFacultyData() {
-    this.facultyService.getAllFaculty().subscribe((data) => {
-      this.faculties = data
-      console.log(data)
-    });
   }
   openNew() {
-    this.product = {};
+    this.faculty = {};
     this.submitted = false;
-    this.productDialog = true;
+    this.facultyDialog = true;
+  }
+  deleteSelectedFaculty() {
+    this.deleteFacultiesDialog = true;
   }
 
-  deleteSelectedProducts() {
-    this.deleteProductsDialog = true;
+  showEditFacultyModal(faculty: Faculty) {
+    this.faculty = {...faculty} ;
+    this.submitted = false;
+    this.editFacultyDialog = true;
   }
-
-  editProduct(product: Product) {
-    this.product = { ...product };
-    this.productDialog = true;
+  editFaculty() {
+    if (this.faculty.name?.trim()) {
+      this.facultyService.updateFaculty(this.faculty,this.faculty.id!)
+        .subscribe((data) => {
+          const index  = this.faculties.findIndex(f => f.id == data.id)
+          this.faculties[index].name = data.name;
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Updated', life: 3000 });
+        });
+      this.submitted = true;
   }
-
-  deleteProduct(product: Product) {
-    this.deleteProductDialog = true;
-    this.product = { ...product };
+      this.editFacultyDialog = false;
+      this.faculty = {};
   }
-
-  confirmDeleteSelected() {
-    this.deleteProductsDialog = false;
-    // this.faculties = this.faculties.filter(val => !this.selectedProducts.includes(val));
-    this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-    this.selectedProducts = [];
+  deleteFaculty(faculty: Faculty) {
+    this.deleteFacultyDialog = true;
+    this.faculty = { ...faculty };
   }
-
   confirmDelete() {
-    this.deleteProductDialog = false;
-    // this.faculties = this.faculties.filter(val => val.id !== this.product.id);
-    this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-    this.product = {};
-  }
-
-  hideDialog() {
-    this.productDialog = false;
-    this.submitted = false;
-  }
-
-  saveProduct() {
-    this.submitted = true;
-
-    if (this.product.name?.trim()) {
-      if (this.product.id) {
-        // @ts-ignore
-        this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-        // this.faculties[this.findIndexById(this.product.id)] = this.product;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-      } else {
-        this.product.id = this.createId();
-        this.product.code = this.createId();
-        this.product.image = 'product-placeholder.svg';
-        // @ts-ignore
-        this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-        // this.faculties.push(this.product);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-      }
-
-      this.faculties = [...this.faculties];
-      this.productDialog = false;
-      this.product = {};
+    this.deleteFacultyDialog = false;
+    if (this.faculty.id) {
+       this.facultyService.deleteFaculty(this.faculty.id).subscribe( {next: (data) => {
+         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Deleted', life: 3000 });
+           this.table.reset()
+           this.faculty = {};
+       }
+         ,error: (error: any) => {
+         console.log(error)
+           this.messageService.add({ severity: 'error', summary: 'Error', detail: error ??  `Faculty couldn't be deleted right now` });
+           this.faculty = {};
+         }
+       })
     }
   }
 
-  // findIndexById(id: string): number {
-  //     let index = -1;
-  //     for (let i = 0; i < this.faculties.length; i++) {
-  //         if (this.faculties[i].id === id) {
-  //             index = i;
-  //             break;
-  //         }
-  //     }
-  //
-  //     return index;
-  // }
-
+  hideDialog() {
+    this.facultyDialog = false;
+    this.submitted = false;
+  }
+  hideEditDialogue() {
+    this.editFacultyDialog = false;
+    this.submitted = false;
+  }
+  saveFaculty() {
+    this.submitted = true;
+    if (this.faculty.name?.trim()) {
+      this.facultyService.createFaculty(this.faculty)
+                         .subscribe((data) =>
+                         {
+                           this.faculties = [...this.faculties,data]
+                           this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Created', life: 3000 });
+                         });
+      this.facultyDialog = false;
+      this.faculty = {};
+    }
+  }
   createId(): string {
     let id = '';
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -220,9 +204,11 @@ export class FacultyComponent implements OnInit {
     });
   }
   getFilterData(event: TableLazyLoadEvent) {
+    this.isLoading = true;
     this.facultyService.getAllFacultyByFilter(event).subscribe((data) => {
       this.totalRecords = data.total;
       this.faculties = data.data;
+      this.isLoading = false;
     })
   }
 }

@@ -635,7 +635,12 @@ namespace AMS.DATA
             });
             #endregion
 
-
+        // soft deletes get query 
+        modelBuilder.Entity<Faculity>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
+        modelBuilder.Entity<Applicant>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
+        modelBuilder.Entity<ApplicationForm>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
+        modelBuilder.Entity<Department>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
+        modelBuilder.Entity<Program>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
