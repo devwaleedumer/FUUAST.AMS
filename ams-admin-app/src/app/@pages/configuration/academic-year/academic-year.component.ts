@@ -47,6 +47,8 @@ export class AcademicYearComponent {
     this.cols = [
       { field: 'id', header: 'Academicyear ID' },
       { field: "name", header: "Name" },
+      { field: "startdate", header: "Start Date" },
+      { field: "enddate", header: "End Date" },
 
     ];
     this.statuses = [
@@ -211,6 +213,8 @@ showEditModal(response:any){
         const dataRows = this.academicyearResponse.map(academicyear => [
           academicyear.id,
           academicyear.name,
+          academicyear.startDate,
+          academicyear.endDate
           // Add other fields as needed
         ]);
 

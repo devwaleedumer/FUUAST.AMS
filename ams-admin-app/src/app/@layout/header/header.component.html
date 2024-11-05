@@ -31,7 +31,7 @@
       <i class="pi pi-calendar"></i>
       <span>Calendar</span>
     </button>
-    <button class="p-link layout-topbar-button">
+    <button class="p-link layout-topbar-button"   (click)="toggleProfileMenu($event)">
       <i class="pi pi-user"></i>
       <span>Profile</span>
     </button>
@@ -39,5 +39,13 @@
       <i class="pi pi-cog"></i>
       <span>Settings</span>
     </button>
+    <!-- <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
+      <ng-template pTemplate> Content </ng-template>
+    </p-overlayPanel> -->
+    <p-overlayPanel #profileMenu [dismissable]="true" [showCloseIcon]="false">
+      <div class="p-d-flex p-flex-column">
+        <button class="p-link" (click)="logout()">Logout</button>
+      </div>
+    </p-overlayPanel>
   </div>
 </div>

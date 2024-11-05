@@ -17,6 +17,7 @@ import { AppSidebarComponent } from './sidebar/sidebar.component';
 import { AppLayoutComponent } from './layout/layout.component';
 import { RouterModule } from '@angular/router';
 import { AppConfigModule } from './config/config.module';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { AppConfigModule } from './config/config.module';
     InputSwitchModule,
     RippleModule,
     RouterModule,
-    AppConfigModule
+    AppConfigModule,
+    OverlayPanelModule,
   ],
   exports: [AppLayoutComponent],
   providers: [provideHttpClient()],

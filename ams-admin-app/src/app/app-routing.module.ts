@@ -1,12 +1,14 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { AppLayoutComponent } from './@layout/layout/layout.component';
+import { authGuard } from './@core/guard/auth.guard';
 
 @NgModule({
   imports: [
     RouterModule.forRoot([
       {
-        path: 'applayout', component: AppLayoutComponent,
+        path: 'applayout', component: AppLayoutComponent ,
+        canActivate: [authGuard],
         children: [
           { path: '', loadChildren: () => import('./@components/dashboard/dashboard.module').then(m => m.DashboardModule) },
           { path: 'app', loadChildren: () => import('./@pages/pages.module').then(m => m.PagesModule) },

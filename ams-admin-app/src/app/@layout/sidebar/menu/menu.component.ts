@@ -32,7 +32,7 @@ export class AppMenuComponent implements OnInit {
               { label: 'Department', icon: 'pi pi-fw pi-building', routerLink: ['/applayout/app/configuration/department'] },
               { label: 'Program Type', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/programtype'] },
               { label: 'Programs', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/program'] },
-              { label: 'Program Departments', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
+             // { label: 'Program Departments', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
               { label: 'Shifts', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/shift'] },
             ]
           },

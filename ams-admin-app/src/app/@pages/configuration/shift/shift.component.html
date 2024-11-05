@@ -97,7 +97,9 @@
             <th pSortableColumn="name">
               Name <p-sortIcon field="name"></p-sortIcon>
             </th>
-            <th></th>
+            <th class="flex justify-content-center" >
+              Actions
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-response>
@@ -112,7 +114,7 @@
             </td>
 
             <td>
-              <div class="flex justify-content-end">
+              <div class="flex justify-content-center">
                 <button
                   pButton
                   pRipple

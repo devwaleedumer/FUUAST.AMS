@@ -48,6 +48,9 @@ export class SessionComponent {
     this.cols = [
       { field: 'id', header: 'Session ID' },
       { field: "name", header: "Name" },
+      { field: "startdate", header: "Start Date" },
+      { field: "enddate", header: "End Date" },
+      { field: "academicyear", header: "Academic Year" },
 
     ];
     this.statuses = [
@@ -226,6 +229,9 @@ showEditModal(response:any){
         const dataRows = this.sessionResponse.map(session => [
           session.id,
           session.name,
+          session.startDate,
+          session.endDate,
+          session.academicYear
           // Add other fields as needed
         ]);
 

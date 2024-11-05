@@ -48,6 +48,8 @@ export class ProgramComponent {
     this.cols = [
       { field: 'id', header: 'Program ID' },
       { field: "name", header: "Name" },
+      { field: "programtype", header: "Programtype" },
+
 
     ];
     this.statuses = [
@@ -220,6 +222,7 @@ showEditModal(response:any){
         const dataRows = this.programResponse.map(program => [
           program.id,
           program.name,
+          program.programType
           // Add other fields as needed
         ]);
 

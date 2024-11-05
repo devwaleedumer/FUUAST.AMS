@@ -49,6 +49,7 @@ export class DepartmentComponent {
     this.cols = [
       { field: 'id', header: 'Department ID' },
       { field: "name", header: "Name" },
+      { field: "faculty", header: "Faculty" },
 
     ];
     this.statuses = [
@@ -214,6 +215,7 @@ showEditModal(response:any){
         const dataRows = this.departmentResponse.map(department => [
           department.id,
           department.name,
+          department.faculity
           // Add other fields as needed
         ]);
 
