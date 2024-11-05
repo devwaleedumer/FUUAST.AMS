@@ -137,7 +137,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
             >
               <div className={cn("md:grid md:grid-cols-3 gap-x-3 ")}>
                 <>
-                    <div className="col-span-3">
+                    <div className="col-span-3 mt-4">
                       <FormField
                         control={form.control}
                         name="profileImage"

@@ -119,7 +119,7 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(processDegreeInfo)}>
-              <div className="bg-blue-50 p-4 my-6 rounded text-sm text-blue-800 md:flex gap-0.5 flex-col items-center  justify-center ">
+              <div className="bg-green-50 p-4 my-6 rounded text-sm text-green-800 md:flex gap-0.5 flex-col items-center  justify-center ">
                 <strong className="flex gap-[2px] justify-center items-center">
                   <Info className="size-[17px]" />  <p>IMPORTANT:</p>
                 </strong>{" "}
@@ -349,6 +349,7 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
                     onClick={() =>
                       append({} as any)
                     }
+                    disabled={fields.length==5}
                   >
                   <Plus className="size-4 mr-1" />  Add More
                   </Button>
@@ -380,7 +381,7 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
                     <ArrowLeft className="mr-1 h-4 w-4" /> Back
                   </Button>
                   <Button type="submit"  disabled={submitApplicationFormIsLoading}>
-                    <SaveAll className="mr-1 h-4 w-4" /> SUBMIT FORM
+                    <SaveAll className="mr-1 h-4 w-4" /> Generate Challan
                   </Button>
                 </div>
               </div>

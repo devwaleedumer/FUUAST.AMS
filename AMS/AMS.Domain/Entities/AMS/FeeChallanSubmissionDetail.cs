@@ -10,7 +10,6 @@ namespace AMS.DOMAIN.Entities.AMS
         public  DateTime SubmissionDate { get; set; }
         public required string DocumentUrl { get; set; }
         public int FeeChallanId { get; set; }
-        public bool IsSubmitted { get; set; }
         public virtual FeeChallan? FeeChallan { get; set; }
 
         public int? InsertedBy { get; set; }

@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import { SubmitApplicationFormResponse } from '@/types/applicationForm';
 import { useAppDispatch } from '@/hooks/reduxHooks';
 import { prevStep } from '@/redux/features/applicant/applicationWizardSlice';
+import List from '@/components/shared/List';
+import { importantNotesAdmissionSelection } from '@/lib/data';
 
 type EditAdmissionSelectionInfoProps = {
     facultyData:Faculty [],
@@ -94,6 +96,13 @@ const EditAdmissionSelectionInfo:FC<EditAdmissionSelectionInfoProps> = ({faculty
       :
       <Card >
         <CardContent>
+             <div className="bg-green-50 p-4 my-6 rounded text-sm text-green-800 md:flex gap-0.5 flex-col items-center  justify-center ">
+                <strong className="flex gap-[2px] justify-center items-center">
+                  <Info className="size-[17px]" />  <p>IMPORTANT:</p>
+                </strong>{" "}
+                          <List className="p-5 self-start" list={importantNotesAdmissionSelection} title="Important notes before selecting programs." />
+
+              </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(processDegreeInfo)}>
               <div className="bg-blue-100 p-4 my-6 rounded text-sm text-blue-800 md:flex gap-0.5  ">

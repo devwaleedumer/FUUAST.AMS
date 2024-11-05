@@ -16,7 +16,7 @@ const List = React.forwardRef<
       <h2 className="mb-2  tracking-tighter  font-semibold  text-gray-900 dark:text-white">
         {title}
       </h2>
-      <ul className="max-w-md space-y-1 text-muted-foreground list-inside dark:text-gray-400">
+      <ul className="max-w-md space-y-1 text-gray-700 list-inside dark:text-gray-400">
         {list &&
           list.map((req, index) => (
             <li key={req + index} className="flex items-center text-sm ">

@@ -25,7 +25,7 @@ namespace AMS.DOMAIN.Entities.AMS
         public int? SessionId { get; set; }
         public int? ApplicantId { get; set; }
         public int? ProgramId { get; set; }
-
+        public int? VerificationStatusEid { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

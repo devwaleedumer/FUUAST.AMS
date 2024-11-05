@@ -36,7 +36,7 @@ const Dashboard : FC<DashboardProps> = ({user}) => {
     <PageLoader />
   ) : (
     // Dashboard grid
-    <div className="">
+    <div>
       <div className="flex flex-col md:flex-row md:justify-between  mb-4">
         <h1 className="text-2xl font-bold flex">
           Hello,{" "}

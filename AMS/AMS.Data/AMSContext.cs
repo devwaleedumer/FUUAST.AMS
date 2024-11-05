@@ -356,7 +356,6 @@ namespace AMS.DATA
                 entity.Property(e => e.BranchNameWithCity)
                                      .HasMaxLength(200)
                                     .IsUnicode(false);
-                entity.Property(e => e.IsSubmitted).HasDefaultValue(false);
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
                 entity.Property(e => e.DocumentUrl)
                                     .IsUnicode(false);

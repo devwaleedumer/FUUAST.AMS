@@ -12,12 +12,12 @@ import AppSidebar from "@/components/Layouts/DashboardTwo/AppSiderbar";
 }) {
   return (
       <>
-      {/* <Header />
+      <Header />
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
           <main className="w-full pt-16">{children}</main>
-      </div> */}
-            <AppSidebar>{children}</AppSidebar>
+      </div>
+            {/* <AppSidebar>{children}</AppSidebar> */}
 
      </>
   );
