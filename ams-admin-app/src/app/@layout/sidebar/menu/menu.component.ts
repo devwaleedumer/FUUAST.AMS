@@ -17,7 +17,7 @@ export class AppMenuComponent implements OnInit {
       {
         label: 'Home',
         items: [
-          { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
+          { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/applayout'] }
         ]
       },
       {
@@ -26,14 +26,14 @@ export class AppMenuComponent implements OnInit {
           { label: 'User Management', icon: 'pi pi-fw pi-users', routerLink: ['/user/users'] },
           { label: 'Configurations', icon: 'pi pi-fw pi-cog',
             items: [
-              { label: 'Academic Year', icon: 'pi pi-fw pi-calendar', routerLink: ['/administration/academicYear'] },
-              { label: 'Session', icon: 'pi pi-fw pi-clock', routerLink: ['/administration/session'] },
-              { label: 'Faculty', icon: 'pi pi-fw pi-briefcase', routerLink: ['/app/configuration/faculty'] },
-              { label: 'Department', icon: 'pi pi-fw pi-building', routerLink: ['/administration/session'] },
-              { label: 'Program Type', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
-              { label: 'Programs', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
+              { label: 'Academic Year', icon: 'pi pi-fw pi-calendar', routerLink: ['/applayout/app/configuration/academicyear'] },
+              { label: 'Session', icon: 'pi pi-fw pi-clock', routerLink: ['/applayout/app/configuration/session'] },
+              { label: 'Faculty', icon: 'pi pi-fw pi-briefcase', routerLink: ['/applayout/app/configuration/faculty'] },
+              { label: 'Department', icon: 'pi pi-fw pi-building', routerLink: ['/applayout/app/configuration/department'] },
+              { label: 'Program Type', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/programtype'] },
+              { label: 'Programs', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/program'] },
               { label: 'Program Departments', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
-              { label: 'Shifts', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
+              { label: 'Shifts', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/shift'] },
             ]
           },
         ]

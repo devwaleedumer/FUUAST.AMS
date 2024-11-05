@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace AMS.MODELS.Program
 {
-    public class ProgramResponse
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = default!;
-    }
+   
+        public record ProgramResponse(int Id, string Name, int ProgramTypeId, string ProgramType);
+ 
+    
 }

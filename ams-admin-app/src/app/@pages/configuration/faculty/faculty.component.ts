@@ -2,7 +2,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { Product } from '../../../@core/api/dashboard/product';
-import { ProductService } from '../../../@core/services/dashboard/product.service';
 import { FacultyService } from '../../../@core/services/faculty/faculty.service';
 import { Faculty } from '../../../@core/api/configuration/faculty/faculty';
 import autoTable from 'jspdf-autotable';
@@ -53,6 +52,7 @@ export class FacultyComponent implements OnInit {
 
     ];
     this.exportColumns = this.cols.map(col => (col.header));
+    this.loadFacultyData()
   }
   openNew() {
     this.faculty = {};
@@ -201,6 +201,14 @@ export class FacultyComponent implements OnInit {
         // Save the PDF
         doc.save('faculties.pdf');
       })
+    });
+  }
+  loadFacultyData() {
+    debugger
+    this.facultyService.getAllFaculty().subscribe((data) => {
+      debugger
+      this.faculties = data
+      console.log(data)
     });
   }
   getFilterData(event: TableLazyLoadEvent) {

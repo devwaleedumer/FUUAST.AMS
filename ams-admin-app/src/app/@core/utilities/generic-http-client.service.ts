@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/c
 import {catchError, map, Observable, throwError} from 'rxjs';
 
 
-  // Generic interface for API responses
+// Generic interface for API responses
 interface ApiResponse<T> {
   data?: T;
   message?: string;
@@ -16,7 +16,7 @@ interface ApiResponse<T> {
 export class GenericHttpClientService {
 
   // base api url
-  private apiUrl = 'https://localhost:7081/api/';
+  private apiUrl = 'http://localhost:65059/api/';
   constructor(private http: HttpClient) {}
   // Error handler
   // Error handling
@@ -30,7 +30,6 @@ export class GenericHttpClientService {
       // Server-side error
       errorMessage = error.error?.detail || `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
@@ -67,7 +66,6 @@ export class GenericHttpClientService {
     if (params) {
      httpParams = this.setQueryParams(params);
     }
-
     return this.http.get<T>(`${this.apiUrl}${endpoint}`, {
       headers,
       params: httpParams,

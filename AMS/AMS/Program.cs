@@ -40,7 +40,7 @@ try
     var app = builder.Build();
 
     //uncomment the code when data seeding is required
-    //await app.Services.InitializeDatabasesAsync();
+    await app.Services.InitializeDatabasesAsync();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())

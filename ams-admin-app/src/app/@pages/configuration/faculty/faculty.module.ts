@@ -24,23 +24,23 @@ import {TooltipModule} from 'primeng/tooltip';
     imports: [
         CommonModule,
         FacultyRoutingModule,
-        TableModule,
-        FileUploadModule,
-        FormsModule,
-        ButtonModule,
-        RippleModule,
-        ToastModule,
-        ToolbarModule,
-        RatingModule,
-        InputTextModule,
-        InputTextareaModule,
-        DropdownModule,
-        RadioButtonModule,
-        InputNumberModule,
-        DialogModule,
-        TooltipModule
+        // TableModule,
+        // FileUploadModule,
+        // FormsModule,
+        // ButtonModule,
+        // RippleModule,
+        // ToastModule,
+        // ToolbarModule,
+        // RatingModule,
+        // InputTextModule,
+        // InputTextareaModule,
+        // DropdownModule,
+        // RadioButtonModule,
+        // InputNumberModule,
+        // DialogModule,
+        // TooltipModule
     ],
-    declarations: [FacultyComponent],
-  providers: [MessageService,FacultyService]
+    declarations: [],
+  providers: []
 })
 export class FacultyModule { }

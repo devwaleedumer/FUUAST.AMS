@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace AMS.MODELS.Department
 {
-    public record DeparmentResponse(int Id, string Name);
+    public record DeparmentResponse(int Id, string Name,int FaculityId, string Faculity);
 
 }

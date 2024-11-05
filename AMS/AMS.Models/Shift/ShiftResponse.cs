@@ -6,5 +6,6 @@ using System.Threading.Tasks;
 
 namespace AMS.MODELS.Shift
 {
-    public record ShiftResponse(int Id, string Name);
+    public record ShiftResponse(int Id, string Name,string Description);
+
 }
