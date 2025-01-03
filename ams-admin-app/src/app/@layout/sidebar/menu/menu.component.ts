@@ -1,6 +1,6 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
-import {LayoutService} from '../../../@core/services/layout/layout.service';
+import { LayoutService } from '../../../@core/services/layout/layout.service';
 
 @Component({
   selector: 'app-menu',
@@ -17,14 +17,31 @@ export class AppMenuComponent implements OnInit {
       {
         label: 'Home',
         items: [
-          { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/applayout'] }
+          {
+            label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/applayout']
+          }
         ]
       },
       {
         label: 'System Administration',
         items: [
-          { label: 'User Management', icon: 'pi pi-fw pi-users', routerLink: ['/user/users'] },
-          { label: 'Configurations', icon: 'pi pi-fw pi-cog',
+          {
+            label: 'User Management', icon: 'pi pi-fw pi-users',
+            items: [
+              {
+                label: 'Users',
+                icon: 'pi pi-fw  pi-users',
+                routerLink: ['/applayout/app/user-management/users']
+              },
+              {
+                label: 'Roles & Permissions',
+                icon: 'pi pi-fw  pi-shield',
+                routerLink: ['/applayout/app/user-management/roles']
+              },
+            ]
+          },
+          {
+            label: 'Configurations', icon: 'pi pi-fw pi-cog',
             items: [
               { label: 'Academic Year', icon: 'pi pi-fw pi-calendar', routerLink: ['/applayout/app/configuration/academicyear'] },
               { label: 'Session', icon: 'pi pi-fw pi-clock', routerLink: ['/applayout/app/configuration/session'] },
@@ -32,8 +49,10 @@ export class AppMenuComponent implements OnInit {
               { label: 'Department', icon: 'pi pi-fw pi-building', routerLink: ['/applayout/app/configuration/department'] },
               { label: 'Program Type', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/programtype'] },
               { label: 'Programs', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/program'] },
-             // { label: 'Program Departments', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
-              { label: 'Shifts', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/shift'] },
+              // { label: 'Program Departments', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
+              {
+                label: 'Shifts', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/shift'],
+              }
             ]
           },
         ]

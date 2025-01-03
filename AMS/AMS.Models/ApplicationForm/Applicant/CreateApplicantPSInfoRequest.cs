@@ -6,7 +6,7 @@
         public FileRequest ImageRequest { get; set; } = default!;
         public string FatherName { get; set; } = default!;
         public string Cnic { get; set; } = default!;
-        public DateTime Dob { get; set; }
+        public DateOnly Dob { get; set; }
         public string Gender { get; set; } = default!;
         public string MobileNo { get; set; } = default!;
         public string Domicile { get; set; } = default!;

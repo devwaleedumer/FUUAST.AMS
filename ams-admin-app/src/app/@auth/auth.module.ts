@@ -11,21 +11,23 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { MessageService } from 'primeng/api';
 import { LoginService } from '../@core/services/login/login.service';
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
   declarations: [
     LoginComponent
   ],
-  imports: [
-    CommonModule,
-    AuthRoutingModule,
-     ButtonModule,
+    imports: [
+        CommonModule,
+        AuthRoutingModule,
+        ButtonModule,
         CheckboxModule,
         InputTextModule,
         FormsModule,
         PasswordModule,
-        ReactiveFormsModule
-  ]
-  ,providers:[MessageService,LoginService]
+        ReactiveFormsModule,
+        ToastModule
+    ]
+    ,providers:[MessageService,LoginService]
 })
 export class AuthModule { }

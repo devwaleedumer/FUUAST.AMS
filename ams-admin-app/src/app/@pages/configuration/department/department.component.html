@@ -15,7 +15,7 @@
               ></button>
             </div>
           </ng-template>
-  
+
           <ng-template pTemplate="right">
             <button
               pButton
@@ -49,7 +49,7 @@
             ></button>
           </ng-template>
         </p-toolbar>
-  
+
         <p-table
           #dt
           [value]="departmentResponse"
@@ -62,11 +62,11 @@
           [totalRecords]="totalRecords"
           [showCurrentPageReport]="true"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-          
+
           [rowHover]="true"
           dataKey="id"
           [lazy]="true"
-         
+
           (onLazyLoad)="getFilterData($event)"
         >
           <ng-template pTemplate="caption">
@@ -118,7 +118,7 @@
                 <span class="p-column-title">Faculty</span>
                 {{ response.faculity }}
               </td>
-  
+
               <td>
                 <div class="flex justify-content-center">
                   <button
@@ -141,19 +141,19 @@
           </ng-template>
         </p-table>
       </div>
-  
+
       <p-dialog
         [(visible)]="addDialog"
-        [style]="{ width: '450px' }"
+        [style]="{ width: '450px',}"
         header="Department Details"
         [modal]="true"
         class="p-fluid"
       >
-      
+
       <ng-template pTemplate="header">
         <h3>{{ isEditing ? 'Add Department Details' : 'Edit Department  Details' }}</h3>
       </ng-template>
-    
+
       <ng-template pTemplate="content">
         <form [formGroup]="adddepartmentForm">
           <div class="field">
@@ -171,10 +171,9 @@
               Name is required.
             </small>
         </div>
-         
+
 
 <!-- !--dropdown -->
-
 <div class="field">
     <label for="facultyId">Faculty</label>
    <p-dropdown id="facultyId"
@@ -183,14 +182,15 @@
    optionLabel="name"
    optionValue="id"
    placeholder="Select faculty"
-   styleClass="margin-bottom:20px"
+               appendTo="body"
+
    >
    </p-dropdown>
   </div>
         </form>
       </ng-template>
-    
-      <ng-template pTemplate="footer">
+
+      <ng-template pTemplate="footer" style="z-index:0!important;">
         <button
           pButton
           pRipple
@@ -217,7 +217,7 @@
         [modal]="true"
         class="p-fluid"
       >
-      
+
         <ng-template pTemplate="content">
           <form [formGroup]="updateshiftForm">
           <div class="field">
@@ -235,7 +235,7 @@
             >Name is required.</small
             >
           </div>
-  
+
           <div class="field">
             <label for="description">Description</label>
             <textarea
@@ -246,12 +246,12 @@
               rows="3"
               cols="20"
             ></textarea>
-  
+
             <small class="ng-dirty ng-invalid" *ngIf="submitted && (updateshiftForm.get('name')?.invalid || updateshiftForm.get('name')?.dirty)"
             >Description  is required.</small
             >
           </div>
-  
+
         </form>
         </ng-template>
         <ng-template pTemplate="footer">
@@ -291,8 +291,7 @@
           <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteDialog = false"></button>
           <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
         </ng-template>
-    
+
       </p-dialog>
     </div>
   </div>
-  

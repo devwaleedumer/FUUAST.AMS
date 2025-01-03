@@ -57,11 +57,32 @@ namespace AMS.Controllers.Identity
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
         [Produces("application/json")]
-        public async Task<IActionResult> ConfirmAccount(int userId, string code, CancellationToken cancellation)
+        public async Task<IActionResult> ConfirmAccount([FromQuery] int userId,
+                                                      [FromQuery] string code,
+                                                      [FromQuery] string cnic,
+                                                      [FromQuery] string fullName, CancellationToken ct)
+
+            => Ok(await _userService.ConfirmEmailAsync(userId, code, cnic, fullName, ct));
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            return Ok(await _userService.ConfirmEmailAsync(userId, code, cancellation));
+            return Ok(await _userService.ForgotPasswordAsync(request, GetOriginFromRequest()));
         }
 
+        [HttpPost("confirm-mail-set-password")]
+        public async Task<IActionResult> ConfirmMailAndSetPassword([FromBody] ConfirmMailAndResetPasswordDto request, [FromQuery] int userId, [FromQuery]  string code,CancellationToken ct)
+        {
+            return Ok( new {
+                message = await _userService.ConfirmEmailAndSetPassword(request, userId, code, ct)
+            });
+        }
+
+        [HttpPost("toggle-status")]
+        public async Task<IActionResult> ToggleUserActiveStatus ([FromBody]ToggleUserStatusRequest request,CancellationToken ct)
+        {
+            await _userService.ToggleStatusAsync(request, ct);
+            return Ok();
+        }
         private string GetOriginFromRequest() => $"{Request.Scheme}://{Request.Host.Value}{Request.PathBase.Value}";
 
     }

@@ -34,9 +34,6 @@ import { SessionService } from '../../@core/services/session/session.service';
 import { AcademicyearService } from '../../@core/services/academicyear/academicyear.service';
 import { SessionComponent } from './session/session.component';
 
-
-
-
 @NgModule({
   declarations: [
     ShiftComponent,FacultyComponent,ProgramtypeComponent, ProgramComponent, DepartmentComponent, AcademicYearComponent,SessionComponent

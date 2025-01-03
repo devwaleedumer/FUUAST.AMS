@@ -9,7 +9,7 @@ type PersonalInfoProps = {}
 const PersonalInfo: FC<PersonalInfoProps> = ({}) => {
       const { data: personalInformationData, isLoading } = useGetApplicantPersonalInformationQuery(null);
        return ( isLoading ? 
-    <PageLoader/> : !personalInformationData ? <CreatePersonalInfo/> : <EditPersonalInfo personalInformationData={personalInformationData}/>
+    <PageLoader/> : <EditPersonalInfo personalInformationData={personalInformationData}/>
   )
 }
 

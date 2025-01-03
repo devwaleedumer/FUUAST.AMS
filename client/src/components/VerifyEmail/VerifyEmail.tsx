@@ -15,7 +15,9 @@ export default function VerifyEmail() {
   const params = useSearchParams()
   const userId = params.get('userId')
   const code = params.get('code')
-  const {isSuccess,data,error,isLoading} = useVerifyEmailQuery({userId: String(userId),code: String(code)});
+  const cnic = params.get('cnic')
+  const fullName = params.get('fullName')
+  const {isSuccess,data,error,isLoading} = useVerifyEmailQuery({userId: String(userId),code: String(code),cnic: String(cnic),fullName: String(fullName)});
   useEffect(() => {
 
   },[state])

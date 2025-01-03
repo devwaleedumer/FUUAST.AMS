@@ -44,6 +44,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using AMS.SERVICES.Dapper;
+using AMS.VALIDATORS.Identity.User;
 
 namespace AMS.Extensions
 {
@@ -313,7 +314,7 @@ namespace AMS.Extensions
         {
             services.AddFluentValidation(config =>
             {
-                config.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateOrUpdateRoleRequestValidator)));
+                config.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(ChangePasswordRequestValidator)));
                 config.AutomaticValidationEnabled = true;
 
             });

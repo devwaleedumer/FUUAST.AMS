@@ -1,6 +1,7 @@
 using AMS.Extensions;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
 using Serilog;
 
 Log.Information("Server Booting Up...");
@@ -23,7 +24,7 @@ try
     builder.Services.AddFluentValidation();
     builder.Services.AddDataSeeder();
     builder.Services.AddCorsPolicy(configuration);
-    builder.Services.AddControllers(opt =>
+    builder.Services.AddControllersWithViews(opt =>
     {
         //opt.Filters.Add<ApiValidationFilter>();
         //opt.ModelValidatorProviders.Clear();
@@ -40,7 +41,7 @@ try
     var app = builder.Build();
 
     //uncomment the code when data seeding is required
-    await app.Services.InitializeDatabasesAsync();
+    //await app.Services.InitializeDatabasesAsync();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -70,6 +71,7 @@ try
 
     app.MapControllers();
 
+    app.UseRotativa();
     app.Run();
 
 }

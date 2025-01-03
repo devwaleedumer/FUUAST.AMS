@@ -20,7 +20,7 @@ namespace AMS.VALIDATORS.ApplicationForms
 
             RuleFor(x => x.Dob)
                 .NotEmpty().WithMessage("Date of birth is required.")
-                .LessThan(DateTime.Now).WithMessage("Date of birth must be in the past.");
+                .LessThan(DateOnly.FromDateTime(DateTime.Now)).WithMessage("Date of birth must be in the past.");
 
             RuleFor(x => x.MobileNo)
                 .NotEmpty().WithMessage("Mobile number is required.")
@@ -38,7 +38,6 @@ namespace AMS.VALIDATORS.ApplicationForms
             RuleFor(x => x.Guardian)
                 .SetValidator(new CreateGuardianRequestValidator());
 
-                
         }
     }
 }

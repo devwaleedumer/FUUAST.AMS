@@ -9,7 +9,7 @@ namespace AMS.VALIDATORS.Identity.Role
     {
         public UpdateRolePermissionsRequestValidator()
         {
-            RuleFor(r => r.RoleId)
+            RuleFor(r => r.Id)
                 .NotEmpty();
             RuleFor(r => r.Permissions)
                 .NotNull();

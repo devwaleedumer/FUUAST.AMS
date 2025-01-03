@@ -1,18 +1,19 @@
-﻿using AMS.MODELS.Academicyear;
+﻿using AMS.Authorization.Permissons;
+using AMS.MODELS.Academicyear;
 using AMS.MODELS.Filters;
-using AMS.MODELS.Shift;
 using AMS.SERVICES.IDataService;
-using Microsoft.AspNetCore.Http;
+using AMS.SHARED.Constants.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMS.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+   [Authorize]
     public class AcademicYearController(IAcademicyearService service) : BaseApiController
     {
         private readonly IAcademicyearService _service = service;
 
+        [MustHavePermission(AMSAction.View,AMSResource.Dashboard)]
         [HttpGet("GetAllAcademicyear")]
         public async Task<IActionResult> GetAllAcedamicYear(CancellationToken ct)
         {

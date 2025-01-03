@@ -16,18 +16,17 @@ export const navItems: NavItem[] = [
         label: "Application Wizard",
     },
     {
+        title: "Challan",
+        href: "/application-challan",
+        icon: "kanban",
+        label: "Challan",
+    },
+    {
         title: "Profile",
         href: "/change-password",
         icon: "profile",
         label: "profile",
     },
-    {
-        title: "Challan",
-        href: "/dashboard/Challan",
-        icon: "kanban",
-        label: "Challan",
-    },
-
 ];
 
 
@@ -52,9 +51,9 @@ export const cities = [
 ];
 
 export const genders = [
-    { id: "1", name: "Male" },
-    { id: "2", name: "Female" },
-    { id: "3", name: "Others" },
+    { id: "Male", name: "Male" },
+    { id: "Female", name: "Female" },
+    { id: "Others", name: "Others" },
 ];
 
 export const bloodGroups = [

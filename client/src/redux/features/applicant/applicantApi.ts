@@ -1,8 +1,8 @@
 import { ApplicantDegrees, Degree, PersonalInformation } from "@/types/applicant";
 import { apiSlice } from "../apiSlice";
-import { PersonalEditInfoValues, PersonalInfoValues } from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.validator";
 import { DegreeValues } from "@/lib/SchemaValidators/ApplicationForm/DegreeSchema.validator";
 import { IProgram } from "@/types/program";
+import { PersonalEditInfoValues, PersonalInfoValues } from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.Validator";
 
 export const applicantApi = apiSlice.injectEndpoints({
 
@@ -27,7 +27,7 @@ export const applicantApi = apiSlice.injectEndpoints({
         }),
         editApplicantPersonalInformation: builder.mutation<PersonalInformation, PersonalEditInfoValues>({
             query: (data) => ({
-                url: "applicants/personal-information",
+                url: "applicants/personal-information/" + data.id,
                 method: "PUT",
                 headers: {
                     'Content-Type': "application/json"

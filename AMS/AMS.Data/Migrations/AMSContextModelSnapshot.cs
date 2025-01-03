@@ -71,13 +71,11 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BloodGroup")
-                        .IsRequired()
                         .HasMaxLength(5)
                         .IsUnicode(false)
                         .HasColumnType("varchar(5)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .IsUnicode(false)
                         .HasColumnType("varchar(30)");
@@ -90,15 +88,13 @@ namespace AMS.DATA.Migrations
                         .HasColumnName("CNIC");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Dob")
-                        .HasColumnType("datetime2")
+                    b.Property<DateOnly?>("Dob")
+                        .HasColumnType("date")
                         .HasColumnName("DOB");
 
                     b.Property<string>("Domicile")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
@@ -112,13 +108,16 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FatherName")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("Gender")
+                    b.Property<string>("FullName")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Gender")
                         .HasMaxLength(15)
                         .IsUnicode(false)
                         .HasColumnType("varchar(15)");
@@ -138,11 +137,9 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MobileNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PermanentAddress")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
                         .HasColumnType("varchar(100)");
@@ -156,13 +153,11 @@ namespace AMS.DATA.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Province")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
 
                     b.Property<string>("Religion")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .IsUnicode(false)
                         .HasColumnType("varchar(30)");
@@ -1191,11 +1186,6 @@ namespace AMS.DATA.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<int?>("InsertedBy")
                         .HasColumnType("int");
 
@@ -1262,6 +1252,9 @@ namespace AMS.DATA.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("UserTypeEid")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

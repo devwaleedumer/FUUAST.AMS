@@ -6,9 +6,9 @@ namespace AMS.SERVICES.IDataService
     public interface IApplicationFormService
     {
         Task<CreateApplicationFormResponse> CreateApplicationForm(CreateApplicationFormRequest request, CancellationToken ct);
-        Task<string> SubmitApplicationForm(SubmitApplicationFormRequest request, CancellationToken ct);
-        Task<SubmitApplicationResponse> GetSubmittedApplication(CancellationToken ct);
-        Task<string> EditSubmittedApplication(EditSubmitApplicationFormRequest request, CancellationToken ct);
+        Task<string> AddApplicationFormPrograms(SubmitApplicationFormRequest request, CancellationToken ct);
+        Task<SubmitApplicationResponse> GetApplicationFormPrograms(CancellationToken ct);
+        Task<string> EditApplicationFormPrograms(EditSubmitApplicationFormRequest request, CancellationToken ct);
         Task<ApplicantDashboardResponse> GetApplicationFormStatus(int userId, CancellationToken ct);
 
     }

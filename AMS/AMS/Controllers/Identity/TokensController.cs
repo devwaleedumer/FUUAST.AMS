@@ -94,7 +94,7 @@ namespace AMS.Controllers.Identity
         [ProducesResponseType(500)]
         [Produces("application/json")]
         public async Task<IActionResult> GetTokenAsync([FromBody]TokenRequest request, CancellationToken cancellation)
-           =>  Ok(await _tokenService.GetTokenAsync(request, GetIpAddress()!, cancellation));
+           =>  Ok(await _tokenService.GetAdminTokenAsync(request, GetIpAddress()!, cancellation));
 
         /// <summary>
         /// Verify refresh token and generate new tokens 
@@ -111,13 +111,12 @@ namespace AMS.Controllers.Identity
         /// <returns>Refresh Token Response</returns>
         /// <response code="200" >Returns  success</response>
         /// <response code="401" >Invalid Request</response>    
-        [HttpGet("refresh")]
+        [HttpPost("refresh")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [Produces("application/json")]
         public async Task<IActionResult> Refresh(RefreshTokenRequest request)
             =>  Ok(await _tokenService.RefreshTokenAsync(request,GetIpAddress()!));
-        
         #endregion
 
         // helper function

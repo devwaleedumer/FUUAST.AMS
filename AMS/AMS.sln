@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMS.SERVICES", "AMS.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMS.VALIDATORS", "AMS.Validators\AMS.VALIDATORS.csproj", "{4BF1C68E-F70B-429F-8206-54846DF2DADD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AMS.RazorToPDFEngine", "AMS.RazorToPDFEngine\AMS.RazorToPDFEngine.csproj", "{02BA1BAC-75C0-4112-8F8A-99DB4ED49065}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AMS.WordReportingEngine", "AMS.WordReportingEngine\AMS.WordReportingEngine.csproj", "{2876B0B7-19EA-41A7-B90A-ED7EAAB7FB98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{4BF1C68E-F70B-429F-8206-54846DF2DADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BF1C68E-F70B-429F-8206-54846DF2DADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BF1C68E-F70B-429F-8206-54846DF2DADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02BA1BAC-75C0-4112-8F8A-99DB4ED49065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02BA1BAC-75C0-4112-8F8A-99DB4ED49065}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02BA1BAC-75C0-4112-8F8A-99DB4ED49065}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02BA1BAC-75C0-4112-8F8A-99DB4ED49065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2876B0B7-19EA-41A7-B90A-ED7EAAB7FB98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2876B0B7-19EA-41A7-B90A-ED7EAAB7FB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2876B0B7-19EA-41A7-B90A-ED7EAAB7FB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2876B0B7-19EA-41A7-B90A-ED7EAAB7FB98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

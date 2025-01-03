@@ -100,13 +100,18 @@ namespace AMS.DATA
             #endregion
 
             #region Identity
+         
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.ToTable(name: "User", "Auth");
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.FullName).HasMaxLength(100);
                 entity.Property(e => e.IsActive).HasDefaultValue(false);
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                entity.HasMany(u => u.UserRoles)
+         .WithOne(ur => ur.User)
+         .HasForeignKey(ur => ur.UserId)
+         .IsRequired();
+
             });
 
             modelBuilder.Entity<ApplicationRole>(entity =>
@@ -121,11 +126,26 @@ namespace AMS.DATA
                       .HasForeignKey(e => e.RoleId)
                       .OnDelete(DeleteBehavior.Cascade)
                       .HasConstraintName("FK_RoleClaims_Role");
+                entity.HasMany(r => r.UserRoles)
+        .WithOne(ur => ur.Role)
+        .HasForeignKey(ur => ur.RoleId)
+        .IsRequired();
+
             });
 
-            modelBuilder.Entity<IdentityUserRole<int>>(entity =>
+            modelBuilder.Entity<ApplicationUserRole>(entity =>
             {
                 entity.ToTable("UserRole", "Auth");
+                entity.HasOne(ur => ur.User)
+         .WithMany(u => u.UserRoles)
+         .HasForeignKey(ur => ur.UserId)
+         .IsRequired();
+
+                entity.HasOne(ur => ur.Role)
+                      .WithMany(r => r.UserRoles)
+                      .HasForeignKey(ur => ur.RoleId)
+                      .IsRequired();
+
             });
 
             modelBuilder.Entity<IdentityUserClaim<int>>(entity =>
@@ -162,7 +182,9 @@ namespace AMS.DATA
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Dob).HasColumnType("datetime2")
+                entity.Property(e => e.FullName).HasMaxLength(100);
+
+                entity.Property(e => e.Dob).HasColumnType("date")
                                            .HasColumnName("DOB");
 
                 entity.Property(e => e.Cnic).HasMaxLength(13)
@@ -640,6 +662,8 @@ namespace AMS.DATA
         modelBuilder.Entity<ApplicationForm>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
         modelBuilder.Entity<Department>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
         modelBuilder.Entity<Program>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
+        modelBuilder.Entity<ApplicationUser>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
+        modelBuilder.Entity<ApplicationRole>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

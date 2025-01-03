@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { ArrowLeft, CheckCircle2, Info, Plus, SaveAll, TriangleAlert } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Info, Plus, SaveAll, Trash2, TriangleAlert } from "lucide-react";
 import { useGetAllFacultiesQuery, useLazyGetDepartmentsByFacultyIdQuery } from "@/redux/features/faculity/faculityApi";
 import PageLoader from "../../shared/Loader";
 import { useLazyGetTimeShiftByDepartmentIdQuery } from "@/redux/features/department/departmentApi";
@@ -119,14 +119,15 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(processDegreeInfo)}>
-              <div className="bg-green-50 p-4 my-6 rounded text-sm text-green-800 md:flex gap-0.5 flex-col items-center  justify-center ">
-                <strong className="flex gap-[2px] justify-center items-center">
+              <div className="my-6  border  rounded-lg text-sm  md:flex gap-0.5 flex-col items-center  ">
+                {/* <strong className="flex gap-[2px] justify-center items-center self-start ml-4">
                   <Info className="size-[17px]" />  <p>IMPORTANT:</p>
-                </strong>{" "}
+                </strong>{" "} */}
                           <List className="p-5 self-start" list={importantNotesAdmissionSelection} title="Important notes before selecting programs." />
 
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+            <div className="p-4 border rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name={`expelledFromUni`}
@@ -196,16 +197,17 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
                   )}
                 />
               </div>
-              <div className="border rounded-lg p-4">
+              <div className="">
                 {fields.map((field, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end"
+                    className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end relative"
                   >
-                    <div className="md:hidden text-lg font-bold text-primary mb-2 ">
+                      {index !==0 && <Trash2  className="absolute top-1 right-0 size-4 cursor-pointer hover:text-red-600" onClick={( ) => {remove(index)}} />}
+                    <div className="md:hidden text-lg font-bold te  xt-primary mb-2 ">
                       Program Choice {String(index + 1).padStart(2, "0")}
                     </div>
-                    <div className="hidden md:flex items-center justify-center">
+                    <div  className="hidden md:flex items-center justify-center">
                       <span className="text-lg font-bold text-primary">
                         {String(index + 1).padStart(2, "0")}.
                       </span>
@@ -381,10 +383,11 @@ const CreateAdmissionSelectionsInfo: FC<CreateAdmissionSelectionsInfoProps> = ({
                     <ArrowLeft className="mr-1 h-4 w-4" /> Back
                   </Button>
                   <Button type="submit"  disabled={submitApplicationFormIsLoading}>
-                    <SaveAll className="mr-1 h-4 w-4" /> Generate Challan
+                    <SaveAll className="mr-1 h-4 w-4" /> Save
                   </Button>
                 </div>
               </div>
+            </div>
               
             </form>
           </Form>

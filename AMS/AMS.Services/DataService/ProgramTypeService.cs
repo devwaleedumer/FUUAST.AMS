@@ -55,7 +55,7 @@ namespace AMS.SERVICES.DataService
         public async Task DeleteProgramType(int id, CancellationToken ct)
         {
             var result = await _context.ProgramTypes
-                               .Where(x => x.Id == id).FirstOrDefaultAsync()
+                                .FirstOrDefaultAsync(x => x.Id == id,ct)
                                 .ConfigureAwait(false);
             if (result is null)
             {

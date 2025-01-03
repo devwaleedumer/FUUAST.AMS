@@ -1,0 +1,21 @@
+
+
+@layer tailwind-base, primeng, tailwind-utilities;
+
+@layer tailwind-base {
+ @tailwind base;
+}
+
+@layer tailwind-utilities {
+ @tailwind components;
+ @tailwind utilities;
+}
+
+
+ @media screen and (max-width: 768px) {
+    .role-responsive {
+      max-height: 500px;;
+      overflow-x: auto;
+    }
+
+   }

@@ -65,7 +65,7 @@ namespace AMS.SERVICES.DataService
         public async Task DeleteAcademicYear(int id, CancellationToken ct)
         {
             var result = await _context.AcademicYears
-                               .Where(x => x.Id == id).FirstOrDefaultAsync()
+                               .Where(x => x.Id == id).FirstOrDefaultAsync(ct)
                                 .ConfigureAwait(false);
             if (result is null)
             {

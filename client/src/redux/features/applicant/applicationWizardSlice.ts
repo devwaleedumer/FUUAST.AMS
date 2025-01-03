@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { admissionSelectionValidator } from "@/lib/SchemaValidators/ApplicationForm/AdmissionSelectionsSchema.validator";
 import { degreeValidator } from "@/lib/SchemaValidators/ApplicationForm/DegreeSchema.validator";
-import { personalInfo } from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.validator";
 import { programValidator } from "@/lib/SchemaValidators/ApplicationForm/ProgramSchema.validator";
 import { z } from "zod";
 import { setCurrentStepId } from "@/lib/services/wizardLocalStorageService";
+import { stat } from "fs";
 
 type AdmissionSelection = z.infer<typeof admissionSelectionValidator>
 type Degrees = z.infer<typeof degreeValidator>
-type PersonalInformation = z.infer<typeof personalInfo>
+// type PersonalInformation = z.infer<typeof personalInfo>
 type ProgramTypeSelection = z.infer<typeof programValidator>
 
 interface ApplicantFormWizardType {
@@ -16,7 +16,7 @@ interface ApplicantFormWizardType {
 }
 
 const initialState: ApplicantFormWizardType = {
-    currentStep: 1,
+    currentStep: 0,
 };
 
 const wizardSlice = createSlice({
@@ -37,7 +37,10 @@ const wizardSlice = createSlice({
                 state.currentStep -= 1;
                 setCurrentStepId(state.currentStep)
             }
-
+        },
+        resetState: (state) => {
+            state.currentStep = 0;
+            setCurrentStepId(0);
         },
         initializeState: (state, actions) => {
             state.currentStep = actions.payload
@@ -45,5 +48,5 @@ const wizardSlice = createSlice({
 
     }
 })
-export const { nextStep, prevStep, initializeState } = wizardSlice.actions;
+export const { nextStep, prevStep, initializeState, resetState } = wizardSlice.actions;
 export default wizardSlice.reducer;

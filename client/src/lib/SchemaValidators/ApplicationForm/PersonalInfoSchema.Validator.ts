@@ -27,66 +27,74 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
             invalid_type_error: "contact no  can be only number 😻.",
         }).regex(/^\d{11}$/, "11 digits are allowed")
         ,
-        fatherName: z.string()
+        fatherName: z.string({
+            invalid_type_error: "Father name is required"
+        })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "Full Name must contain only alphabets."
             }),
-        permanentAddress: z.string().trim().min(1, "Address  is required 😊."),
+        permanentAddress: z.string({
+            invalid_type_error: "Permanent address is required"
+        }).trim().min(1, "Address  is required 😊."),
         cnic: z.string().regex(/^\d{13}$/, "only 13 digits are allowed")
         ,
 
         guardian: z.object({
-            name: z.string().min(1, "guardian name is required")
+            name: z.string({
+                invalid_type_error: "invalid input"
+            }).min(1, "guardian name is required")
                 .trim()
                 .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                     message: "Guardian Name must contain only alphabets."
                 }),
-            relation: z.string().min(1, "Guardian relation  is required 😊")
+            relation: z.string({
+                required_error: "relation is required", invalid_type_error: "required"
+            }).min(1, "Guardian relation  is required 😊")
                 .trim(),
-            permanentAddress: z.string().min(1, "Guardian address  is required 😊").trim(),
-            contactNo: z.string().regex(/^\d{11}$/, "11 digits are allowed"),
+            permanentAddress: z.string({ required_error: "Permanent address is required", invalid_type_error: "required" }).min(1, "Guardian address  is required 😊").trim(),
+            contactNo: z.string({ required_error: "Contact is required", invalid_type_error: "required" }).regex(/^\d{11}$/, "11 digits are allowed"),
             applicantId: z.number().optional(),
             id: z.number().optional()
         })
         ,
         emergencyContact: z.object({
-            name: z.string().min(1, "guardian name is required")
+            name: z.string().min(1, "Name is required")
                 .trim()
                 .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
-                    message: "Guardian Name must contain only alphabets."
+                    message: "Contact Name must contain only alphabets."
                 }),
-            relation: z.string().min(1, "Guardian relation  is required 😊")
+            relation: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact relation  is required 😊")
                 .trim(),
-            permanentAddress: z.string().min(1, "Guardian address  is required 😊").trim(),
-            contactNo: z.string().regex(/^\d{11}$/, "11 digits are allowed"),
+            permanentAddress: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact address  is required 😊").trim(),
+            contactNo: z.string({ required_error: "required", invalid_type_error: "required" }).regex(/^\d{11}$/, "11 digits are allowed"),
             applicantId: z.number().optional(),
             id: z.number().optional()
         }),
-        religion: z.string().min(1, { message: "Please select a religion" }),
-        gender: z.string().min(1, { message: "Please select a gender" }),
-        bloodGroup: z.string().min(1, { message: "Please select a blood group" }),
-        province: z.string().min(1, { message: "Province is required" })
+        religion: z.string({ required_error: "required" }).min(1, { message: "Please select a religion" }),
+        gender: z.string({ required_error: "required" }).min(1, { message: "Please select a gender" }),
+        bloodGroup: z.string({ required_error: "required" }).min(1, { message: "Please select a blood group" }),
+        province: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Province is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "Province must contain only alphabets."
             }),
-        city: z.string().min(1, { message: "City is required" })
+        city: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "City is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
             }),
-        country: z.string().min(1, { message: "Country is required" })
+        country: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Country is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
             }),
-        domicile: z.string().min(1, { message: "Domicile is required" })
+        domicile: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Domicile is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "Domicile must contain only alphabets."
             }),
-        postalCode: z.coerce.number({ invalid_type_error: "Only digits are allowed" })
+        postalCode: z.coerce.number({ invalid_type_error: "Only digits are allowed", required_error: "required" })
     }),
     z.object({
         id: z.number(),
@@ -99,68 +107,75 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
             }),
         mobileNo: z.string({
             invalid_type_error: "contact no  can be only number 😻.",
+            required_error: "required"
         }).regex(/^\d{11}$/, "11 digits are allowed")
         ,
-        fatherName: z.string()
+        fatherName: z.string({
+            required_error: "required",
+            invalid_type_error: "required"
+        })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "Full Name must contain only alphabets."
             }),
-        permanentAddress: z.string().trim().min(1, "Address  is required 😊."),
+        permanentAddress: z.string({
+            invalid_type_error: "required",
+            required_error: "required"
+        }).trim().min(1, "Address  is required 😊."),
         cnic: z.string().regex(/^\d{13}$/, "only 13 digits are allowed")
         ,
 
         guardian: z.object({
-            name: z.string().min(1, "guardian name is required")
+            name: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "guardian name is required")
                 .trim()
                 .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                     message: "Guardian Name must contain only alphabets."
                 }),
-            relation: z.string().min(1, "Guardian relation  is required 😊")
+            relation: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Guardian relation  is required 😊")
                 .trim(),
-            permanentAddress: z.string().min(1, "Guardian address  is required 😊").trim(),
-            contactNo: z.string().regex(/^\d{11}$/, "11 digits are allowed"),
+            permanentAddress: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Guardian address  is required 😊").trim(),
+            contactNo: z.string({ required_error: "required", invalid_type_error: "required" }).regex(/^\d{11}$/, "11 digits are allowed"),
             applicantId: z.number().optional(),
             id: z.number().optional()
         })
         ,
         emergencyContact: z.object({
-            name: z.string().min(1, "guardian name is required")
+            name: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact name is required")
                 .trim()
                 .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
-                    message: "Guardian Name must contain only alphabets."
+                    message: "Contact Name must contain only alphabets."
                 }),
-            relation: z.string().min(1, "Guardian relation  is required 😊")
+            relation: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact relation  is required 😊")
                 .trim(),
-            permanentAddress: z.string().min(1, "Guardian address  is required 😊").trim(),
-            contactNo: z.string().regex(/^\d{11}$/, "11 digits are allowed"),
+            permanentAddress: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Guardian address  is required 😊").trim(),
+            contactNo: z.string({ required_error: "required", invalid_type_error: "required" }).regex(/^\d{11}$/, "11 digits are allowed"),
             applicantId: z.number().optional(),
             id: z.number().optional()
         }),
-        religion: z.string().min(1, { message: "Please select a religion" }),
-        gender: z.string().min(1, { message: "Please select a gender" }),
-        bloodGroup: z.string().min(1, { message: "Please select a blood group" }),
-        province: z.string().min(1, { message: "Province is required" })
+        religion: z.string({ required_error: "required" }).min(1, { message: "Please select a religion" }),
+        gender: z.string({ required_error: "required" }).min(1, { message: "Please select a gender" }),
+        bloodGroup: z.string({ required_error: "required" }).min(1, { message: "Please select a blood group" }),
+        province: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Province is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "Province must contain only alphabets."
             }),
-        city: z.string().min(1, { message: "City is required" })
+        city: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "City is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
             }),
-        country: z.string().min(1, { message: "Country is required" })
+        country: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Country is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
             }),
-        domicile: z.string().min(1, { message: "Domicile is required" })
+        domicile: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Domicile is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "Domicile must contain only alphabets."
             }),
-        postalCode: z.coerce.number({ invalid_type_error: "Only digits are allowed" })
+        postalCode: z.coerce.number({ invalid_type_error: "Only digits are allowed", required_error: "required" })
     })
 ])
 export const personalInfo = z.object({

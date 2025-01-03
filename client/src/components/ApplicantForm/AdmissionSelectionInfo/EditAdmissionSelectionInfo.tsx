@@ -96,23 +96,24 @@ const EditAdmissionSelectionInfo:FC<EditAdmissionSelectionInfoProps> = ({faculty
       :
       <Card >
         <CardContent>
-             <div className="bg-green-50 p-4 my-6 rounded text-sm text-green-800 md:flex gap-0.5 flex-col items-center  justify-center ">
-                <strong className="flex gap-[2px] justify-center items-center">
+             <div className="border  bg-white my-6 rounded text-sm  md:flex gap-0.5 flex-col items-center  justify-center ">
+                {/* <strong className="flex gap-[2px] justify-center items-center">
                   <Info className="size-[17px]" />  <p>IMPORTANT:</p>
-                </strong>{" "}
+                </strong>{" "} */}
                           <List className="p-5 self-start" list={importantNotesAdmissionSelection} title="Important notes before selecting programs." />
 
               </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(processDegreeInfo)}>
-              <div className="bg-blue-100 p-4 my-6 rounded text-sm text-blue-800 md:flex gap-0.5  ">
+              {/* <div className="bg-blue-100 p-4 my-6 rounded text-sm text-blue-800 md:flex gap-0.5  ">
                 <strong className="flex gap-[2px]">
                   <Info className="size-[17px]" /> IMPORTANT:
                 </strong>{" "}
                 Order of choice of the disciplines once submitted Should not be
                 changed under any circumstances.
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+              </div> */}
+            <div className="border rounded-lg p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
                 <FormField
                   control={form.control}
                   name={`expelledFromUni`}
@@ -182,7 +183,7 @@ const EditAdmissionSelectionInfo:FC<EditAdmissionSelectionInfoProps> = ({faculty
                   )}
                 />
               </div>
-              <div className="border rounded-lg p-4">
+              <div>
                 {fields.map((field, index) => (
                   <div
                     key={index}
@@ -345,15 +346,16 @@ const EditAdmissionSelectionInfo:FC<EditAdmissionSelectionInfoProps> = ({faculty
                     <ArrowLeft className="mr-1 h-4 w-4" /> Back
                   </Button>
                   <div  className='space-x-2 flex'>
-                    <Button  type="button">
+                    {/* <Button  type="button">
                     <SaveAll className="mr-1 h-4 w-4"  />  Challan
-                    </Button>
+                    </Button> */}
                     <Button type='submit'  disabled={editApplicationFormIsLoading}>
                     <FileText className="mr-1 h-4 w-4" /> Update
                   </Button>
                   </div>
                 </div>
               </div>
+            </div>
               
             </form>
           </Form>

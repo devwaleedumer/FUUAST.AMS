@@ -52,7 +52,7 @@ import {
   personalInfo,
   personalInfoDefaults,
   personalInfoEditSchema,
-} from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.validator";
+} from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.Validator";
 import { cn, omitProps } from "@/lib/utils";
 import {
   useEditApplicantPersonalInformationMutation,
@@ -100,12 +100,21 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
   });
 
   const [edit,{isLoading,isSuccess}] =  useEditApplicantPersonalInformationMutation();
+  const [isOpen, setIsOpen] = useState(false);
     useEffect(() => {
-    if (personalInformationData) {
-       setValue("dob",new Date(personalInformationData.dob))
-       setValue("isImageChanged",false)
-    }
-  }, [personalInformationData]);
+     if (personalInformationData!.dob) {
+        setValue("dob",new Date(personalInformationData!.dob))
+      }
+      if ((personalInformationData as any).profilePictureUrl) {
+        setValue("isImageChanged",false)
+
+      }
+      else{
+        setValue("isImageChanged",true)
+      }
+              // setValue("isImageChanged",false)
+
+  }, []);
   useEffect(() =>{
   if (isSuccess) {
     toast({
@@ -150,7 +159,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                 {/* Create  */}
                 
                     {/* // Image remain unchanged */}
-          { isImageChanged ==false ? 
+          { isImageChanged == false ? 
                      <div className=" col-span-3">
                       <FormLabel>Photo</FormLabel>
                       <div className=" flex justify-center items-center">
@@ -208,7 +217,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                         </FormLabel>
                         <FormControl>
                           <Input
-                            disabled={loading}
+                            disabled
                             placeholder="61101xxxxxxx"
                             {...field}
                             error={errors?.cnic?.message}
@@ -250,7 +259,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                           DOB{" "}
                           <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
                         </FormLabel>
-                        <Popover>
+                        <Popover open={isOpen} onOpenChange={setIsOpen}>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -272,8 +281,12 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                               mode="single"
+                              captionLayout="dropdown"
+                              fromYear={2015} toYear={2025}
                               selected={(field.value as any) !== typeof(Date) ? new Date(field.value) : field.value }
                               onSelect={field.onChange}
+                              onDayClick={() => setIsOpen(false)}
+                              defaultMonth={field.value}
                               disabled={(date) =>
                                 date > new Date() ||
                                 date < new Date("1900-01-01")
@@ -822,7 +835,12 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                   <ArrowLeft className="size-4 " />
                   Previous
                 </Button>
-               <div className="space-x-2 flex">
+              
+               {(personalInformationData?.emergencyContact == null) ?<Button disabled={isLoading} type="submit" size={"sm"} >
+                     {!isLoading ? <> Save & Next
+                  <Save className="size-4 " /></> : <LoaderCircle className="size-4 animate-spin"/>} 
+                  </Button> :
+                   <div className="space-x-2 flex">
                 <Button disabled={isLoading} type="submit" size={"sm"} >
                      {!isLoading ? <>Update
                   <Save className="size-4 " /></> : <LoaderCircle className="size-4 animate-spin"/>} 
@@ -832,6 +850,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                   <ArrowRight className="size-4 " /> 
                 </Button>
                </div>
+                  }
               </div>
             </form>
           </Form>

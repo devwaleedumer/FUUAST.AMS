@@ -2,6 +2,7 @@
 using AMS.DOMAIN.Identity;
 using AMS.MODELS.SettingModels.AppSettings;
 using AMS.SHARED.Constants.Authorization;
+using AMS.SHARED.Enums.AMS;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -86,7 +87,6 @@ namespace AMS.DatabaseSeed
             {
                 adminUser = new ApplicationUser
                 {
-                    FullName = _admin.FullName,
                     Email = _admin.Email,
                     UserName = _admin.Username,
                     EmailConfirmed = true,
@@ -94,6 +94,7 @@ namespace AMS.DatabaseSeed
                     NormalizedEmail = _admin.Email?.ToUpperInvariant(),
                     NormalizedUserName = _admin.Username.ToUpperInvariant(),
                     IsActive = true,
+                    UserTypeEid = (int)UserType.Admin,
 
                 };
 

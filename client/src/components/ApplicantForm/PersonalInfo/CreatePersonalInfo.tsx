@@ -54,7 +54,7 @@ import {
   personalInfoDefaults,
   personalInfoEditSchema,
   PersonalInfoValues,
-} from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.validator";
+} from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.Validator";
 import { cn, omitProps } from "@/lib/utils";
 import {
   useCreateApplicantPersonalInformationMutation,

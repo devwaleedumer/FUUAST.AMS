@@ -10,6 +10,7 @@
     <ProjectReference Include="..\AMS.Data\AMS.DATA.csproj" />
     <ProjectReference Include="..\AMS.Domain\AMS.DOMAIN.csproj" />
     <ProjectReference Include="..\AMS.Shared\AMS.SHARED.csproj" />
+    <ProjectReference Include="..\AMS.WordReportingEngine\AMS.WordReportingEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

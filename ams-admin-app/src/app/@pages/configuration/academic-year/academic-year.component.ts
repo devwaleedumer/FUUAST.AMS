@@ -24,14 +24,8 @@ export class AcademicYearComponent {
    submitted: boolean = false;
    cols: any[] = [];
   exportColumns: any[] = [];
-
-  statuses: any[] = [];
-
-  searchValue: string | undefined;
   totalRecords: number = 0;
-
   rowsPerPageOptions = [5, 10, 20];
-  destroy$: Subject<void> = new Subject<void>();
   constructor(private _service: AcademicyearService, private messageService: MessageService,private fb:FormBuilder,) {
    this. academicyearRequest=new AcademicyearRequest();
     this.academicyearId=0;
@@ -39,10 +33,6 @@ export class AcademicYearComponent {
 
   ngOnInit() {
     this.ValidationAddFormControl();
-   
-     this.loadacademicData();
-     
-     
 
     this.cols = [
       { field: 'id', header: 'Academicyear ID' },
@@ -51,21 +41,16 @@ export class AcademicYearComponent {
       { field: "enddate", header: "End Date" },
 
     ];
-    this.statuses = [
-      { label: 'INSTOCK', value: 'instock' },
-      { label: 'LOWSTOCK', value: 'lowstock' },
-      { label: 'OUTOFSTOCK', value: 'outofstock' }
-    ];
+
     this.exportColumns = this.cols.map(col => (col.header));
 
   }
   loadacademicData() {
-    this._service.getAllAcademicyear().subscribe((response:any) => 
+    this._service.getAllAcademicyear().subscribe((response:any) =>
     {
-      debugger
       this.academicyearResponse = response;
       this.academicyearRequest.id=response.id;
-     
+
    },
    (error) => {
       console.error('Error fetching Academicyear data:', error);
@@ -76,12 +61,12 @@ openNew() {
   this.isEditing = true; // Add mode
     this.academicyearForm.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
-    this.addDialog = true; 
+    this.addDialog = true;
 }
 
 ValidationAddFormControl(){
 this.academicyearForm = this.fb.group({
-  name: ['', Validators.required], 
+  name: ['', Validators.required],
    startDate:['', Validators.required],
    endDate:['', Validators.required]
 
@@ -95,7 +80,7 @@ hideDialog() {
 isDeleted(response:any) {
     this.deleteDialog = true;
     this.academicyearId=response.id;
-    
+
   }
 editDetails(){
   if (this.academicyearForm.valid) {
@@ -114,7 +99,7 @@ editDetails(){
 saveDetails() {
   this.submitted = true;
   if (this.academicyearForm.valid) {
-   
+
     this._service.addAcademicyear(this.academicyearForm.value).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Academicyear Added', life: 3000 });
       this.loadacademicData();  // Refresh the list
@@ -125,14 +110,14 @@ saveDetails() {
   }
   this.academicyearForm.markAllAsTouched();
 }
-  
+
 showEditModal(response:any){
     this.addDialog=true;
     this.submitted=true;
     this.isEditing=false;
     debugger
     const startdate = new Date(response.startDate).toISOString().split('T')[0]; // Extract date only
-    const enddate = new Date(response.endDate).toISOString().split('T')[0]; 
+    const enddate = new Date(response.endDate).toISOString().split('T')[0];
     this.academicyearForm.patchValue({
       ...response,
       startDate: startdate,
@@ -142,7 +127,7 @@ showEditModal(response:any){
   }
 
   confirmDelete() {
- 
+
     this._service.deleteAcademicyear(this.academicyearId).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Academicyear Deleted', life: 3000 });
       this.loadacademicData();
@@ -159,7 +144,7 @@ showEditModal(response:any){
               break;
           }
       }
-  
+
       return index;
   }
 

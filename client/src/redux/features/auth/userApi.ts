@@ -14,9 +14,9 @@ export const userApi = apiSlice.injectEndpoints({
             }),
 
         }),
-        verifyEmail: builder.query<string, { userId: string, code: string }>({
-            query: ({ userId, code }) => ({
-                url: `users/confirm-email?userId=${userId}&code=${code}`,
+        verifyEmail: builder.query<string, { userId: string, code: string, cnic: string, fullName: string }>({
+            query: ({ userId, code, cnic, fullName }) => ({
+                url: `accounts/confirm-email?userId=${userId}&code=${code}&cnic=${cnic}&fullName=${fullName}`,
                 method: "GET",
                 responseHandler: "text"
 

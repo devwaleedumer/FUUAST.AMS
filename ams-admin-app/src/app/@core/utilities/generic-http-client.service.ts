@@ -16,13 +16,13 @@ interface ApiResponse<T> {
 export class GenericHttpClientService {
 
   // base api url
-  private apiUrl = 'http://localhost:65059/api/';
+  private apiUrl = 'https://localhost:7081/api/';
   constructor(private http: HttpClient) {}
   // Error handler
   // Error handling
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
-
+  debugger;
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = error.error.message;
@@ -100,7 +100,7 @@ export class GenericHttpClientService {
   }
   public  post<T>(
     endpoint: string,
-    customHeaders?: HttpHeaders,
+    customHeaders?: HttpHeaders ,
     body?: any,
     reportProgress?: boolean,
     responseType?: 'json',
@@ -111,7 +111,7 @@ export class GenericHttpClientService {
     return  this.http.post<T>(`${this.apiUrl}${endpoint}`, body,{
       headers,
       reportProgress,
-      responseType,
+      responseType:responseType as any,
       withCredentials},)
       .pipe(map(response => response as T),catchError(this.handleError))
   }

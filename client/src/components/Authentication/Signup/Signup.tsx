@@ -37,6 +37,7 @@ const Signup: FC<SignupProps> = ({}) => {
       email: "",
       password: "",
       confirmPassword: "",
+      cnic:""
     },
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -49,7 +50,7 @@ const Signup: FC<SignupProps> = ({}) => {
    useEffect(() => {
     if(isSuccess){
       toast({title: "Success",description: data},)
-      // redirect("/login")
+      redirect("/login")
     }
     
   },[isSuccess])
@@ -88,6 +89,21 @@ const Signup: FC<SignupProps> = ({}) => {
                       </FormLabel>
                       <FormControl>
                         <Input placeholder="Full Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                   <FormField
+                  control={form.control}
+                  name="cnic"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        CNIC
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder="6110112346789" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -153,7 +169,7 @@ const Signup: FC<SignupProps> = ({}) => {
               disabled={isLoading} 
               className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
             >
-            {isLoading ? <LoaderCircle className="size-4 animate-spin"/>:   ("Start Application")}
+            {isLoading ? <LoaderCircle className="size-4 animate-spin"/>:   ("Register")}
             </Button>
               <p className="pt-5">
                   Have already an account?{" "}

@@ -7,7 +7,7 @@ namespace AMS.Services.CurrentUser
     {
         private ClaimsPrincipal? _user;
 
-        public string? Name => _user?.GetFullName();
+        public string? Name => _user?.GetUserName();
 
         private int? _userId = null;
 

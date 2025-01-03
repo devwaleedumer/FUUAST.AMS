@@ -29,14 +29,14 @@ export const applicationFormApi = apiSlice.injectEndpoints({
         }),
         getSubmittedApplication: builder.query<SubmitApplicationFormResponse, null>({
             query: () => ({
-                url: "/ApplicationForms/submitted-application",
+                url: "/ApplicationForms/application-programs",
                 method: "GET",
             }),
             providesTags: ["applicationForms"]
         }),
         editSubmittedApplication: builder.mutation<string, editAdmissionSelectionValues>({
             query: (data) => ({
-                url: `/ApplicationForms/submitted-application/${data.id}`,
+                url: `/ApplicationForms/application-programs/${data.id}`,
                 method: "PUT",
                 body: data,
                 headers: {

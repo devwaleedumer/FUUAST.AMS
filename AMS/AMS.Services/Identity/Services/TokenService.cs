@@ -5,49 +5,49 @@ using AMS.MODELS.MODELS.SettingModels.Identity.User;
 using AMS.SERVICES.Identity.Interfaces;
 using AMS.SHARED.Constants.Authorization;
 using AMS.SHARED.Exceptions;
-using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using AMS.SHARED.Enums.AMS;
 
 namespace AMS.SERVICES.Identity.Services
 {
     public class TokenService : ITokenService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserService _userService;
         private readonly SecuritySettings _securitySettings;
         private readonly JwtSettings _jwtSettings;
 
-        public TokenService(
-            UserManager<ApplicationUser> userManager,
-            IOptions<JwtSettings> jwtSettings,
-            IOptions<SecuritySettings> securitySettings)
+
+        public TokenService(UserManager<ApplicationUser> userManager, IUserService userService, SecuritySettings securitySettings, JwtSettings jwtSettings)
         {
             _userManager = userManager;
-            _jwtSettings = jwtSettings.Value;
-            _securitySettings = securitySettings.Value;
+            _userService = userService;
+            _securitySettings = securitySettings;
+            _jwtSettings = jwtSettings;
         }
+
         /// <summary>
-        /// Get Security Tokens i.e Access and Refresh
+        /// Get Security Tokens i.e. Access and Refresh
         /// </summary>
         /// <param name="request"></param>
         /// <param name="ipAddress"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="UnauthorizedException"></exception>
-        public async Task<TokenResponse> GetTokenAsync(TokenRequest request, string ipAddress, CancellationToken cancellationToken)
+        public async Task<TokenResponse> GetTokenAsync(TokenRequest request, string ipAddress,
+            CancellationToken cancellationToken)
         {
             if (await _userManager.FindByEmailAsync(request.Email.Trim().Normalize()) is not { } user
                 || !await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                throw new UnauthorizedException("Authentication Failed.");
+                throw new UnauthorizedException("Invalid Credentials");
             }
 
             if (!user.IsActive)
@@ -65,7 +65,7 @@ namespace AMS.SERVICES.Identity.Services
         }
 
         /// <summary>
-        /// Generate pair of Token refresh and access token along expiry time
+        /// Generate a pair of Token refresh and access token along expiry time
         /// </summary>
         /// <param name="request"></param>
         /// <param name="ipAddress"></param>
@@ -74,16 +74,16 @@ namespace AMS.SERVICES.Identity.Services
         public async Task<TokenResponse> RefreshTokenAsync(RefreshTokenRequest request, string ipAddress)
         {
             var userPrincipal = GetPrincipalFromExpiredToken(request.Token);
-            string? useremail = userPrincipal.GetEmail();
-            var user = await _userManager.FindByEmailAsync(useremail!);
+            string? userEmail = userPrincipal.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail!);
             if (user is null)
             {
-                throw new UnauthorizedException("Authentication Failed.");
+                throw new UnauthorizedException("Invalid Token.");
             }
 
             if (user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
-                throw new UnauthorizedException("Invalid Refresh Token.");
+                throw new UnauthorizedException("Session expired please login again.");
             }
 
             return await GenerateTokensAndUpdateUser(user, ipAddress);
@@ -97,24 +97,24 @@ namespace AMS.SERVICES.Identity.Services
         /// <returns>TokenResponse</returns>
         private async Task<TokenResponse> GenerateTokensAndUpdateUser(ApplicationUser user, string ipAddress)
         {
-            string token = GenerateJwt(user, ipAddress);
+            string token = await GenerateJwt(user, ipAddress);
 
             user.RefreshToken = GenerateRefreshToken();
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays);
-
+            user.LastLogin = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 
             return new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime.Value);
         }
 
         /// <summary>
-        ///  Generate JWT security access token Access Token 
+        ///  Generate JWT security  Access Token 
         /// </summary>
         /// <param name="user"></param>
         /// <param name="ipAddress"></param>
         /// <returns cref="string"></returns>
-        private string GenerateJwt(ApplicationUser user, string ipAddress) =>
-            GenerateEncryptedToken(GetSigningCredentials(), GetClaims(user, ipAddress));
+        private async Task<string> GenerateJwt(ApplicationUser user, string ipAddress) =>
+            GenerateEncryptedToken(GetSigningCredentials(), await GetClaims(user, ipAddress));
 
         /// <summary>
         /// Generate Claims for Application user
@@ -122,18 +122,39 @@ namespace AMS.SERVICES.Identity.Services
         /// <param name="user"></param>
         /// <param name="ipAddress"></param>
         /// <returns>Claims</returns>
-        private IEnumerable<Claim> GetClaims(ApplicationUser user, string ipAddress) =>
-            new List<Claim>
+        private async Task<IEnumerable<Claim>> GetClaims(ApplicationUser user, string ipAddress)
+        {
+            if (user.UserTypeEid == (int)UserType.Applicant)
             {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Email, user.Email!),
-            new(AMSClaims.Fullname, $"{user.FullName}"),
-            new(AMSClaims.IpAddress, ipAddress),
-            new(AMSClaims.ProfileImageUrl, user.ProfilePictureUrl ?? string.Empty),
-            new(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
-            };
+                return
+                [
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email!),
+                    new Claim(AMSClaims.UserName, $"{user.UserName}"),
+                    new Claim(AMSClaims.IpAddress, ipAddress),
+                    new Claim(AMSClaims.ProfileImageUrl, user.ProfilePictureUrl ?? string.Empty)
+                ];
+            }
+            var roles =  await _userManager.GetRolesAsync(user).ConfigureAwait(false);   
+            List<Claim> claims =  [
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(AMSClaims.UserName, $"{user.UserName}"),
+                new Claim(AMSClaims.IpAddress, ipAddress),
+                new Claim(AMSClaims.ProfileImageUrl, user.ProfilePictureUrl ?? string.Empty),
+                new Claim(AMSClaims.Role,roles.FirstOrDefault() ?? string.Empty)
+            ];
+            var permissions = await _userService.GetPermissionsAsync(user.Id,CancellationToken.None);
+            permissions.ForEach((permission) =>
+            {
+                claims.Add(new Claim(AMSClaims.Permission, permission));   
+            });
+            return claims;
+        }
 
-        /// <summary>
+
+
+    /// <summary>
         /// Random Bas64 Encoded string generated using RandomNumberGenerator
         /// </summary>
         /// <returns>Base64EncodedString</returns>
@@ -177,6 +198,7 @@ namespace AMS.SERVICES.Identity.Services
                 ValidateAudience = false,
                 RoleClaimType = ClaimTypes.Role,
                 ClockSkew = TimeSpan.Zero,
+                //escape lifetime validation 
                 ValidateLifetime = false
             };
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -219,7 +241,7 @@ namespace AMS.SERVICES.Identity.Services
             string? refreshToken = context.Request.Cookies["refreshToken"];
             if ( string.IsNullOrEmpty(refreshToken))
             {
-                throw new UnauthorizedException("invalid tokens");
+                throw new UnauthorizedException("Authentication Failed.");
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(user => user.RefreshToken == refreshToken && user.RefreshTokenExpiryTime > DateTime.UtcNow);
             if (user is null)
@@ -237,6 +259,35 @@ namespace AMS.SERVICES.Identity.Services
             context.Response.Cookies.Delete("token");
 
         }
+        
+        // Admin Login 
+        public async Task<TokenResponse> GetAdminTokenAsync(TokenRequest request, string ipAddress, CancellationToken cancellationToken)
+        {
+            if (await _userManager.FindByEmailAsync(request.Email.Trim().Normalize()) is not { } user
+                || !await _userManager.CheckPasswordAsync(user, request.Password))
+            {
+                throw new UnauthorizedException("Invalid Credentials");
+            }
+
+            if (!user.IsActive)
+            {
+                throw new UnauthorizedException("User Not Active. Please contact the administrator.");
+            }
+
+            if (_securitySettings.RequireConfirmedAccount && !user.EmailConfirmed)
+            {
+                throw new UnauthorizedException("E-Mail not confirmed.");
+            }
+
+            if (user.UserTypeEid is not (int)UserType.Admin)
+            {
+                user.IsActive = false;    
+                throw new UnauthorizedException("Your account has been blocked");
+            }
+
+            return await GenerateTokensAndUpdateUser(user, ipAddress);
+
+        }
 
         /// <summary>
         /// Generate Signing Credentials using jwt secrets
@@ -250,7 +301,7 @@ namespace AMS.SERVICES.Identity.Services
 
         /// <summary>
         /// Sets tokens in cookie
-        /// </summary>
+        /// </summary> nhg
         /// <param name="token">Tokens Object </param>
         /// <param name="context">HttpContext</param>
         private void SetTokensCookie(HttpContext context, TokenResponse token)
@@ -258,8 +309,8 @@ namespace AMS.SERVICES.Identity.Services
             context.Response.Cookies.Append("token", token.Token,
              new CookieOptions
              {
-                 // Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.TokenExpirationInMinutes),
-                 Expires = DateTimeOffset.UtcNow.AddMinutes(2),
+                 Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.TokenExpirationInMinutes),
+                 // Expires = DateTimeOffset.UtcNow.AddMinutes(2),
                  HttpOnly = true,
                  IsEssential = true,
                  Secure = true,
@@ -268,8 +319,8 @@ namespace AMS.SERVICES.Identity.Services
             context.Response.Cookies.Append("refreshToken", token.RefreshToken,
                 new CookieOptions
                 {
-                    // Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(20),
+                    Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
+                    // Expires = DateTimeOffset.UtcNow.AddMinutes(20),
                     HttpOnly = true,
                     IsEssential = true,
                     Secure = true,

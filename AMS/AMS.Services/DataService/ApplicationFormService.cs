@@ -34,11 +34,11 @@ namespace AMS.SERVICES.DataService
             await _context.SaveChangesAsync(ct);
             return new CreateApplicationFormResponse(applicationForm.Id);
         }
-        public async Task<string> SubmitApplicationForm(SubmitApplicationFormRequest request,CancellationToken ct)
+        public async Task<string> AddApplicationFormPrograms(SubmitApplicationFormRequest request,CancellationToken ct)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
             var applicant = await GetApplicantUtility(ct);
-            var applicationForm = await _context.ApplicationForms.FirstOrDefaultAsync(appForm => appForm.ApplicantId == applicant.Id) ?? throw new NotFoundException("Application not found");
+            var applicationForm = await _context.ApplicationForms.FirstOrDefaultAsync(appForm => appForm.ApplicantId == applicant.Id,ct) ?? throw new NotFoundException("Application not found");
             if (applicationForm.IsSubmitted)
                 throw new AMSException("Already application exists ");
             var programsApplied = request.ProgramsApplied
@@ -52,28 +52,26 @@ namespace AMS.SERVICES.DataService
             applicant.ExpelledFromUni = request.ExpelledFromUni;
             // Always True
             applicationForm.InfoConsent = request.InfoConsent;
-            applicationForm.SubmissionDate = DateTime.Now;
-            applicationForm.IsSubmitted = true;
             applicationForm.ProgramsApplied = programsApplied;
             await _context.SaveChangesAsync(ct);
 
-            var email = _currentUser.GetUserEmail();
-            var userName = _currentUser.Name;
-            var emailModel = new ConfirmApplicationEmail(userName!, applicationForm.Id,applicationForm.SubmissionDate.Value);
-            var mailRequest = new MailRequest(
-               // To user mail
-               new List<string> { email! },
-            //subject
-               "Application Confirmation",
-            //body
-               _emailTemplateService.GenerateEmailTemplate("admission-confirmation", emailModel));
-            // fire and forget pattern so that's why we are sending cancellation.none token  
-            _job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
+            // var email = _currentUser.GetUserEmail();
+            // var userName = _currentUser.Name;
+            // var emailModel = new ConfirmApplicationEmail(userName!, applicationForm.Id,applicationForm.SubmissionDate.Value);
+            // var mailRequest = new MailRequest(
+            //    // To user mail
+            //    new List<string> { email! },
+            // //subject
+            //    "Application Confirmation",
+            // //body
+            //    _emailTemplateService.GenerateEmailTemplate("admission-confirmation", emailModel));
+            // // fire and forget pattern so that's why we are sending cancellation.none token  
+            // _job.Enqueue(() => _mailService.SendAsync(mailRequest, CancellationToken.None));
             return "Application submitted with successfully";
         }
-        public async Task<string> EditSubmittedApplication(EditSubmitApplicationFormRequest request, CancellationToken ct)
+        public async Task<string> EditApplicationFormPrograms(EditSubmitApplicationFormRequest request, CancellationToken ct)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync(ct);
+            await using var transaction = await _context.Database.BeginTransactionAsync(ct);
             try
             {
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -102,14 +100,14 @@ namespace AMS.SERVICES.DataService
                 throw new AMSException("Application form can't be updated");
             }
         }
-        public async Task<SubmitApplicationResponse> GetSubmittedApplication(CancellationToken ct)
+        public async Task<SubmitApplicationResponse> GetApplicationFormPrograms(CancellationToken ct)
         {
             var applicant = await GetApplicantUtility(ct);
             var response = await _context.ApplicationForms
                                                 .AsNoTracking()
                                                 .Include(x  => x.ProgramsApplied!)
                                                 .ThenInclude(y => y.Department)
-                                                .Where(x => x.ApplicantId == applicant.Id && x.IsSubmitted == true)
+                                                .Where(x => x.ApplicantId == applicant.Id)
                                                 .AsSplitQuery()
                                                 .Select((application)
                                                    => new SubmitApplicationResponse
@@ -132,7 +130,7 @@ namespace AMS.SERVICES.DataService
                                                     .AsNoTracking()
                                                     .Where(pd => pd.DepartmentId == pa.DepartmentId && pd.ProgramId == response.ProgramId)
                                                     .Select((programDepartment) => programDepartment.TimeShift)
-                                                    .ToListAsync();
+                                                    .ToListAsync(ct);
                 timeShiftsList.Add(timeShiftsResult.Select(x => new TimeShiftOptions(x!.Id,x.Name)).ToList());
 
                 var departmentsResult = await _context.Faculties
@@ -142,7 +140,6 @@ namespace AMS.SERVICES.DataService
                                             .Select((faculty) => faculty.Departments)
                                             .FirstOrDefaultAsync(ct);
                 departmentsList.Add(departmentsResult!.Select((x) => new DepartmentOptions(x.Id,x.Name)).ToList());
-
             };
             response.Departments = departmentsList;
             response.Shifts = timeShiftsList;
@@ -157,7 +154,7 @@ namespace AMS.SERVICES.DataService
         //Private Methods
         private async Task<Applicant> GetApplicantUtility(CancellationToken cancellationToken)
         {
-            var userId = _currentUser.GetUserId() ?? throw new UnauthorizedException("User is not login");
+            var userId = _currentUser.GetUserId() ?? throw new UnauthorizedException("Authentication Failed.");
             var applicant = await _context.Applicants
                                           .FirstOrDefaultAsync((a) => a.ApplicationUserId == userId, cancellationToken)
                                           .ConfigureAwait(false) ?? throw new NotFoundException("applicant not found");
@@ -169,29 +166,29 @@ namespace AMS.SERVICES.DataService
             var applicant = await _context.Applicants.FirstOrDefaultAsync(x => x.ApplicationUserId == userId, ct);
             if (applicant == null)
             {
-                response.FormStatuses = new List<FormStatus>
-                {
-                    new FormStatus("Personal Information","In Progress"),
-                    new FormStatus("Program Type Selection","Not Started"),
-                    new FormStatus("Academic Records","Not Started"),
-                    new FormStatus("Programs Selection & Form Submission","Not Started"),
-                };
+                response.FormStatuses =
+                [
+                    new FormStatus("Personal Information", "In Progress"),
+                    new FormStatus("Program Type Selection", "Not Started"),
+                    new FormStatus("Academic Records", "Not Started"),
+                    new FormStatus("Programs Selection & Form Submission", "Not Started")
+                ];
                 response.CompletedSteps = 0;
                 response.LastModified = null;
                 return response;
             }
             var applicationForm = await _context.ApplicationForms
                                                       .AsNoTracking()
-                                                      .FirstOrDefaultAsync(x => x.ApplicantId == applicant.Id);
+                                                      .FirstOrDefaultAsync(x => x.ApplicantId == applicant.Id,ct);
             if (applicationForm is null)
             {
-                response.FormStatuses = new List<FormStatus>
-                {
-                    new FormStatus("Personal Information","Completed"),
-                    new FormStatus("Program Type Selection","In Progress"),
-                    new FormStatus("Academic Records","Not Started"),
-                    new FormStatus("Programs Selection & Form Submission","Not Started"),
-                };
+                response.FormStatuses =
+                [
+                    new FormStatus("Personal Information", "Completed"),
+                    new FormStatus("Program Type Selection", "In Progress"),
+                    new FormStatus("Academic Records", "Not Started"),
+                    new FormStatus("Programs Selection & Form Submission", "Not Started")
+                ];
                 response.CompletedSteps = 1;
                 response.LastModified = applicant.UpdatedDate;
                 return response;
@@ -199,37 +196,37 @@ namespace AMS.SERVICES.DataService
             var degreesExist = await _context.ApplicantDegrees.AnyAsync((x) => x.ApplicantId == applicant.Id, ct);
             if (!degreesExist)
             {
-                response.FormStatuses = new List<FormStatus>
-                {
-                    new FormStatus("Personal Information","Completed"),
-                    new FormStatus("Program Type Selection","Completed"),
-                    new FormStatus("Academic Records","In Progress"),
-                    new FormStatus("Programs Selection & Form Submission","Not Started"),
-                };
+                response.FormStatuses =
+                [
+                    new FormStatus("Personal Information", "Completed"),
+                    new FormStatus("Program Type Selection", "Completed"),
+                    new FormStatus("Academic Records", "In Progress"),
+                    new FormStatus("Programs Selection & Form Submission", "Not Started")
+                ];
                 response.CompletedSteps = 2;
                 response.LastModified = applicant.UpdatedDate;
                 return response;
             }
             if (!applicationForm.IsSubmitted)
             {
-                response.FormStatuses = new List<FormStatus>
-                {
-                    new FormStatus("Personal Information","Completed"),
-                    new FormStatus("Program Type Selection","Completed"),
-                    new FormStatus("Academic Records","Completed"),
-                    new FormStatus("Programs Selection & Form Submission","In Progress"),
-                };
+                response.FormStatuses =
+                [
+                    new FormStatus("Personal Information", "Completed"),
+                    new FormStatus("Program Type Selection", "Completed"),
+                    new FormStatus("Academic Records", "Completed"),
+                    new FormStatus("Programs Selection & Form Submission", "In Progress")
+                ];
                 response.CompletedSteps = 3;
                 response.LastModified = applicant.InsertedDate;
                 return response;
             }
-            response.FormStatuses = new List<FormStatus>
-                {
-                    new FormStatus("Personal Information","Completed"),
-                    new FormStatus("Program Type Selection","Completed"),
-                    new FormStatus("Academic Records","Completed"),
-                    new FormStatus("Programs Selection & Form Submission","Completed"),
-                };
+            response.FormStatuses =
+            [
+                new FormStatus("Personal Information", "Completed"),
+                new FormStatus("Program Type Selection", "Completed"),
+                new FormStatus("Academic Records", "Completed"),
+                new FormStatus("Programs Selection & Form Submission", "Completed")
+            ];
             response.CompletedSteps = 4;
             response.LastModified = applicant.UpdatedDate;
             return response;

@@ -1,2 +1,7 @@
+@if (loading$ | async) {
+<div class="loading-spinner">
+  <p-progressBar mode="indeterminate"></p-progressBar>
+</div>
+}
 <router-outlet />
 <!-- <app-sidebar></app-sidebar> -->

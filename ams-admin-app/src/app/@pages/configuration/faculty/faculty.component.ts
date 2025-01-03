@@ -52,7 +52,6 @@ export class FacultyComponent implements OnInit {
 
     ];
     this.exportColumns = this.cols.map(col => (col.header));
-    this.loadFacultyData()
   }
   openNew() {
     this.faculty = {};

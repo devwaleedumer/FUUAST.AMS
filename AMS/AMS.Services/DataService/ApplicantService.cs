@@ -45,29 +45,87 @@ namespace AMS.SERVICES.DataService
                                           .ConfigureAwait(false)
                                            ?? throw new NotFoundException("applicant not found");
             var response = applicant.Adapt<ApplicantPSInfoResponse>();
-            response.ProfilePictureUrl = user.ProfilePictureUrl ?? "";
-            response.Dob = applicant.Dob.Date;
+            response.BloodGroup = applicant.BloodGroup ?? "";
+            response.Gender = applicant.Gender ?? "";
+            response.Religion = applicant.Religion ?? "";
+            response.ProfilePictureUrl = user.ProfilePictureUrl ?? null;
+            response.Dob = applicant.Dob;
             return response;
         }
 
         public async Task<UpdateApplicantPSInfoResponse> UpdateApplicantPersonalInformation(UpdateApplicantPSInfoRequest request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
-            using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                var applicant = await GetApplicantUtility(cancellationToken);
-                if (applicant.Id != request.Id) throw new BadRequestException("Invalid request please try again");
-                var user = await _context.Users.FindAsync(applicant.ApplicationUserId, cancellationToken) ?? throw new NotFoundException("user not found");
-                request.Adapt(applicant);
+                
+                var applicant = await _context.Applicants
+                    .Include(applicant => applicant.ApplicationUser)
+                    .Include(applicant => applicant.Guardian)
+                    .Include(applicant => applicant.EmergencyContact)
+                    .FirstOrDefaultAsync(applicant => applicant.Id == request.Id,cancellationToken);
+                if (applicant is null)
+                    throw new NotFoundException($"Applicant not found with id {request.Id}");
+                //applicant 
+                applicant.Dob = DateOnly.FromDateTime(request.Dob);
+                applicant.BloodGroup = request.BloodGroup;
+                applicant.Religion = request.Religion;
+                applicant.Gender = request.Gender;
+                applicant.City = request.City;
+                applicant.Country = request.Country;
+                applicant.Domicile = request.Domicile;
+                applicant.Province = request.Province;
+                applicant.FatherName = request.FatherName;
+                applicant.MobileNo = request.MobileNo;
+                applicant.PermanentAddress = request.PermanentAddress;
+                applicant.PostalCode = request.PostalCode;
+                // Guardian
+                if (applicant.Guardian is null)
+                {
+                    var guardian = new Guardian
+                    {
+                        Name = request.Guardian.Name,
+                        Relation = request.Guardian.Relation,
+                        ContactNo = request.Guardian.ContactNo,
+                        PermanentAddress = request.PermanentAddress
+                    };
+                    applicant.Guardian = guardian;
+                }
+                else
+                {
+                    applicant.Guardian.Relation = request.Guardian.Relation;
+                    applicant.Guardian.ContactNo = request.Guardian.ContactNo;
+                    applicant.Guardian.Name = request.Guardian.Name;
+                    applicant.Guardian.PermanentAddress = request.PermanentAddress;
+                }
+                // Emergency Contact
+                if (applicant.EmergencyContact is null)
+                {
+                    var emergencyContact = new EmergencyContact()
+                    {
+                        Name = request.EmergencyContact.Name,
+                        Relation = request.EmergencyContact.Relation,
+                        ContactNo = request.EmergencyContact.ContactNo,
+                        PermanentAddress = request.Guardian.PermanentAddress
+                    };
+                    applicant.EmergencyContact = emergencyContact;
+                }
+                else
+                {
+                    applicant.EmergencyContact.Relation = request.EmergencyContact.Relation;
+                    applicant.EmergencyContact.ContactNo = request.EmergencyContact.ContactNo;
+                    applicant.EmergencyContact.Name = request.EmergencyContact.Name;
+                    applicant.EmergencyContact.PermanentAddress = request.EmergencyContact.PermanentAddress;
+                }
                 if (request.ImageRequest is not null)
                 {
-                   await UpdateUserProfilePictureAsync(user, request.ImageRequest, cancellationToken);
+                    await UpdateUserProfilePictureAsync(applicant.ApplicationUser!, request.ImageRequest, cancellationToken);
                 }
                 await _context.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
                 var response = applicant.Adapt<UpdateApplicantPSInfoResponse>();
-                response.ProfilePictureUrl = user.ProfilePictureUrl ?? "";
+                response.ProfilePictureUrl = applicant.ApplicationUser!.ProfilePictureUrl ?? "";
                 return response;
             }
             catch 
@@ -127,7 +185,7 @@ namespace AMS.SERVICES.DataService
         //Private Methods
         private async Task<Applicant> GetApplicantUtility(CancellationToken cancellationToken)
         {
-            var userId = _currentUser.GetUserId() ?? throw new UnauthorizedException("User is not login");
+            var userId = _currentUser.GetUserId();
             var applicant = await _context.Applicants.FirstOrDefaultAsync((a) => a.ApplicationUserId == userId, cancellationToken) ?? throw new NotFoundException("applicant not found"); ;
             return applicant;
         }  

@@ -9,7 +9,7 @@ using AMS.SHARED.Enums.Audit;
 
 namespace AMS.DATA.Base
 {
-    public abstract class BaseContext : IdentityDbContext<ApplicationUser, ApplicationRole, int, IdentityUserClaim<int>, IdentityUserRole<int>, IdentityUserLogin<int>, ApplicationRoleClaim, IdentityUserToken<int>>
+    public abstract class BaseContext : IdentityDbContext<ApplicationUser, ApplicationRole, int, IdentityUserClaim<int>, ApplicationUserRole, IdentityUserLogin<int>, ApplicationRoleClaim, IdentityUserToken<int>>
     {
         protected BaseContext(DbContextOptions options) : base(options)
         {

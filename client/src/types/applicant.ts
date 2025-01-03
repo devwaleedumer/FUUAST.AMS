@@ -1,6 +1,6 @@
 import { admissionSelectionValidator } from "@/lib/SchemaValidators/ApplicationForm/AdmissionSelectionsSchema.validator";
 import { degreeValidator } from "@/lib/SchemaValidators/ApplicationForm/DegreeSchema.validator";
-import { personalInfo, personalInfoEditSchema } from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.validator";
+import { personalInfo, personalInfoEditSchema } from "@/lib/SchemaValidators/ApplicationForm/PersonalInfoSchema.Validator";
 import { programValidator } from "@/lib/SchemaValidators/ApplicationForm/ProgramSchema.validator";
 import { z } from "zod";
 

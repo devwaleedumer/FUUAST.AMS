@@ -1,0 +1,319 @@
+<div class="">
+  <p-toast></p-toast>
+  <div
+    class="mb-4 flex justify-between items-center bg-white px-4 p-2 rounded-lg border"
+  >
+    <div class="flex items-center">
+      <i class="pi pi-shield mr-2 mt-2 text-xl"></i>
+      <h1 class="text-xl font-semibold">Roles & Permissions</h1>
+    </div>
+    <div class="p-toolbar-group-right">
+      <p-button
+        icon="pi pi-plus"
+        label="Add Role"
+        (click)="openNew()"
+      ></p-button>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="md:grid-cols-12 gap-6" style="display: grid">
+    <!-- Roles Sidebar -->
+    <div class="md:col-start-1 md:col-span-4">
+      <div class="mb-3 flex align-items-center">
+        <i class="pi pi-users mr-2"></i>
+        <div class="text-xl font-semibold text-black">Roles</div>
+      </div>
+      <div
+        class="gap-4 max-h-96 bg-scroll overflow-scroll role-responsive"
+        style="display: grid"
+      >
+        <p-card
+          *ngFor="let role of roles"
+          [ngClass]="{ 'border-primary': selectedRole.id === role.id }"
+          class="cursor-pointer py-2 px-4 rounded-md bg-white border"
+          (click)="selectRole(role)"
+        >
+          <h3 class="text-2xl mb-2 font-semibold">{{ role.name }}</h3>
+          <p class="text-gray-600">{{ role.description }}</p>
+          <!-- @if (role.name !== "Admin") { -->
+          <div class="flex justify-center md:justify-start mt-3">
+            <button
+              pButton
+              pRipple
+              icon="pi pi-pencil"
+              class="p-button-rounded bg-primary border mr-2"
+              (click)="showEditModal(role)"
+            ></button>
+            <button
+              pButton
+              pRipple
+              icon="pi pi-trash"
+              class="p-button-rounded border bg-red-400 text-white"
+              (click)="isDeleted(role)"
+            ></button>
+          </div>
+          <!-- } -->
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Permissions Content -->
+    <div class="md:col-span-8">
+      <div class="mb-4">
+        <div class="flex justify-between items-center mb-4">
+          <div class="">
+            <div class="text-2xl font-semibold text-black">
+              {{ selectedRole.name }}
+            </div>
+            <p class="text-gray-500 text-lg">{{ selectedRole.description }}</p>
+          </div>
+          <div>
+            <p-button
+              class="self-end"
+              label="Save Permissions"
+              (onClick)="saveChanges()"
+            ></p-button>
+          </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="flex gap-3 mb-4 w-full justify-between">
+          <!-- <span class="!p-input-icon-left grow">
+            <i class="pi pi-search"></i>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="searchQuery"
+              (input)="onSearch()"
+              placeholder="Search permissions..."
+              class="w-full"
+            />
+          </span> -->
+          <div class="relative grow">
+            <div
+              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <svg
+                class="size-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </div>
+            <input
+              type="search"
+              id="default-search"
+              class="block w-full px-5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              [(ngModel)]="searchQuery"
+              style="padding: 12px 0"
+              (input)="onSearch()"
+              placeholder="Search permissions..."
+            />
+          </div>
+          <p-dropdown
+            [options]="modules"
+            [(ngModel)]="selectedModule"
+            (onChange)="onModuleChange()"
+            placeholder="Filter by Module"
+            [showClear]="true"
+          >
+          </p-dropdown>
+        </div>
+
+        <!-- Permissions Table -->
+        <p-table
+          [value]="filteredPermissions"
+          styleClass="p-datatable-sm"
+          scrollHeight="380px"
+          scrollable="true"
+        >
+          <ng-template pTemplate="header" class="">
+            <tr>
+              <th style="width: 4rem">
+                <p-checkbox [binary]="true"></p-checkbox>
+              </th>
+              <th>Permission</th>
+              <th>Module</th>
+              <th style="width: 10rem">Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-permission>
+            <tr>
+              <td>
+                <p-checkbox
+                  [binary]="true"
+                  [ngModel]="isPermissionEnabled(permission.id)"
+                  (onChange)="togglePermission(permission.id)"
+                >
+                </p-checkbox>
+              </td>
+              <td>
+                <div class="font-medium">{{ permission.name }}</div>
+                <div class="text-sm text-gray-600">
+                  {{ permission.description }}
+                </div>
+              </td>
+              <td>{{ permission.module }}</td>
+              <td>
+                <div
+                  class="flex align-items-center"
+                  [ngClass]="{
+                    'text-green-600': isPermissionEnabled(permission.id),
+                    'text-gray-500': !isPermissionEnabled(permission.id)
+                  }"
+                >
+                  <i
+                    class="pi"
+                    [ngClass]="{
+                      'pi-check': isPermissionEnabled(permission.id)
+                    }"
+                  ></i>
+                  <span class="ml-2">{{
+                    isPermissionEnabled(permission.id) ? "Enabled" : "Disabled"
+                  }}</span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <p-dialog
+    [(visible)]="addDialog"
+    [style]="{ width: '450px' }"
+    header="Role"
+    [modal]="true"
+    class="p-fluid"
+  >
+    <ng-template pTemplate="header">
+      <h3>{{ isEditing ? "Create Role" : "Edit Role" }}</h3>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+      <form [formGroup]="roleFormGroup">
+        <div class="field">
+          <label
+            [class]="
+              roleFormGroup.get('name')?.invalid &&
+              roleFormGroup.get('name')?.touched
+                ? 'p-error'
+                : ''
+            "
+            for="name"
+            >Role Name</label
+          >
+          <input
+            type="text"
+            formControlName="name"
+            required
+            class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-300 focus:border-purple- block w-full p-2.5 focus:outline-none"
+            autofocus
+            id="name"
+          />
+          <div
+            *ngIf="
+              roleFormGroup.get('name')?.invalid &&
+              roleFormGroup.get('name')?.touched
+            "
+            class="p-error"
+          >
+            <small *ngIf="roleFormGroup.get('name')?.errors?.['required']"
+              >Name is required.</small
+            >
+          </div>
+        </div>
+        <div class="field">
+          <label
+            for="description"
+            [class]="
+              roleFormGroup.get('description')?.invalid &&
+              roleFormGroup.get('description')?.touched
+                ? 'p-error'
+                : ''
+            "
+            >Description</label
+          >
+          <input
+            type="text"
+            class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-purple-300 block w-full p-2.5 focus:outline-none"
+            formControlName="description"
+            required
+            autofocus
+            id="description"
+          />
+          <div
+            *ngIf="
+              roleFormGroup.get('description')?.invalid &&
+              roleFormGroup.get('description')?.touched
+            "
+            class="p-error"
+          >
+            <small
+              *ngIf="roleFormGroup.get('description')?.errors?.['required']"
+              >Description is required.</small
+            >
+          </div>
+        </div>
+      </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        label="{{ isEditing ? 'Add' : 'Update ' }}"
+        icon="pi pi-check"
+        class="p-button-text p-2"
+        (click)="isEditing ? saveDetails() : editDetails()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text rounded-full p-2 ml-4"
+        (click)="hideDialog()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  <!--Delete Dialogue-->
+  <p-dialog
+    [(visible)]="deleteDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+  >
+    <div class="flex align-items-center justify-content-center">
+      <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+      <span>Are you sure you want to delete ?</span>
+    </div>
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        icon="pi pi-check"
+        class="p-button-text"
+        label="Yes"
+        (click)="confirmDelete()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        icon="pi pi-times"
+        class="p-button-text ml-4"
+        label="No"
+        (click)="deleteDialog = false"
+      ></button>
+    </ng-template>
+  </p-dialog>
+</div>

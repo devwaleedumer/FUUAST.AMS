@@ -7,7 +7,7 @@
         public string ProfilePictureUrl { get; set; } = default!;
         public string FatherName { get; set; } = default!;
         public string Cnic { get; set; } = default!;
-        public DateTime Dob { get; set; } = default!;
+        public DateOnly Dob { get; set; } = default!;
         public string Gender { get; set; } = default!;
         public string MobileNo { get; set; } = default!;
         public string Domicile { get; set; } = default!;

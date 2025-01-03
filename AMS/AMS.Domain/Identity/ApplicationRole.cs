@@ -18,8 +18,10 @@ namespace AMS.DOMAIN.Identity
             Description = description;
             NormalizedName = name.ToUpperInvariant();
             this.RoleClaims = new HashSet<ApplicationRoleClaim>();
+            this.UserRoles = new HashSet<ApplicationUserRole>();
         }
         public virtual ICollection<ApplicationRoleClaim> RoleClaims { get; set; }
+        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }
