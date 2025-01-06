@@ -4,6 +4,7 @@ import { AppLayoutComponent } from './@layout/layout/layout.component';
 import { authGuard } from './@core/guard/auth.guard';
 import { NotfoundComponent } from './@pages/notfound/notfound.component';
 import { LoadingService } from './@core/services/loading/loading.service';
+import { pagenotfoundComponent } from './@components/404NotFound/pagenotfound.component';
 
 @NgModule({
   imports: [
@@ -20,9 +21,9 @@ import { LoadingService } from './@core/services/loading/loading.service';
           //   { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) }
         ],
       },
-      { path: '', loadChildren: () => import('./@auth/auth.module').then(m => m.AuthModule) },
-      { path: 'auth', loadChildren: () => import('./@auth/auth.module').then(m => m.AuthModule) },
-      { path: 'create-password', loadChildren: () => import('./@pages/account/account.module').then(m => m.AccountModule) },
+      {path:'',loadChildren: () => import('./@auth/auth.module').then(m => m.AuthModule) },
+      {path:'auth',loadChildren: () => import('./@auth/auth.module').then(m => m.AuthModule) },
+      // { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
       // { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
       { path: 'notfound', component: NotfoundComponent },
       { path: '**', redirectTo: '/notfound' },

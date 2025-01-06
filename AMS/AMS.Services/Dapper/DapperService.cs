@@ -59,5 +59,18 @@ namespace AMS.SERVICES.Dapper;
             var result = await _dbConnection.QueryFirstOrDefaultAsync<T>(query, parameters, commandType: CommandType.StoredProcedure);
             return result ?? default;
         }
-        #endregion
+    /// <summary>
+    /// This method is used to return list of type object.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="procedureName"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<IEnumerable<T>> ReturnListAsync<T>(string procedureName, DynamicParameters parameters)
+    {
+        var _dbConnection = _databaseContext.Database.GetDbConnection();
+        return await _dbConnection.QueryAsync<T>(procedureName, parameters, commandType: CommandType.StoredProcedure);
     }
+    #endregion
+}

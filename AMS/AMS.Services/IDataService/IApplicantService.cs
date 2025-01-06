@@ -14,6 +14,7 @@ namespace AMS.SERVICES.IDataService
         Task<List<CreateApplicantDegreeResponse>> AddApplicantDegrees(CreateApplicantDegreeListRequest request, CancellationToken ct);
         Task<List<ApplicantDegreeResponse>> GetApplicantDegrees(CancellationToken ct);
         Task<List<EditApplicantDegreeResponse>> EditApplicantDegrees(EditApplicantDegreeListRequest request, CancellationToken ct);
+     //   Task<List<ApplicantmanagementResponse>> GetApplicantDetails(CancellationToken ct);
 
 
 

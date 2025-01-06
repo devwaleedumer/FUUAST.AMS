@@ -256,6 +256,7 @@ namespace AMS.Extensions
             services.AddScoped<IProgramtypeService, ProgramTypeService>();
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IAcademicyearService, AcademicyearService>();
+            services.AddScoped<IApplicantManagementService, ApplicantManagementService>();
 
 
 

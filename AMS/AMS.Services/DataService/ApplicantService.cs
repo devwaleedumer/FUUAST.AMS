@@ -3,6 +3,7 @@ using AMS.DOMAIN.Entities.AMS;
 using AMS.DOMAIN.Identity;
 using AMS.MODELS.ApplicationForm.Applicant;
 using AMS.MODELS.ApplicationForm.ApplicantDegree;
+using AMS.MODELS.ProgramType;
 using AMS.SERVICES.IDataService;
 using AMS.SHARED.Enums.Shared;
 using AMS.SHARED.Exceptions;
@@ -135,6 +136,39 @@ namespace AMS.SERVICES.DataService
                 throw new AMSException("Some thing went wrong, please try again later.");
             }
         }
+
+       // public async Task<List<ApplicantmanagementResponse>> GetApplicantDetails(CancellationToken ct)
+       // {
+       //     var applicant = await _context.Applicants
+       //         .Include(x => x.ApplicationUser)
+       //       .Include(x => x.Degrees)
+       //       //  .Include(x => x.ApplicationForm)
+       //         .Select(
+       //         x => new
+       //         {
+       //             x.Id,
+       //             x.ApplicationUserId,
+       //             Fullname = x.ApplicationUser.FullName,
+       //             Email = x.ApplicationUser.Email,
+       //             x.FatherName,
+       //             x.Cnic,
+       //             x.Dob,
+       //             x.MobileNo,
+                 
+       //             //BoardOrUniversityname= x.BoardOrUniversityName,
+       //             //Passingyear= x.PassingYear,
+       //             //TotalMarks=  x.TotalMarks,
+       //             //ObtainedMarks= x.ObtainedMarks
+               
+
+       //         }
+       //         ).ToListAsync(ct)
+       //.ConfigureAwait(false);
+
+
+       //     return applicant.Adapt<List<ApplicantmanagementResponse>>();
+
+       // }
         #endregion
         //Degrees 
         #region Degrees
