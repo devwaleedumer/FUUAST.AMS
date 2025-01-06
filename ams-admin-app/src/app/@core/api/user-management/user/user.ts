@@ -5,7 +5,6 @@ export interface User {
   role : string,
   isActive : boolean,
   isEmailConfirmed : boolean,
-  profilePictureUrl: string
 }
 
 export interface UserRequest{

@@ -3,7 +3,7 @@ import { GenericHttpClientService } from '../../utilities/generic-http-client.se
 import { Observable } from 'rxjs';
 import { Faculty } from '../../api/configuration/faculty/faculty';
 import { FilterResponse } from '../../api/filter-response';
-import { User } from '../../api/user-management/user/user';
+import { User, UserRequest } from '../../api/user-management/user/user';
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +20,15 @@ export class UserService {
   createUser(data: Partial<User>): Observable<{ message: string }> {
     return this._httpService.post<{ message: string }>(`${this._baseEndPoint}`, undefined, data)
   }
-  updateUser(data: Partial<User>, userId: number): Observable<User> {
-    return this._httpService.put<User>(`${this._baseEndPoint}/${userId}`, data)
-  }
-  deleteUser(userId: number): Observable<any> {
-    return this._httpService.delete(`${this._baseEndPoint}/${userId}`)
+  // updateUser(data: Partial<User>, userId: number): Observable<User> {
+  //   return this._httpService.put<User>(`${this._baseEndPoint}/${userId}`, data)
+  // }
+
+  updateUser(request:UserRequest): Observable<any> {
+    return this._httpService.put<any>(`${this._baseEndPoint}`,request)
+    }
+  deleteUser(Id: number): Observable<any> {
+    return this._httpService.delete<any>(`${this._baseEndPoint}?id=${encodeURIComponent(Id)}`)
   }
   toggleUserStatus(data: any): Observable<any> {
     return this._httpService.post<any>(`accounts/toggle-status`, data)

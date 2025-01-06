@@ -36,6 +36,13 @@ namespace AMS.Controllers
            return Ok(await _service.UpdateShift(request, ct));
         }
 
+        //    [HttpPost]
+        //    public async Task<IActionResult> AddFeeImage( IFormFile file, CancellationToken ct)
+        //    {
+        //        return Ok(await _service.AddFeeImage(file, ct));
+        //    }
+
+
         [HttpPost("filter")]
         public async Task<IActionResult> GetAllShiftByFilter([FromBody] LazyLoadEvent request, CancellationToken ct)
                 => Ok(await _service.GetShiftByFilter(request, ct));

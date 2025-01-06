@@ -96,13 +96,13 @@ export class AuthService {
   // Check if token is expired
   isTokenExpired(): boolean {
     const token = this.tokenSubject.value;
-    debugger;
+  
     if (!token) return true;
 
     try {
       const tokenPayload = JSON.parse(atob(token.split('.')[1]));
       const expirationTime = tokenPayload.exp * 1000; // Convert to milliseconds
-      debugger;
+
       return Date.now() >= expirationTime;
     } catch (error) {
       return true;
@@ -138,7 +138,7 @@ export class AuthService {
 
   // Automatic token management method
   ensureValidToken(): Observable<string> {
-    debugger;
+  
     const tokenStatus = this.validateTokens();
     switch (tokenStatus) {
       case 'valid':

@@ -16,4 +16,12 @@ namespace AMS.MODELS.Dashboard
         public DateTime? LastModified { get; set; }
         public int CompletedSteps { get; set; }
     }
+
+    public class DashboardResponse()
+    {
+        public int? TotalApplicant {  get; set; }
+        public int? TotalUser {  get; set; }
+        public int? ApprovedApplication { get; set; }
+        public int ?SubmittedApplication {  get; set; }
+    }
 }

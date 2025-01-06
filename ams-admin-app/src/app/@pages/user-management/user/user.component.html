@@ -184,12 +184,14 @@
                   pRipple
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-success mr-2"
+                  (click)="showEditModal(user)"
                 ></button>
                 <button
                   pButton
                   pRipple
                   icon="pi pi-trash"
                   class="p-button-rounded p-button-warning"
+                (click)="isDeleted(user)"
                 ></button>
               </div>
             </td>
@@ -351,5 +353,31 @@
         ></button>
       </ng-template>
     </p-dialog>
+
+
+    <p-dialog
+ [(visible)]="deleteDialog"
+ header="Confirm"
+ [modal]="true"
+ [style]="{ width: '450px' }"
+>
+ <div class="flex align-items-center justify-content-center">
+   <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+   <span
+   >Are you sure you want to delete
+   >?</span
+   >
+ </div>
+ <ng-template pTemplate="footer">
+   <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteDialog = false"></button>
+   <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+ </ng-template>
+
+</p-dialog>
+
+
+
   </div>
 </div>
+
+ 

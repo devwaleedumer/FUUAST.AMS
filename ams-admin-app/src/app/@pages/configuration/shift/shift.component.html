@@ -161,9 +161,17 @@
             id="name"
             [ngClass]="{ 'ng-invalid ng-dirty': submitted && addShiftForm.get('name')?.invalid }"
           />
-          <small class="ng-invalid" *ngIf="submitted  && addShiftForm.get('name')?.touched || addShiftForm.get('name')?.invalid">
-            Name is required.
-          </small>
+          <div
+          *ngIf="
+addShiftForm.get('name')?.invalid &&
+(addShiftForm.get('name')?.touched || addShiftForm.get('name')?.dirty || submitted)
+"
+          class="p-error"
+        >
+          <small *ngIf="addShiftForm.get('name')?.errors?.['required'] "
+            >Name is required.</small
+          >
+        </div>
         </div>
   
         <div class="field">
@@ -175,13 +183,22 @@
             required
             rows="3"
             cols="20"
+            [ngClass]="{ 'ng-invalid ng-dirty': submitted && addShiftForm.get('description')?.invalid }"
           ></textarea>
           <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted">
         
           </small> -->
-          <small class="ng-invalid" *ngIf="submitted  && addShiftForm.get('description')?.touched || addShiftForm.get('description')?.invalid">
-            Description is required.
-          </small>
+          <div
+          *ngIf="
+addShiftForm.get('description')?.invalid &&
+(addShiftForm.get('description')?.touched || addShiftForm.get('description')?.dirty || submitted)
+"
+          class="p-error"
+        >
+          <small *ngIf="addShiftForm.get('description')?.errors?.['required'] "
+            >Description is required.</small
+          >
+        </div>
         </div>
       </form>
     </ng-template>

@@ -28,7 +28,7 @@ export class GenericHttpClientService {
       errorMessage = error.error.message;
     } else {
       // Server-side error
-      errorMessage = error.error?.detail || `Error Code: ${error.status}\nMessage: ${error.message}`;
+      errorMessage = error.error?.message || error.error?.detail || error.error?.Detail  || `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));

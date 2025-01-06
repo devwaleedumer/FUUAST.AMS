@@ -167,10 +167,21 @@
               id="name"
               [ngClass]="{ 'ng-invalid ng-dirty': submitted && addprogramForm.get('name')?.invalid }"
             />
-            <small class="ng-invalid" *ngIf="submitted  && addprogramForm.get('name')?.touched || addprogramForm.get('name')?.invalid">
-              Name is required.
-            </small>
+            
+
+            <div
+            *ngIf="
+  addprogramForm.get('name')?.invalid &&
+  (addprogramForm.get('name')?.touched || addprogramForm.get('name')?.dirty || submitted)
+"
+            class="p-error"
+          >
+            <small *ngIf="addprogramForm.get('name')?.errors?.['required'] "
+              >Name is required.</small
+            >
+          </div>
         </div>
+      
 
 <!-- !--dropdown -->
 
@@ -182,8 +193,24 @@
    optionLabel="name"
    optionValue="id"
    placeholder="Select Program Type"
+   appendTo="body"
+
+   [ngClass]="{ 'ng-invalid ng-dirty': submitted && addprogramForm.get('programTypeId')?.invalid }"
    >
    </p-dropdown>
+
+   <div
+            *ngIf="
+  addprogramForm.get('programTypeId')?.invalid &&
+  (addprogramForm.get('programTypeId')?.touched || addprogramForm.get('programTypeId')?.dirty || submitted)
+"
+            class="p-error"
+          >
+            <small *ngIf="addprogramForm.get('programTypeId')?.errors?.['required'] "
+              >Program Type required .</small
+            >
+          </div>
+
    
 
   </div>

@@ -187,9 +187,17 @@
             id="name"
             [ngClass]="{ 'ng-invalid ng-dirty': submitted && sessionForm.get('name')?.invalid }"
           />
-          <small class="ng-invalid" *ngIf="submitted  && sessionForm.get('name')?.touched || sessionForm.get('name')?.invalid">
-            Name is required.
-          </small>
+          <div
+          *ngIf="
+sessionForm.get('name')?.invalid &&
+(sessionForm.get('name')?.touched || sessionForm.get('name')?.dirty || submitted)
+"
+          class="p-error"
+        >
+          <small *ngIf="sessionForm.get('name')?.errors?.['required'] "
+            >Name is required.</small
+          >
+        </div>
       </div>
 
       <div class="field">
@@ -200,7 +208,19 @@
           formControlName="startDate"
           required
           id="startdate"
+          [ngClass]="{ 'ng-invalid ng-dirty': submitted && sessionForm.get('startDate')?.invalid }"
         />
+        <div
+        *ngIf="
+sessionForm.get('startDate')?.invalid &&
+(sessionForm.get('startDate')?.touched || sessionForm.get('startDate')?.dirty || submitted)
+"
+        class="p-error"
+      >
+        <small *ngIf="sessionForm.get('startDate')?.errors?.['required'] "
+          >StartDate is required.</small
+        >
+      </div>
       </div>
     
       <!-- EndDate -->
@@ -211,7 +231,21 @@
           pInputText
           formControlName="endDate"
           required
-          id="enddate" />
+          id="enddate" 
+          [ngClass]="{ 'ng-invalid ng-dirty': submitted && sessionForm.get('endDate')?.invalid }"
+          />
+
+          <div
+          *ngIf="
+sessionForm.get('endDate')?.invalid &&
+(sessionForm.get('endDate')?.touched || sessionForm.get('endDate')?.dirty || submitted)
+"
+          class="p-error"
+        >
+          <small *ngIf="sessionForm.get('endDate')?.errors?.['required'] "
+            >EndDate is required.</small
+          >
+        </div>
       </div>
     
       <div class="field">
@@ -220,11 +254,25 @@
        formControlName="academicYearId"
        [options]="academicyearResponse"
        optionLabel="name"
-       optionValue="id"
+       optionValue="id"   
+       appendTo="body"
        placeholder="Select academic year"
        styleClass="margin-bottom:20px"
+       [ngClass]="{ 'ng-invalid ng-dirty': submitted && sessionForm.get('academicYearId')?.invalid }"
        >
+       
        </p-dropdown>
+       <div
+       *ngIf="
+sessionForm.get('academicYearId')?.invalid &&
+(sessionForm.get('academicYearId')?.touched || sessionForm.get('academicYearId')?.dirty || submitted)
+"
+       class="p-error"
+     >
+       <small *ngIf="sessionForm.get('academicYearId')?.errors?.['required'] "
+         >Field is required.</small
+       >
+     </div>
       </div>
 
       </form>

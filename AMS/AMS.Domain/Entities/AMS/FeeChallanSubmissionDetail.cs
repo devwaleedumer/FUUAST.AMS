@@ -6,7 +6,7 @@ namespace AMS.DOMAIN.Entities.AMS
     {
         public int Id { get; set; }
         public  int BranchCode { get; set; }
-        public required string BranchNameWithCity { get; set; }
+        public  string BranchNameWithCity { get; set; }
         public  DateTime SubmissionDate { get; set; }
         public required string DocumentUrl { get; set; }
         public int FeeChallanId { get; set; }

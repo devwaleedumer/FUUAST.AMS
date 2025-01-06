@@ -21,6 +21,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using AMS.MODELS.Filters;
+using AMS.MODELS.Session;
+using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 
 namespace AMS.SERVICES.Identity.Services
@@ -343,7 +346,40 @@ namespace AMS.SERVICES.Identity.Services
             await _db.Applicants.AddAsync(applicant);
             await _db.SaveChangesAsync();
         }
+        public async Task DeleteUser(int id, CancellationToken ct)
+        {
+            var result = await _userManager.Users
+                               .Where(x => x.Id == id).FirstOrDefaultAsync()
+                                .ConfigureAwait(false);
+            if (result is null)
+            {
 
+                throw new NotFoundException($"user doesn't exist with id: {id}");
+            }
+            await _userManager.DeleteAsync(result);
+        }
+        public async Task<UpdateUserResponse> Updateuser(MODELS.MODELS.SettingModels.Identity.User.UpdateUserRequest Request,
+              CancellationToken ct)
+        {
+            ArgumentNullException.ThrowIfNull(Request);
+            var user = await _userManager.Users.Where(x => x.Id == Request.Id).FirstOrDefaultAsync() ?? throw new NotFoundException($"user doesn't exist with id: {Request.Id}");
+            user.UserName = Request.Username;
+            user.Email = Request.Email;
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+
+            // Remove existing roles if any
+            if (currentRoles.Any())
+            {
+                var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+                var AddRole = await _userManager.AddToRoleAsync(user, Request.role);
+
+                await _userManager.UpdateAsync(user);
+               
+            }
+            return user.Adapt<UpdateUserResponse>();
+        }
         public async Task<string> ConfirmEmailAsync(int userId, string code, string cnic, string fullName, CancellationToken cancellationToken)
         {
             var user = await _userManager.Users.Where(user => user.Id == userId && !user.EmailConfirmed).FirstOrDefaultAsync(cancellationToken);

@@ -1,20 +1,34 @@
 ﻿using AMS.DATA;
+using AMS.DOMAIN.Entities.AMS;
 using AMS.DOMAIN.Entities.Lookups;
+using AMS.DOMAIN.Identity;
+using AMS.MODELS.ApplicationForm.Applicant;
 using AMS.MODELS.Faculity;
 using AMS.MODELS.Filters;
 using AMS.MODELS.Program;
 using AMS.MODELS.Shift;
 using AMS.SERVICES.IDataService;
+using AMS.SHARED.Enums.AMS;
+using AMS.SHARED.Enums.Shared;
 using AMS.SHARED.Exceptions;
 using AMS.SHARED.Extensions;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Mapster;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
+using System.Management.Automation;
+using System.Threading;
 
 namespace AMS.SERVICES.DataService
 {
-    public class ShiftService(AMSContext context) : IShiftService
+    public class ShiftService(AMSContext context, ILocalFileStorageService imageStorage, IWebHostEnvironment hostingEnvironment) : IShiftService
     {
         private readonly AMSContext _context = context;
+       private readonly IWebHostEnvironment _hostingEnvironment = hostingEnvironment;
+        private readonly ILocalFileStorageService _imageStorage = imageStorage;
         public async Task<List<ShiftResponse>> GetTimeShiftByDepartmentAndProgramId(int departmentId, int programId, CancellationToken ct)
         {
             var result = await _context.ProgramDepartments
@@ -73,6 +87,66 @@ namespace AMS.SERVICES.DataService
             await _context.SaveChangesAsync(ct);
            
         }
+
+
+        //public async Task<Imageresponse> AddFeeImage(IFormFile file, CancellationToken ct)
+        //{
+        //    if (file == null || file.Length == 0)
+        //    {
+        //        throw new ArgumentException("No file uploaded.");
+        //    }
+
+        //    try
+        //    {
+        //        // Check for cancellation before processing
+        //        ct.ThrowIfCancellationRequested();
+
+        //        // Generate a unique file name using GUID to avoid collisions
+        //        var fileInfo = new FileInfo(file.FileName);
+        //        var newFileName = "Image_" + Guid.NewGuid().ToString() + fileInfo.Extension;
+
+        //        // Define the path to save the file
+        //        var path = Path.Combine(_hostingEnvironment.WebRootPath, "Images", newFileName);
+
+        //        // Create the directory if it doesn't exist
+        //        var directoryPath = Path.GetDirectoryName(path);
+        //        if (!Directory.Exists(directoryPath))
+        //        {
+        //            Directory.CreateDirectory(directoryPath);
+        //        }
+
+        //        // Save the file to the server
+        //        using (var stream = new FileStream(path, FileMode.Create))
+        //        {
+        //            await file.CopyToAsync(stream, ct); // Pass ct to allow cancellation during the copy
+        //        }
+
+        //        // Create the FeeChallanSubmissionDetail entity
+        //        var feeSubmission = new FeeChallanSubmissionDetail
+        //        {
+        //            DocumentUrl = "/Images/" + newFileName ,// Assigning the URL of the uploaded image
+        //            BranchNameWithCity = "avc",
+        //            FeeChallanId=1
+        //        };
+
+        //        // Save the FeeSubmissionDetail to the database
+        //        _context.FeeChallanSubmissionDetails.Add(feeSubmission);
+        //        await _context.SaveChangesAsync(ct); // Pass ct to support cancellation during DB save
+
+        //        // Return the adapted result
+        //        return feeSubmission.Adapt<Imageresponse>();
+        //    }
+        //    catch (OperationCanceledException)
+        //    {
+        //        // Handle the cancellation scenario
+        //        throw new TaskCanceledException("The file upload was cancelled.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log or handle other exceptions as needed
+        //        throw new Exception("An error occurred while uploading the file.", ex);
+        //    }
+        //}
 
         public async Task<PaginationResponse<ShiftResponse>> GetShiftByFilter(LazyLoadEvent request, CancellationToken ct)
         {

@@ -4,6 +4,7 @@ import { Subscription, debounceTime } from 'rxjs';
 import {Product} from '../../@core/api/dashboard/product';
 import {LayoutService} from '../../@core/services/layout/layout.service';
 import { ProductService } from '../../@core/services/dashboard/product.service';
+import { DashboardService } from '../../@core/services/dashboard/dashboard.service';
 
 @Component({
     templateUrl: './dashboard.component.html',
@@ -13,6 +14,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     items!: MenuItem[];
 
     products!: Product[];
+    dashboardDetails : any[] = [];
 
     chartData: any;
 
@@ -20,7 +22,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     subscription!: Subscription;
 
-    constructor(private productService: ProductService, public layoutService: LayoutService) {
+    constructor(private productService: ProductService, public layoutService: LayoutService,private _service:DashboardService) {
         this.subscription = this.layoutService.configUpdate$
         .pipe(debounceTime(25))
         .subscribe((config) => {
@@ -29,6 +31,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+
+       this.getDashboard();
         this.initChart();
         this.productService.getProductsSmall().then(data => this.products = data);
 
@@ -36,6 +40,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
             { label: 'Remove', icon: 'pi pi-fw pi-minus' }
         ];
+    }
+
+    getDashboard(){
+     
+        this._service.getDashboard().subscribe((response:any) => 
+            {
+                debugger
+              this.dashboardDetails = response; 
+           },
+           (error) => {
+              console.error('Error fetching Academicyear data:', error);
+           }
+        );
     }
 
     initChart() {

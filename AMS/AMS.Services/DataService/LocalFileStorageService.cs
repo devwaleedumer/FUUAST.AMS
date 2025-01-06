@@ -4,6 +4,7 @@ using AMS.SERVICES.IDataService;
 using AMS.SHARED.Enums.Shared;
 using AMS.SHARED.Extensions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -129,6 +130,11 @@ namespace AMS.SERVICES.DataService
             }
 
             return string.Format(pattern, max);
+        }
+
+        public Task<string> UploadAsync<T>(IFormFile imageRequest, FileType image, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

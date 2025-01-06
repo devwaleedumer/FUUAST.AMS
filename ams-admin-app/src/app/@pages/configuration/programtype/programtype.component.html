@@ -161,9 +161,17 @@
               id="name"
               [ngClass]="{ 'ng-invalid ng-dirty': submitted && addprogramtypeForm.get('name')?.invalid }"
             />
-            <small class="ng-invalid" *ngIf="submitted  && addprogramtypeForm.get('name')?.touched || addprogramtypeForm.get('name')?.invalid">
-              Name is required.
-            </small>
+            <div
+            *ngIf="
+  addprogramtypeForm.get('name')?.invalid &&
+  (addprogramtypeForm.get('name')?.touched || addprogramtypeForm.get('name')?.dirty || submitted)
+"
+            class="p-error"
+          >
+            <small *ngIf="addprogramtypeForm.get('name')?.errors?.['required'] "
+              >Name is required.</small
+            >
+          </div>
         </div>
         </form>
       </ng-template>

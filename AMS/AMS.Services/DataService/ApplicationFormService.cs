@@ -20,15 +20,19 @@ namespace AMS.SERVICES.DataService
         private readonly IMailService _mailService = mailService;
         private readonly IEmailTemplateService _emailTemplateService = emailTemplateService;
 
+
+
+       
         public async Task<CreateApplicationFormResponse> CreateApplicationForm(CreateApplicationFormRequest request, CancellationToken ct)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
             var applicant = await GetApplicantUtility(ct);
+            var sessionid = await getsession();
             var applicationForm = new ApplicationForm
             {
                 ApplicantId = applicant.Id,
                 ProgramId = request.programId,
-                SessionId = 1
+                SessionId = sessionid
             };
             await _context.ApplicationForms.AddAsync(applicationForm, ct);
             await _context.SaveChangesAsync(ct);
@@ -231,5 +235,10 @@ namespace AMS.SERVICES.DataService
             response.LastModified = applicant.UpdatedDate;
             return response;
         }
+        private async Task<int> getsession()
+        {
+            return (await _context.Sessions.LastAsync()).Id;
     }
+    }
+   
 }

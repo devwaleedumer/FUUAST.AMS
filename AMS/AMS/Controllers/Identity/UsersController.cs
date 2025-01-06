@@ -26,7 +26,24 @@ namespace AMS.Controllers.Identity
                 message=result
             });
         }
-       
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(
+    [FromBody] MODELS.MODELS.SettingModels.Identity.User.UpdateUserRequest request,
+    CancellationToken ct)
+        {
+            var response = await _userService.Updateuser(request, ct);   
+
+            return Ok(response); // Return the updated user details in the response
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(int id, CancellationToken ct)
+     
+        {
+            await _userService.DeleteUser(id,ct);
+            return NoContent();
+        }
+
         [Authorize]
         [HttpGet("{userId}/programs")]
         public async Task<IActionResult> GetProgramByApplicantId([FromRoute] int userId, CancellationToken ct) => Ok(await _programService.GetProgramByApplicantId(userId, ct));

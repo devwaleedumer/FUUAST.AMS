@@ -76,15 +76,27 @@ export class UserComponent {
     this.addDialog = false;
     this.submitted = false;
   }
-  isDeleted(response: any) {
+  isDeleted(user: any) {
+    debugger
     this.deleteDialog = true;
-    this.userId = response.id;
+    this.userId = user.id;
+  }
+  showEditModal(user:any){
+    debugger
+    this.addDialog=true;
+    this.submitted=true;
+    this.isEditing=false;
+    this.loadRoles();
+    debugger
+    this.userFormGroup.patchValue(user);
+    this.userId=user.id;
   }
   editDetails() {
+    debugger
     if (this.userFormGroup.valid) {
       this.userRequest = this.userFormGroup.value;
       this.userRequest.id = this.userId;
-      this._service.updateUser(this.userRequest, this.userRequest.id).subscribe(() => {
+      this._service.updateUser(this.userRequest).subscribe(() => {
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'User Updated', life: 3000 });
         this.getFilterData({ first: this.first, last: this.rows });  // Refresh the list
         this.hideDialog();
@@ -94,6 +106,7 @@ export class UserComponent {
     }
     this.userFormGroup.markAllAsTouched();
   }
+
   saveDetails() {
     this.submitted = true;
     if (this.userFormGroup.valid) {
@@ -108,7 +121,7 @@ export class UserComponent {
     this.userFormGroup.markAllAsTouched();
   }
   confirmDelete() {
-
+    debugger
     this._service.deleteUser(this.userId).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'User Deleted', life: 3000 });
       this.getFilterData({ first: this.first, last: this.rows });  // Refresh the list

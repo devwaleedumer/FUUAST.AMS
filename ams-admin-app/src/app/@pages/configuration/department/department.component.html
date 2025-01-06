@@ -167,9 +167,17 @@
               id="name"
               [ngClass]="{ 'ng-invalid ng-dirty': submitted && adddepartmentForm.get('name')?.invalid }"
             />
-            <small class="ng-invalid" *ngIf="submitted  && adddepartmentForm.get('name')?.touched || adddepartmentForm.get('name')?.invalid">
-              Name is required.
-            </small>
+            <div
+            *ngIf="
+  adddepartmentForm.get('name')?.invalid &&
+  (adddepartmentForm.get('name')?.touched || adddepartmentForm.get('name')?.dirty || submitted)
+"
+            class="p-error"
+          >
+            <small *ngIf="adddepartmentForm.get('name')?.errors?.['required'] "
+              >Name is required.</small
+            >
+          </div>
         </div>
 
 
@@ -183,9 +191,20 @@
    optionValue="id"
    placeholder="Select faculty"
                appendTo="body"
-
+               [ngClass]="{ 'ng-invalid ng-dirty': submitted && adddepartmentForm.get('faculityId')?.invalid }"
    >
    </p-dropdown>
+   <div
+   *ngIf="
+adddepartmentForm.get('faculityId')?.invalid &&
+(adddepartmentForm.get('faculityId')?.touched || adddepartmentForm.get('faculityId')?.dirty || submitted)
+"
+   class="p-error"
+ >
+   <small *ngIf="adddepartmentForm.get('faculityId')?.errors?.['required'] "
+     >faculty is required.</small
+   >
+ </div>
   </div>
         </form>
       </ng-template>

@@ -2,6 +2,7 @@
 using AMS.MODELS.Identity.User;
 using System.Security.Claims;
 using AMS.MODELS.Filters;
+using AMS.MODELS.MODELS.SettingModels.Identity.User;
 
 
 namespace AMS.SERVICES.Identity.Interfaces
@@ -42,5 +43,11 @@ namespace AMS.SERVICES.Identity.Interfaces
         Task<string> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
         Task<string> ResetPasswordAsync(ResetPasswordRequest request);
         Task ChangePasswordAsync(ChangePasswordRequest request, string userId);
+        Task DeleteUser(int id, CancellationToken ct);
+      
+        Task<UpdateUserResponse> Updateuser(MODELS.MODELS.SettingModels.Identity.User.UpdateUserRequest Request,
+              CancellationToken ct);
+
+
     }
 }

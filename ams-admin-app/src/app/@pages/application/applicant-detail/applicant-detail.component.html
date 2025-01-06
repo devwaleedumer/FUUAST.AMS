@@ -1,0 +1,507 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <button
+            pButton
+            pRipple
+            label="Export"
+            icon="pi pi-upload"
+            class="p-button-help"
+            pTooltip="CSV"
+            tooltipPosition="bottom"
+            (click)="dt.exportCSV()"
+          ></button>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-file-excel"
+            pTooltip="xlsx"
+            tooltipPosition="bottom"
+            (click)="exportExcel()"
+            class="p-button-success ml-2"
+          ></button>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-file-pdf"
+            (click)="exportPdf()"
+            pTooltip="Pdf"
+            tooltipPosition="bottom"
+            class="p-button-success ml-2"
+          ></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table
+        #dt
+        [value]="applicantInfoResponse"
+        [columns]="cols"
+        responsiveLayout="scroll"
+        [rows]="10"
+        [globalFilterFields]="['name','id']"
+        [paginator]="true"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        [totalRecords]="totalRecords"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        
+        [rowHover]="true"
+        dataKey="id"
+        [lazy]="true"
+       
+        (onLazyLoad)="getFilterData($event)"
+      >
+      <ng-template pTemplate="caption">
+        <div class="flex flex-wrap md:flex-nowrap gap-4 items-center justify-between mt-2">
+          <!-- Name Input Field -->
+          <div class="field">
+            <input
+              id="name"
+              type="text"
+              (keyup.enter)="OnSearch()"
+              [(ngModel)]="applicantInfoRequest.userName"
+              pInputText
+              class="w-full md:w-14rem"
+              placeholder="Enter Name"
+            />
+          </div>
+      
+          <!-- Email Input Field -->
+          <div class="field">
+            <input
+              id="email"
+              type="text"
+              (keyup.enter)="OnSearch()"
+              [(ngModel)]="applicantInfoRequest.email"
+              pInputText
+              class="w-full md:w-14rem"
+              placeholder="Enter Email"
+            />
+          </div>
+      
+          <!-- Status Dropdown -->
+          <div class="field">
+            <p-dropdown
+              id="status"
+              (keyup.enter)="OnSearch()"
+              [options]="statusOptions"
+              optionValue="value"
+              optionLabel="label"
+              class="w-full md:w-20rem"
+              placeholder="Select Status"
+              [(ngModel)]="applicantInfoRequest.verificationStatusEid"
+            ></p-dropdown>
+          </div>
+      
+          <!-- Search Button -->
+          <div>
+            <button
+              pButton
+              pRipple
+              label="Search"
+              icon="pi pi-search"
+              class=" w-full md:w-7.5rem   bg-purple-600 text-white"
+              (click)="OnSearch()"
+            ></button>
+          </div>
+      
+          <!-- Reset Button -->
+          <div>
+            <button
+              pButton
+              pRipple
+              label="Reset"
+              icon="pi pi-refresh"
+              class= " w-full md:w-6.5rem text-center bg-red-600 text-white"
+              (click)="OnReset()"
+            ></button>
+          </div>
+        </div>
+      </ng-template>
+      
+        <ng-template pTemplate="header">
+          <tr>
+<!--            <th style="width: 3rem">-->
+<!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+<!--            </th>-->
+            <th pSortableColumn="id">
+             #SrNo
+            </th>
+            <th pSortableColumn="name" class="text-center">
+              Name 
+
+<th pSortableColumn="email"class="text-center">Fathername
+
+</th>
+              <th pSortableColumn="email"class="text-center">Email
+
+              </th>
+
+              <th pSortableColumn="cnic" class="text-center">Cnic
+              </th>
+              <th pSortableColumn="cnic" class="text-center">Status
+              </th>
+             
+              <th pSortableColumn="cnic" class="text-center">Actions
+              </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-response>
+          <tr>
+           
+             <td style=" min-width: 2rem" class="text-center" >
+             
+             1
+            </td>
+            <td style=" min-width: 10rem" class="text-center">
+             
+              {{ response.userName | titlecase}}
+            </td>
+            <td style=" min-width: 10rem" class="text-center">
+             
+              {{ response.fatherName |titlecase}}
+            </td>
+            <td style=" min-width: 10rem" class="text-center">
+             
+              {{ response.email |titlecase }}
+            </td>
+
+            <td style=" min-width: 10rem" class="text-center">
+             
+              {{ response.cnic |titlecase }}
+            </td>
+            <td style="min-width: 10rem" class="text-center">
+              <ng-container [ngSwitch]="response.verificationStatusEid">
+                  <span *ngSwitchCase="1">Pending</span>
+                  <span *ngSwitchCase="2">Approved</span>
+                  <span *ngSwitchCase="3">Rejected</span>            
+              </ng-container>
+          </td>
+
+            <td>
+              <div class="flex justify-content-center">
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-success mr-2"
+                  (click)="showEditModal(response)"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-warning"
+                  (click)="isDeleted(response)"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog
+      [(visible)]="addDialog"
+      [style]="{ width: '90vw', maxWidth: '1200px' }"
+      header="Applicant Details"
+      [modal]="true"
+      class="p-fluid"
+    >
+    
+    <ng-template pTemplate="header">
+      <h3>Applicant Details</h3>
+    </ng-template>
+  
+    <ng-template pTemplate="content">
+      <form [formGroup]="applicantFormgroup">
+        
+        <div class="field">
+          <label for="userName">Full Name</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="userName"
+            [disabled]="true"
+            required
+            autofocus
+            id="userName"
+          />
+        </div>
+        
+        <div class="field">
+          <label for="fatherName">Father's Name</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="fatherName"
+            id="fatherName"
+          />
+        </div>
+        
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            pInputText
+            formControlName="email"
+            id="email"
+          />
+        </div>
+        
+        <div class="field">
+          <label for="dob">Date of Birth</label>
+          <input
+            type="date"
+            pInputText
+            formControlName="dob"
+            id="dob"
+          />
+        </div>
+        
+        <div class="field">
+          <label for="cnic">CNIC</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="cnic"
+            id="cnic"
+          />
+        </div>
+        
+      <!-- Matric Section -->
+<h3>Matric</h3>
+<div class="matric-section">
+  <div class="field">
+    <label for="matricBoard">Degree Name</label>
+    <input type="text" pInputText formControlName="matricDegreeName" id="matricBoard" />
+  </div>
+  <div class="field">
+    <label for="matricBoard">Board or University Name</label>
+    <input type="text" pInputText formControlName="matricBoard" id="matricBoard" />
+  </div>
+  <div class="field">
+    <label for="matricYear">Passing Year</label>
+    <input type="number" pInputText formControlName="matricYear" id="matricYear" />
+  </div>
+  <div class="field">
+    <label for="matricSubject">Subject</label>
+    <input type="text" pInputText formControlName="matricSubject" id="matricSubject" />
+  </div>
+  <div class="field">
+    <label for="matricRollNo">Roll No</label>
+    <input type="number" pInputText formControlName="matricRollNo" id="matricRollNo" />
+  </div>
+  <div class="field">
+    <label for="matricTotalMarks">Total Marks</label>
+    <input type="number" pInputText formControlName="matricTotalMarks" id="matricTotalMarks" />
+  </div>
+  <div class="field">
+    <label for="matricObtainedMarks">Obtained Marks</label>
+    <input type="number" pInputText formControlName="matricObtainedMarks" id="matricObtainedMarks" />
+  </div>
+</div>
+
+<hr />
+
+<!-- Intermediate Section -->
+<h3>Intermediate</h3>
+<div class="intermediate-section">
+  <div class="field">
+    <label for="intermediateBoard">Degree Name</label>
+    <input type="text" pInputText formControlName="intermediateDegreeName" id="intermediateBoard" />
+  </div>
+  <div class="field">
+    <label for="intermediateBoard">Board or University Name</label>
+    <input type="text" pInputText formControlName="intermediateBoard" id="intermediateBoard" />
+  </div>
+  <div class="field">
+    <label for="intermediateYear">Passing Year</label>
+    <input type="number" pInputText formControlName="intermediateYear" id="intermediateYear" />
+  </div>
+  <div class="field">
+    <label for="intermediateSubject">Subject</label>
+    <input type="text" pInputText formControlName="intermediateSubject" id="intermediateSubject" />
+  </div>
+  <div class="field">
+    <label for="intermediateRollNo">Roll No</label>
+    <input type="number" pInputText formControlName="intermediateRollNo" id="intermediateRollNo" />
+  </div>
+  <div class="field">
+    <label for="intermediateTotalMarks">Total Marks</label>
+    <input type="number" pInputText formControlName="intermediateTotalMarks" id="intermediateTotalMarks" />
+  </div>
+  <div class="field">
+    <label for="intermediateObtainedMarks">Obtained Marks</label>
+    <input type="number" pInputText formControlName="intermediateObtainedMarks" id="intermediateObtainedMarks" />
+  </div>
+</div>
+        <!-- For Bachelor -->
+         <div *ngIf="programType === 'PG'" >
+        <h3>Bachelor</h3>
+        <div class="intermediate-section">
+          <div class="field">
+            <label for="intermediateBoard">Degree Name</label>
+            <input type="text" pInputText formControlName="bachleorDegreeName" id="intermediateBoard" />
+          </div>
+          <div class="field">
+            <label for="intermediateBoard">Board or University Name</label>
+            <input type="text" pInputText formControlName="bachleorBoard" id="intermediateBoard" />
+          </div>
+          <div class="field">
+            <label for="intermediateYear">Passing Year</label>
+            <input type="number" pInputText formControlName="bachleorYear" id="intermediateYear" />
+          </div>
+          <div class="field">
+            <label for="intermediateSubject">Subject</label>
+            <input type="text" pInputText formControlName="bachleorSubject" id="intermediateSubject" />
+          </div>
+          <div class="field">
+            <label for="intermediateRollNo">Roll No</label>
+            <input type="number" pInputText formControlName="bachleorRollNo" id="intermediateRollNo" />
+          </div>
+          <div class="field">
+            <label for="intermediateTotalMarks">Total Marks</label>
+            <input type="number" pInputText formControlName="bachleorTotalMarks" id="intermediateTotalMarks" />
+          </div>
+          <div class="field">
+            <label for="intermediateObtainedMarks">Obtained Marks</label>
+            <input type="number" pInputText formControlName="bachleorObtainedMarks" id="intermediateObtainedMarks" />
+          </div>
+        </div>
+      </div>
+
+
+      <div 
+  *ngIf="imageUrl" 
+  style="border: 1px solid #e0e0e0; padding: 16px; background-color: #ffffff; border-radius: 8px; margin-top: 16px; max-width: 600px; margin-left: auto; margin-right: auto;"
+>
+  <h3 style="margin-bottom: 12px; font-size: 18px; font-weight: bold; text-align: center;">Challan Image</h3>
+  <div style="text-align: center;">
+    <img
+      [src]="imageUrl"
+      alt="Fee Challan Image"
+      style="width: 100%; max-width: 500px; height: auto; border: 2px solid #000; padding: 8px; border-radius: 4px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);"
+    />
+    <!-- <img [lazyLoad]="image" alt="Image from API" /> -->
+  </div>
+</div>
+   
+
+
+      </form>
+    </ng-template>
+      
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        label="Rejected"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="update('REJECTED')"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Approved"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="update('APPROVED')"
+      ></button>
+    </ng-template>
+  </p-dialog>
+<!--Edit Product-->
+    <!-- <p-dialog
+      [(visible)]="editshiftDialog"
+      [style]="{ width: '450px' }"
+      header="Edit Shift details"
+      [modal]="true"
+      class="p-fluid"
+    >
+    
+      <ng-template pTemplate="content">
+        <form [formGroup]="updateshiftForm">
+        <div class="field">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="name"
+            required
+            autofocus
+            id="name"
+            [ngClass]="{ 'ng-invalid ng-dirty': submitted && updateshiftForm.get('name')?.invalid }"
+          />
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && (updateshiftForm.get('name')?.invalid || updateshiftForm.get('name')?.dirty)"
+          >Name is required.</small
+          >
+        </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            pInputTextarea
+           formControlName="description"
+            required
+            rows="3"
+            cols="20"
+          ></textarea>
+
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && (updateshiftForm.get('name')?.invalid || updateshiftForm.get('name')?.dirty)"
+          >Description  is required.</small
+          >
+        </div>
+
+      </form>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="hideEditDialogue()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Save"
+          icon="pi pi-check"
+          class="p-button-text"
+          (click)="editFaculty()"
+        ></button>
+      </ng-template>
+    </p-dialog> -->
+<!--Delete Dialogue-->
+    <p-dialog
+      [(visible)]="deleteDialog"
+      header="Confirm"
+      [modal]="true"
+      [style]="{ width: '450px' }"
+    >
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span
+        >Are you sure you want to delete
+        >?</span
+        >
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteDialog"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+      </ng-template>
+  
+    </p-dialog>
+  </div>
+</div>
