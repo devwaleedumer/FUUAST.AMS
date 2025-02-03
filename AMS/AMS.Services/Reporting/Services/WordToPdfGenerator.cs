@@ -19,7 +19,7 @@ namespace AMS.SERVICES.Reporting.Services
             finally
             {
                 if (File.Exists(filePath))
-                     File.Delete(filePath);
+                    File.Delete(filePath);
             }
         }
     }

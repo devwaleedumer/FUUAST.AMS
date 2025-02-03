@@ -22,6 +22,14 @@ export const userApi = apiSlice.injectEndpoints({
 
             })
         }),
+        changePassword: builder.mutation<string, { password: string, newPassword: string, confirmNewPassword: string }>({
+            query: (data) => ({
+                url: "accounts/change-password",
+                method: "POST",
+                body: data,
+                responseHandler: "text"
+            })
+        }),
         login: builder.mutation<ILoginResponse, ILoginRequest>({
             query: ({ email, password }) => ({
                 url: "tokens/get-token-cookie",
@@ -57,4 +65,4 @@ export const userApi = apiSlice.injectEndpoints({
 
 
 
-export const { useRegisterMutation, useLoginMutation, useLazyLogoutQuery, useVerifyEmailQuery } = userApi
+export const { useRegisterMutation, useLoginMutation, useLazyLogoutQuery, useVerifyEmailQuery, useChangePasswordMutation } = userApi

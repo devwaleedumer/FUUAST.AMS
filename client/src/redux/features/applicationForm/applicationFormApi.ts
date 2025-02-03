@@ -1,5 +1,5 @@
 import { apiSlice } from "../apiSlice";
-import { ApplicantDashboardResponse, ApplicationFormCreateRequest, ApplicationFormCreateResponse, SubmitApplicationFormResponse } from "@/types/applicationForm";
+import { ApplicantDashboardResponse, ApplicationDetailResponse, ApplicationFormCreateRequest, ApplicationFormCreateResponse, SubmitApplicationFormResponse } from "@/types/applicationForm";
 import { admissionSelectionValues, editAdmissionSelectionValues } from "@/lib/SchemaValidators/ApplicationForm/AdmissionSelectionsSchema.validator";
 
 export const applicationFormApi = apiSlice.injectEndpoints({
@@ -28,11 +28,18 @@ export const applicationFormApi = apiSlice.injectEndpoints({
             invalidatesTags: ["applicationForms"]
         }),
         getSubmittedApplication: builder.query<SubmitApplicationFormResponse, null>({
-            query: () => ({
+            query: (id) => ({
                 url: "/ApplicationForms/application-programs",
                 method: "GET",
             }),
             providesTags: ["applicationForms"]
+        }),
+        getApplicationDetail: builder.query<ApplicationDetailResponse, number>({
+            query: (id) => ({
+                url: "/ApplicationForms/get-details/" + id,
+                method: "GET",
+            }),
+            // providesTags: ["applicationForms"]
         }),
         editSubmittedApplication: builder.mutation<string, editAdmissionSelectionValues>({
             query: (data) => ({
@@ -62,5 +69,6 @@ export const {
     useSubmitApplicationFormMutation,
     useGetSubmittedApplicationQuery,
     useEditSubmittedApplicationMutation,
-    useGetApplicantDashboardDataQuery
+    useGetApplicantDashboardDataQuery,
+    useGetApplicationDetailQuery
 } = applicationFormApi;

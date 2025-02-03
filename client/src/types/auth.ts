@@ -22,6 +22,7 @@ export interface ILoginResponse {
 
 export interface IUser {
     id: number,
+    applicantId: number,
     userName: string,
     fullName: string,
     email: string,

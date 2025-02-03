@@ -278,6 +278,9 @@ namespace AMS.DATA.Migrations
                     b.Property<int?>("ProgramId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("SessionId")
                         .HasColumnType("int");
 
@@ -420,15 +423,6 @@ namespace AMS.DATA.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BranchCode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BranchNameWithCity")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)");
-
                     b.Property<string>("DocumentUrl")
                         .IsRequired()
                         .IsUnicode(false)
@@ -521,6 +515,103 @@ namespace AMS.DATA.Migrations
                         .IsUnique();
 
                     b.ToTable("Guardian", "Domain");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.MeritList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InsertedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("MeritListNo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ProgramId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.HasIndex("SessionId", "ProgramId", "DepartmentId", "ShiftId");
+
+                    b.ToTable("MeritList", "Domain");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.MeritListDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationFormId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InsertedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MeritListId")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Score")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationFormId")
+                        .IsUnique();
+
+                    b.HasIndex("MeritListId");
+
+                    b.ToTable("MeritListDetails", "Domain");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.ProgramApplied", b =>
@@ -1269,6 +1360,21 @@ namespace AMS.DATA.Migrations
                     b.ToTable("User", "Auth");
                 });
 
+            modelBuilder.Entity("AMS.DOMAIN.Identity.ApplicationUserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole", "Auth");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -1312,21 +1418,6 @@ namespace AMS.DATA.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserLogin", "Auth");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRole", "Auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -1451,6 +1542,66 @@ namespace AMS.DATA.Migrations
                         .HasConstraintName("FK_Applicant_Guardian");
 
                     b.Navigation("Applicant");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.MeritList", b =>
+                {
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.Department", "Department")
+                        .WithMany("MeritLists")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_MeritList_Department");
+
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.Program", "Program")
+                        .WithMany("MeritLists")
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_MeritList_Program");
+
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.AdmissionSession", "Session")
+                        .WithMany("MeritLists")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_MeritList_Session");
+
+                    b.HasOne("AMS.DOMAIN.Entities.Lookups.TimeShift", "Shift")
+                        .WithMany("MeritLists")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_MeritList_Shift");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Program");
+
+                    b.Navigation("Session");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.MeritListDetails", b =>
+                {
+                    b.HasOne("AMS.DOMAIN.Entities.AMS.ApplicationForm", "ApplicationForm")
+                        .WithOne("MeritListDetails")
+                        .HasForeignKey("AMS.DOMAIN.Entities.AMS.MeritListDetails", "ApplicationFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ApplicationForm_MeritListDetails");
+
+                    b.HasOne("AMS.DOMAIN.Entities.AMS.MeritList", "MeritList")
+                        .WithMany("MeritListDetails")
+                        .HasForeignKey("MeritListId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("FK_MeritListDetails_MeritList");
+
+                    b.Navigation("ApplicationForm");
+
+                    b.Navigation("MeritList");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.ProgramApplied", b =>
@@ -1606,6 +1757,25 @@ namespace AMS.DATA.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("AMS.DOMAIN.Identity.ApplicationUserRole", b =>
+                {
+                    b.HasOne("AMS.DOMAIN.Identity.ApplicationRole", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AMS.DOMAIN.Identity.ApplicationUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.HasOne("AMS.DOMAIN.Identity.ApplicationUser", null)
@@ -1617,21 +1787,6 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("AMS.DOMAIN.Identity.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.HasOne("AMS.DOMAIN.Identity.ApplicationRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AMS.DOMAIN.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1665,12 +1820,19 @@ namespace AMS.DATA.Migrations
                 {
                     b.Navigation("FeeChallan");
 
+                    b.Navigation("MeritListDetails");
+
                     b.Navigation("ProgramsApplied");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.FeeChallan", b =>
                 {
                     b.Navigation("FeeChallanSubmissionDetail");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Entities.AMS.MeritList", b =>
+                {
+                    b.Navigation("MeritListDetails");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.AcademicYear", b =>
@@ -1681,6 +1843,8 @@ namespace AMS.DATA.Migrations
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.AdmissionSession", b =>
                 {
                     b.Navigation("ApplicationForms");
+
+                    b.Navigation("MeritLists");
                 });
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.DegreeGroup", b =>
@@ -1695,6 +1859,8 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.Department", b =>
                 {
+                    b.Navigation("MeritLists");
+
                     b.Navigation("ProgramApplied");
 
                     b.Navigation("ProgramDepartments");
@@ -1711,6 +1877,8 @@ namespace AMS.DATA.Migrations
                 {
                     b.Navigation("ApplicationForms");
 
+                    b.Navigation("MeritLists");
+
                     b.Navigation("ProgramDepartments");
                 });
 
@@ -1726,6 +1894,8 @@ namespace AMS.DATA.Migrations
 
             modelBuilder.Entity("AMS.DOMAIN.Entities.Lookups.TimeShift", b =>
                 {
+                    b.Navigation("MeritLists");
+
                     b.Navigation("ProgramApplied");
 
                     b.Navigation("ProgramDepartments");
@@ -1734,6 +1904,13 @@ namespace AMS.DATA.Migrations
             modelBuilder.Entity("AMS.DOMAIN.Identity.ApplicationRole", b =>
                 {
                     b.Navigation("RoleClaims");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("AMS.DOMAIN.Identity.ApplicationUser", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

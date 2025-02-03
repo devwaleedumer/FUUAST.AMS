@@ -42,17 +42,21 @@ namespace AMS.SERVICES.DataService
             {
                 throw new NotFoundException("Applicant data not found");
             }
-
-            // Process the degree details JSON into a list
+            
+            // Deserialize the JSON into the DegreeDetails list
             foreach (var applicant in userList)
             {
                 if (!string.IsNullOrEmpty(applicant.DegreeDetails))
                 {
                     // Deserialize the JSON into the DegreeDetails list
-                    applicant.Degrees = JsonConvert.DeserializeObject<List<DegreeInfoList>>(applicant.DegreeDetails);
+                    var degrees = JsonConvert.DeserializeObject<List<DegreeInfoList>>(applicant.DegreeDetails);
+                    applicant.Degrees = degrees ?? new List<DegreeInfoList>();
+                }
+                else
+                {
+                    applicant.Degrees = new List<DegreeInfoList>();
                 }
             }
-
             return userList.Adapt<List<ApplicantInfoList>>();
         }
             

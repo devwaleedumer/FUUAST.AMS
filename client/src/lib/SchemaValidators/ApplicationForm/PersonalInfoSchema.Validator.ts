@@ -64,36 +64,32 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
                 .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                     message: "Contact Name must contain only alphabets."
                 }),
-            relation: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact relation  is required 😊")
+            relation: z.string({ required_error: "Relation is required", invalid_type_error: "Relation is required" }).min(1, "Contact relation  is required 😊")
                 .trim(),
-            permanentAddress: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact address  is required 😊").trim(),
-            contactNo: z.string({ required_error: "required", invalid_type_error: "required" }).regex(/^\d{11}$/, "11 digits are allowed"),
+            permanentAddress: z.string({ required_error: "Address is required", invalid_type_error: "required" }).min(1, "Contact address  is required 😊").trim(),
+            contactNo: z.string({ required_error: "Contact is required", invalid_type_error: "required" }).regex(/^\d{11}$/, "11 digits are allowed"),
             applicantId: z.number().optional(),
             id: z.number().optional()
         }),
-        religion: z.string({ required_error: "required" }).min(1, { message: "Please select a religion" }),
-        gender: z.string({ required_error: "required" }).min(1, { message: "Please select a gender" }),
-        bloodGroup: z.string({ required_error: "required" }).min(1, { message: "Please select a blood group" }),
-        province: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Province is required" })
+        religion: z.string({ required_error: "Gender is required" }).min(1, { message: "Please select a religion" }),
+        gender: z.string({ required_error: "Gender is required" }).min(1, { message: "Please select a gender" }),
+        bloodGroup: z.string({ required_error: "Blood group is required" }).min(1, { message: "Please select a blood group" }),
+        province: z.string({ required_error: "Province is required", invalid_type_error: "Province is required" }).min(1, { message: "Province is required" })
             .trim()
-            .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
-                message: "Province must contain only alphabets."
-            }),
-        city: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "City is required" })
+        ,
+        city: z.string({ required_error: "City is required", invalid_type_error: "City is required" }).min(1, { message: "City is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
             }),
-        country: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Country is required" })
+        country: z.string({ required_error: "Country is required", invalid_type_error: "Country is required" }).min(1, { message: "Country is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
             }),
         domicile: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Domicile is required" })
             .trim()
-            .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
-                message: "Domicile must contain only alphabets."
-            }),
+        ,
         postalCode: z.coerce.number({ invalid_type_error: "Only digits are allowed", required_error: "required" })
     }),
     z.object({
@@ -140,27 +136,25 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
         })
         ,
         emergencyContact: z.object({
-            name: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact name is required")
+            name: z.string({ required_error: "Name is required", invalid_type_error: "Name is required" }).min(1, "Contact name is required")
                 .trim()
                 .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                     message: "Contact Name must contain only alphabets."
                 }),
-            relation: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Contact relation  is required 😊")
+            relation: z.string({ required_error: "Relation is required", invalid_type_error: "required" }).min(1, "Contact relation  is required 😊")
                 .trim(),
-            permanentAddress: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, "Guardian address  is required 😊").trim(),
-            contactNo: z.string({ required_error: "required", invalid_type_error: "required" }).regex(/^\d{11}$/, "11 digits are allowed"),
+            permanentAddress: z.string({ required_error: "Address is required", invalid_type_error: "Address is required" }).min(1, "Guardian address  is required 😊").trim(),
+            contactNo: z.string({ required_error: "Contact no is  required", invalid_type_error: "Contact no is  required" }).regex(/^\d{11}$/, "11 digits are allowed"),
             applicantId: z.number().optional(),
             id: z.number().optional()
         }),
-        religion: z.string({ required_error: "required" }).min(1, { message: "Please select a religion" }),
-        gender: z.string({ required_error: "required" }).min(1, { message: "Please select a gender" }),
-        bloodGroup: z.string({ required_error: "required" }).min(1, { message: "Please select a blood group" }),
-        province: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Province is required" })
+        religion: z.string({ required_error: "Religion is required" }).min(1, { message: "Please select a religion" }),
+        gender: z.string({ required_error: "Gender is required" }).min(1, { message: "Please select a gender" }),
+        bloodGroup: z.string({ required_error: "blood group is required" }).min(1, { message: "Please select a blood group" }),
+        province: z.string({ required_error: "Province is required", invalid_type_error: "Please select a Province" }).min(1, { message: "Province is required" })
             .trim()
-            .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
-                message: "Province must contain only alphabets."
-            }),
-        city: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "City is required" })
+        ,
+        city: z.string({ required_error: "City is required", invalid_type_error: "City is required" }).min(1, { message: "City is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
@@ -170,7 +164,7 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "City must contain only alphabets."
             }),
-        domicile: z.string({ required_error: "required", invalid_type_error: "required" }).min(1, { message: "Domicile is required" })
+        domicile: z.string({ required_error: "Domicile is required", invalid_type_error: "Domicile is required" }).min(1, { message: "Domicile is required" })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
                 message: "Domicile must contain only alphabets."

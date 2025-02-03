@@ -52,7 +52,7 @@ namespace AMS.MODELS.ApplicationForm.Applicant
         public string? BoardOrUniversityName { get; set; }  // Changed to PascalCase
         public int PassingYear { get; set; }               // Changed to PascalCase
         public string? Subject { get; set; }
-        public int RollNo { get; set; }                    // Changed to PascalCase
+        public string? RollNo { get; set; }                    // Changed to PascalCase
         public int TotalMarks { get; set; }
         public int ObtainedMarks { get; set; }
         public int DegreeId { get; set; }

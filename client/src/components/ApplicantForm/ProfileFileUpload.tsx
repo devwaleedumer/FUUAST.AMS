@@ -11,11 +11,12 @@ interface ProfileFileUploadProps extends React.InputHTMLAttributes<HTMLInputElem
   onChange: (value: any) => void;
   isValid: boolean,
   setValue?: UseFormSetValue<any>,
-  imageUrl?:string 
+  imageUrl?:string ,
+  className?:string ,
 }
  
 const ProfileFileUpload = React.forwardRef<HTMLInputElement, ProfileFileUploadProps>(
-  ({ isValid, value, onChange,setValue, ...props }, ref) => {
+  ({ isValid, value,className, onChange,setValue, ...props }, ref) => {
     {
       const [preview, setPreview] = useState<string | undefined>();
       return (
@@ -23,7 +24,7 @@ const ProfileFileUpload = React.forwardRef<HTMLInputElement, ProfileFileUploadPr
           {preview && (
             <div className="w-full flex justify-center items-center">
               <div
-                className={`border relative w-[100px] h-[100px] rounded-full overflow-hidden ring-2 ring-primary hover:opacity-70 transition-opacity duration-100 ease-in-out`}
+                className={`border relative  overflow-hidden ring-2 ring-primary hover:opacity-70 transition-opacity duration-100 ease-in-out ${!className ? "w-[100px] h-[100px]  rounded-full" : className}}`}
               >
                 <AspectRatio ratio={1 / 1} className="relative">
                   <Image src={preview} alt="upload item" fill />

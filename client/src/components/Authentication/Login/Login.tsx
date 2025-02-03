@@ -25,10 +25,11 @@ import {
   loginFormSchema,
   loginFormSchemaType,
 } from "@/lib/SchemaValidators/Authentication/Login.Validator";
+import { setCurrentStepId } from "@/lib/services/wizardLocalStorageService";
 import { useLoginMutation } from "@/redux/features/auth/userApi";
 import { userLoggedOut } from "@/redux/features/auth/userSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GraduationCap, FileText } from "lucide-react";
+import { GraduationCap, FileText, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -42,6 +43,7 @@ export default function Login() {
       email: "",
       password: "",
     },
+    mode: "onChange"
   });
   const {formState:{errors}} = form
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -51,8 +53,17 @@ export default function Login() {
     if (isSuccess) {
       toast({
         title:"Success",
-        description: "Sign in successfully"
+        description: "Sign in successfully",
+        className: "bg-background border-l-8 border-l-green-500",
+        action: (
+                <div className="flex items-center">
+                  <CheckCircle2 className="mr-2 h-5 w-5 text-green-500" />
+                  <span className="font-semibold text-green-500">Success</span>
+                </div>
+              ),
+        // i
       })
+      setCurrentStepId(0)
       redirect('/dashboard')
     }
   },[isSuccess])

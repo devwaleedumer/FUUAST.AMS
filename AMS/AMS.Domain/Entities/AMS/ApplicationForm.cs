@@ -12,6 +12,7 @@ namespace AMS.DOMAIN.Entities.AMS
         {
             ProgramsApplied = new HashSet<ProgramApplied>();
         }
+        public string? Remarks { get; set; }
         public int Id { get; set; }
         public bool? InfoConsent { get; set; }
         public DateTime? SubmissionDate { get; set; }
@@ -22,6 +23,7 @@ namespace AMS.DOMAIN.Entities.AMS
         public virtual ICollection<ProgramApplied>? ProgramsApplied { get; set; }
         public virtual AdmissionSession? Session { get; set; }
         public virtual Program? Program { get; set; }
+        public virtual MeritListDetails? MeritListDetails { get; set; }
         public int? SessionId { get; set; }
         public int? ApplicantId { get; set; }
         public int? ProgramId { get; set; }
@@ -31,6 +33,5 @@ namespace AMS.DOMAIN.Entities.AMS
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public bool? IsDeleted { get; set; }
-
     }
 }

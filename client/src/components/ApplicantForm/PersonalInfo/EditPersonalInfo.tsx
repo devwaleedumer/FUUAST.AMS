@@ -46,6 +46,9 @@ import {
   genders,
   religions,
   photographRequirements,
+  pakistanCitiesByProvince,
+  relations,
+  countrie,
 } from "@/lib/data";
 import {
   PersonalEditInfoValues,
@@ -76,6 +79,8 @@ import {
   Asterisk,
   LoaderCircle,
   SaveAll,
+  ChevronsUpDown,
+  Check,
 } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
@@ -83,47 +88,78 @@ import { AspectRatio } from "../../ui/aspect-ratio";
 import { FaTrashAlt } from "react-icons/fa";
 import { PersonalInformation } from "@/types/applicant";
 import { toast } from "../../ui/use-toast";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 const description =
   "For processing your application, we first following information about you.";
 type EditPersonalInfoProps = {
-  personalInformationData : PersonalInformation | undefined
+  personalInformationData: PersonalInformation | undefined;
 };
 
-const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) => {
-
-  type PersonalEditInfoValuesTrue = Extract<PersonalEditInfoValues,{isImageChanged : true}>
-  const form = useForm<  PersonalEditInfoValues>({
-    resolver: zodResolver( personalInfoEditSchema ),
-    defaultValues:  {...personalInfoDefaults,isImageChanged:false},
-    mode: "onBlur",
-    values: personalInformationData as any ,
+const EditPersonalInfo: FC<EditPersonalInfoProps> = ({
+  personalInformationData,
+}) => {
+  type PersonalEditInfoValuesTrue = Extract<
+    PersonalEditInfoValues,
+    { isImageChanged: true }
+  >;
+  const form = useForm<PersonalEditInfoValues>({
+    resolver: zodResolver(personalInfoEditSchema),
+    defaultValues: { ...personalInfoDefaults, isImageChanged: false },
+    mode: "onTouched",
+    values: personalInformationData as any,
   });
 
-  const [edit,{isLoading,isSuccess}] =  useEditApplicantPersonalInformationMutation();
+  const [edit, { isLoading, isSuccess }] =
+    useEditApplicantPersonalInformationMutation();
   const [isOpen, setIsOpen] = useState(false);
-    useEffect(() => {
-     if (personalInformationData!.dob) {
-        setValue("dob",new Date(personalInformationData!.dob))
-      }
-      if ((personalInformationData as any).profilePictureUrl) {
-        setValue("isImageChanged",false)
-
-      }
-      else{
-        setValue("isImageChanged",true)
-      }
-              // setValue("isImageChanged",false)
-
+  const [isCountryListOpen, setIsCountryListOpen] = useState(false);
+  useEffect(() => {
+    if (personalInformationData!.dob) {
+      setValue("dob", new Date(personalInformationData!.dob));
+    }
+    if ((personalInformationData as any).profilePictureUrl) {
+      setValue("isImageChanged", false);
+    } else {
+      setValue("isImageChanged", true);
+    }
+    // setValue("isImageChanged",false)
+    if (personalInformationData?.domicile) {
+      setCityList(
+        pakistanCitiesByProvince.filter(
+          (x) => x.province == personalInformationData?.province
+        )[0].cities
+      );
+      setValue("domicile", personalInformationData?.domicile);
+      setValue("province", personalInformationData?.province);
+    }
   }, []);
-  useEffect(() =>{
-  if (isSuccess) {
-    toast({
-          title: "Success",
-          description : "Personal data successfully updated",
-          variant: "default",
-        })
-  }
-  },[isSuccess])
+  useEffect(() => {
+    if (isSuccess) {
+      toast({
+        title: "Success",
+        description: "Personal data successfully updated",
+        variant: "default",
+      });
+      dispatch(nextStep());
+    }
+  }, [isSuccess]);
+  const [cityList, setCityList] = useState<Array<string>>([]);
+  const onChangeProvince = (province: string) => {
+    if (province) {
+      setCityList(
+        pakistanCitiesByProvince.filter((x) => x.province == province)[0]
+          .cities ?? []
+      );
+    }
+    setValue("domicile", "");
+  };
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const {
@@ -132,14 +168,15 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
     watch,
     formState: { errors },
   } = form;
-  const isImageChanged = watch("isImageChanged")
+  const isImageChanged = watch("isImageChanged");
   const processPersonalInfoForm: SubmitHandler<PersonalEditInfoValues> = async (
     data
   ) => {
-    // Dispatch and next step 
+    // Dispatch and next step
     await edit(data);
   };
-  return <>
+  return (
+    <>
       <Heading
         title={"Step#1. Personal Information"}
         description={description}
@@ -147,7 +184,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
       <Card>
         <CardContent>
           {/*<List className="p-5" list={photographRequirements} title="Physical Attributes of Photograph"/>*/}
-          <Form {...form} >
+          <Form {...form}>
             <form
               onSubmit={form.handleSubmit(processPersonalInfoForm, (error) => {
                 console.log(error);
@@ -156,11 +193,11 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
             >
               <div className={cn("md:grid md:grid-cols-3 gap-x-3 ")}>
                 <>
-                {/* Create  */}
-                
-                    {/* // Image remain unchanged */}
-          { isImageChanged == false ? 
-                     <div className=" col-span-3">
+                  {/* Create  */}
+
+                  {/* // Image remain unchanged */}
+                  {isImageChanged == false ? (
+                    <div className=" col-span-3">
                       <FormLabel>Photo</FormLabel>
                       <div className=" flex justify-center items-center">
                         <div
@@ -175,13 +212,16 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                           </AspectRatio>
                           <FaTrashAlt
                             className="h-4 w-5 z-30 absolute text-green-700 hover:text-green-500 top-[17%] left-[68%] cursor-pointer"
-                            onClick={() => {setValue("isImageChanged",true)}}
+                            onClick={() => {
+                              setValue("isImageChanged", true);
+                            }}
                           />
                         </div>
                       </div>
-                    </div> : 
+                    </div>
+                  ) : (
                     // Image got changed
-                     <div className="col-span-3">
+                    <div className="col-span-3">
                       <FormField
                         control={form.control}
                         name="profileImage"
@@ -196,15 +236,19 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                                 setValue={setValue as any}
                                 onChange={field.onChange}
                                 value={field.value}
-                                isValid={!!(errors as FieldErrors<PersonalEditInfoValuesTrue>).profileImage}
+                                isValid={
+                                  !!(
+                                    errors as FieldErrors<PersonalEditInfoValuesTrue>
+                                  ).profileImage
+                                }
                               />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </div>}
-                  
+                    </div>
+                  )}
 
                   <FormField
                     control={form.control}
@@ -282,8 +326,13 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                             <Calendar
                               mode="single"
                               captionLayout="dropdown"
-                              fromYear={2015} toYear={2025}
-                              selected={(field.value as any) !== typeof(Date) ? new Date(field.value) : field.value }
+                              fromYear={2015}
+                              toYear={2025}
+                              selected={
+                                (field.value as any) !== typeof Date
+                                  ? new Date(field.value)
+                                  : field.value
+                              }
                               onSelect={field.onChange}
                               onDayClick={() => setIsOpen(false)}
                               defaultMonth={field.value}
@@ -372,7 +421,9 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                         <Select
                           disabled={loading}
                           onValueChange={field.onChange}
-                          value={field.value || personalInformationData?.bloodGroup}
+                          value={
+                            field.value || personalInformationData?.bloodGroup
+                          }
                           defaultValue={field.value}
                         >
                           <FormControl>
@@ -412,7 +463,9 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                         <Select
                           disabled={loading}
                           onValueChange={field.onChange}
-                          value={field.value  || personalInformationData?.religion}
+                          value={
+                            field.value || personalInformationData?.religion
+                          }
                           defaultValue={field.value}
                         >
                           <FormControl>
@@ -441,27 +494,6 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                   />
                   <FormField
                     control={form.control}
-                    name="domicile"
-                    render={({ field }) => (
-                      <FormItem className="mb-2">
-                        <FormLabel className="relative">
-                          Domicile{" "}
-                          <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={loading}
-                            placeholder="Domicile"
-                            error={errors.domicile?.message}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name="province"
                     render={({ field }) => (
                       <FormItem className="mb-2">
@@ -469,18 +501,76 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                           Province{" "}
                           <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
                         </FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={loading}
-                            error={errors.province?.message}
-                            placeholder="Province"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Select
+                          disabled={loading}
+                          onValueChange={(e) => {
+                            onChangeProvince(e as string);
+                            field.onChange(e);
+                          }}
+                          value={field.value || personalInformationData?.province || ''}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger error={errors.province?.message}>
+                              <SelectValue
+                                defaultValue={field.value}
+                                placeholder="Select a Province"
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {/* @ts-ignore  */}
+                            {pakistanCitiesByProvince.map((p_c) => (
+                              <SelectItem
+                                key={p_c.province + "pvc"}
+                                value={p_c.province}
+                              >
+                                {p_c.province}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="domicile"
+                    render={({ field }) => (
+                      <FormItem className="mb-2">
+                        <FormLabel className="relative">
+                          Domicile{" "}
+                          <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
+                        </FormLabel>
+                        <Select
+                          disabled={loading}
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          value={field.value || personalInformationData?.domicile || ''}
+                        >
+                          <FormControl>
+                            <SelectTrigger error={errors.domicile?.message}>
+                              <SelectValue
+                                defaultValue={field.value}
+                                placeholder="Select a Domicile"
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {/* @ts-ignore  */}
+                            {cityList.map((p_c) => (
+                              <SelectItem key={p_c + "city"} value={p_c}>
+                                {p_c}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="postalCode"
@@ -503,7 +593,78 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                       </FormItem>
                     )}
                   />
+                 
                   <FormField
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col space-y-2 mt-2">
+                        <FormLabel className="relative">
+                          Country{" "}
+                          <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
+                        </FormLabel>{" "}
+                        <Popover
+                          open={isCountryListOpen}
+                          onOpenChange={setIsCountryListOpen}
+                        >
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "justify-between",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value
+                                  ? countrie.find(
+                                      (country) => country === field.value
+                                    )
+                                  : "Select language"}
+                                <ChevronsUpDown className="opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0">
+                            <Command>
+                              <CommandInput
+                                placeholder="Search country."
+                                className="h-9"
+                              />
+                              <CommandList>
+                                <CommandEmpty>No Country found.</CommandEmpty>
+                                <CommandGroup>
+                                  {countrie.map((c) => (
+                                    <CommandItem
+                                      value={c}
+                                      key={c}
+                                      onSelect={() => {
+                                        form.setValue("country", c);
+                                        setIsCountryListOpen(false);
+                                      }}
+                                    >
+                                      {c}
+                                      <Check
+                                        className={cn(
+                                          "ml-auto",
+                                          c === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                   <FormField
                     control={form.control}
                     name="city"
                     render={({ field }) => (
@@ -518,27 +679,6 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                             placeholder="City"
                             {...field}
                             error={errors.city?.message}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem className="mb-2">
-                        <FormLabel className="relative">
-                          Country{" "}
-                          <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={loading}
-                            placeholder="Country"
-                            {...field}
-                            error={errors.country?.message}
                           />
                         </FormControl>
                         <FormMessage />
@@ -610,6 +750,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                                       error={errors.guardian?.name?.message}
                                       disabled={loading}
                                       {...field}
+                                      placeholder="Guardian's Name"
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -618,22 +759,47 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                             />
                             <FormField
                               control={form.control}
-                              name={`guardian.relation`}
+                              name="guardian.relation"
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="mb-2">
                                   <FormLabel className="relative">
-                                    Guardian relation{" "}
+                                    Guardian Relation{" "}
                                     <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
                                   </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder=""
-                                      type="text"
-                                      error={errors.guardian?.relation?.message}
-                                      disabled={loading}
-                                      {...field}
-                                    />
-                                  </FormControl>
+                                  <Select
+                                    disabled={loading}
+                                    onValueChange={field.onChange}
+                                    value={
+                                      field.value ||
+                                      personalInformationData?.guardian
+                                        ?.relation || ""
+                                    }
+                                    defaultValue={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger
+                                        error={
+                                          errors.guardian?.relation?.message
+                                        }
+                                      >
+                                        <SelectValue
+                                          defaultValue={field.value}
+                                          placeholder="Select a Relation"
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {/* @ts-ignore  */}
+                                      {relations.map((rlgn) => (
+                                        <SelectItem
+                                          key={rlgn + "rel"}
+                                          value={rlgn}
+                                        >
+                                          {rlgn}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -745,25 +911,49 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                             />
                             <FormField
                               control={form.control}
-                              name={"emergencyContact.relation"}
+                              name="emergencyContact.relation"
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="mb-2">
                                   <FormLabel className="relative">
-                                    Contact relation{" "}
+                                    Contact's Relation{" "}
                                     <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
                                   </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="Relation"
-                                      type="text"
-                                      error={
-                                        errors.emergencyContact?.relation
-                                          ?.message
-                                      }
-                                      disabled={loading}
-                                      {...field}
-                                    />
-                                  </FormControl>
+                                  <Select
+                                    disabled={loading}
+                                    onValueChange={field.onChange}
+                                    value={
+                                      field.value ||
+                                      personalInformationData?.emergencyContact
+                                        ?.relation ||
+                                      ""
+                                    }
+                                    defaultValue={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger
+                                        error={
+                                          errors.emergencyContact?.relation
+                                            ?.message
+                                        }
+                                      >
+                                        <SelectValue
+                                          defaultValue={field.value}
+                                          placeholder="Select a Relation"
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {/* @ts-ignore  */}
+                                      {relations.map((rlgn) => (
+                                        <SelectItem
+                                          key={rlgn + "em-rel"}
+                                          value={rlgn}
+                                        >
+                                          {rlgn}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -835,29 +1025,49 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({personalInformationData}) 
                   <ArrowLeft className="size-4 " />
                   Previous
                 </Button>
-              
-               {(personalInformationData?.emergencyContact == null) ?<Button disabled={isLoading} type="submit" size={"sm"} >
-                     {!isLoading ? <> Save & Next
-                  <Save className="size-4 " /></> : <LoaderCircle className="size-4 animate-spin"/>} 
-                  </Button> :
-                   <div className="space-x-2 flex">
-                <Button disabled={isLoading} type="submit" size={"sm"} >
-                     {!isLoading ? <>Update
-                  <Save className="size-4 " /></> : <LoaderCircle className="size-4 animate-spin"/>} 
+
+                {personalInformationData?.emergencyContact == null ? (
+                  <Button disabled={isLoading} type="submit" size={"sm"}>
+                    {!isLoading ? (
+                      <>
+                        {" "}
+                        Save & Next
+                        <Save className="size-4 " />
+                      </>
+                    ) : (
+                      <LoaderCircle className="size-4 animate-spin" />
+                    )}
                   </Button>
-                 <Button type="button" disabled={isLoading} size={"sm"}  onClick={() =>dispatch(nextStep())}  >
-                 Next
-                  <ArrowRight className="size-4 " /> 
-                </Button>
-               </div>
-                  }
+                ) : (
+                  <div className="space-x-2 flex">
+                    <Button disabled={isLoading} type="submit" size={"sm"}>
+                      {!isLoading ? (
+                        <>
+                          Update
+                          <Save className="size-4 " />
+                        </>
+                      ) : (
+                        <LoaderCircle className="size-4 animate-spin" />
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      disabled={isLoading}
+                      size={"sm"}
+                      onClick={() => dispatch(nextStep())}
+                    >
+                      Next
+                      <ArrowRight className="size-4 " />
+                    </Button>
+                  </div>
+                )}
               </div>
             </form>
           </Form>
         </CardContent>
       </Card>
     </>
- 
+  );
 };
 
 export default EditPersonalInfo;

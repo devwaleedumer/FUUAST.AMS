@@ -45,6 +45,8 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using AMS.SERVICES.Dapper;
 using AMS.VALIDATORS.Identity.User;
+using AMS.SERVICES.Reporting.IService;
+using AMS.SERVICES.Reporting.Services;
 
 namespace AMS.Extensions
 {
@@ -258,6 +260,9 @@ namespace AMS.Extensions
             services.AddScoped<IAcademicyearService, AcademicyearService>();
             services.AddScoped<IApplicantManagementService, ApplicantManagementService>();
              services.AddScoped<IDashboardservice, Dashboardservice>();
+            services.AddScoped<IFeeChallanService, FeeChallanService>();
+            services.AddScoped<IWordReportGenerator, WordToPdfGenerator>();
+            services.AddScoped<IApplicationFormReportService, ApplicationFormReportService>();
 
 
 

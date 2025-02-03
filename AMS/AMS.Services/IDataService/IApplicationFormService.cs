@@ -10,6 +10,7 @@ namespace AMS.SERVICES.IDataService
         Task<SubmitApplicationResponse> GetApplicationFormPrograms(CancellationToken ct);
         Task<string> EditApplicationFormPrograms(EditSubmitApplicationFormRequest request, CancellationToken ct);
         Task<ApplicantDashboardResponse> GetApplicationFormStatus(int userId, CancellationToken ct);
+        Task<ApplicationDetailResponse> ApplicationDetailsByApplicantId(int applicantId, CancellationToken ct);
 
     }
 }

@@ -56,6 +56,7 @@ namespace AMS.SERVICES.Identity.Services
 
         public async Task<List<string>> GetAllPermissionsAsync(CancellationToken ct) => 
             await _context.RoleClaims.Select(role => role.ClaimValue!).ToListAsync(ct);
+
         public async Task<string> UpdatePermissionsAsync(UpdateRolePermissionsRequest request, CancellationToken cancellationToken)
         {
             var role = await _roleManager.FindByIdAsync(request.Id.ToString());
@@ -76,7 +77,6 @@ namespace AMS.SERVICES.Identity.Services
                     throw new AMSException("Update permissions failed.", removeResult.GetErrors());
                 }
             }
-
             // Add all permissions that were not previously selected
             foreach (string permission in request.Permissions.Where(c => !currentClaims.Any(p => p.Value == c)))
             {
@@ -91,8 +91,6 @@ namespace AMS.SERVICES.Identity.Services
                     await _context.SaveChangesAsync(cancellationToken);
                 }
             }
-
-
             return "Permissions Updated.";
         }
         public async Task<RoleDto> GetByIdAsync(int id) =>

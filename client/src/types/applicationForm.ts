@@ -25,3 +25,15 @@ export type FormStatus = {
     name: string,
     status: string,
 }
+
+export type ApplicationDetailResponse = {
+    fullName: string;
+    formNo: number;
+    cnic: string;
+    feeChallanNo: string;
+    program: string;
+    noOfProgramsApplied: number;
+    totalFee: number;
+    challanStatus: string;
+    VerificationStatus: string;
+};

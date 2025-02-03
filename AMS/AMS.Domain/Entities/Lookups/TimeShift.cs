@@ -14,11 +14,13 @@ namespace AMS.DOMAIN.Entities.Lookups
         {
             ProgramDepartments = new HashSet<ProgramDepartment>();
             ProgramApplied = new HashSet<ProgramApplied>();
+            MeritLists = new HashSet<MeritList>();
         }
         public int Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
         public virtual ICollection<ProgramDepartment> ProgramDepartments { get; set; }
+        public virtual ICollection<MeritList>? MeritLists { get; set; }
         public virtual ICollection<ProgramApplied> ProgramApplied { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }

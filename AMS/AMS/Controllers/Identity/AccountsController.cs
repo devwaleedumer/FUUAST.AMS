@@ -1,6 +1,8 @@
 ﻿using AMS.MODELS.Identity.User;
 using AMS.SERVICES.Identity.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AMS.Controllers.Identity
 {
@@ -83,6 +85,29 @@ namespace AMS.Controllers.Identity
             await _userService.ToggleStatusAsync(request, ct);
             return Ok();
         }
+
+        /// <summary>
+        /// Reset password
+        /// </summary>
+        /// <param name="request">Change Password reset object request</param>
+        /// <remarks>
+        /// Sample Request
+        /// Post api/accounts/change-password
+        /// {
+        ///    "Password": "xxxx",
+        ///    "NewPassword": "xxxx",
+        ///    "ConfirmNewPassword": "xxxx"
+        /// }
+        /// </remarks>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            await _userService.ChangePasswordAsync(request,User.GetUserId().ToString());
+            return Ok();
+        }
+
         private string GetOriginFromRequest() => $"{Request.Scheme}://{Request.Host.Value}{Request.PathBase.Value}";
 
     }

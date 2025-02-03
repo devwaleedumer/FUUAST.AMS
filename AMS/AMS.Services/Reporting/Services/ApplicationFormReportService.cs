@@ -15,24 +15,24 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace AMS.SERVICES.Reporting.Services
 {
-    public class ApplicationFormReportService(IWordReportGenerator wordReportGenerator, AMSContext context, IWebHostEnvironment env)
+    public class ApplicationFormReportService(IWordReportGenerator wordReportGenerator, AMSContext context, IWebHostEnvironment env) : IApplicationFormReportService
     {
         private readonly IWordReportGenerator _wordReportGenerator = wordReportGenerator;
         private readonly AMSContext _context = context;
         private readonly IWebHostEnvironment _env = env;
         public async Task<byte[]> GenerateUGApplicationFormPdfReportAsync(int applicationFormId)
         {
-                var data = await GetApplicationFormUgData(applicationFormId);
-                //get directory of reports
-                var reportFileDirectory = Path.Combine(_env.ContentRootPath, "Reports");
-                // get path of template docx file
-                var reportTemplatePath = Path.Combine(reportFileDirectory, "ug_admission_template.docx");
-                // name of new file without extension
-                var newFileName = $"UG-{data.PersonalInformationTableModel!.ApplicantName}-Admission Form-{data.TextFields.FormId}";
-                // new docx file path
-                var newFilePathDocx = Path.Combine(reportFileDirectory, string.Join(".", newFileName, "docx"));
-                // new pdf file path for cleanup purpose
-                var newFilePathPdf = Path.Combine(reportFileDirectory, string.Join(".", newFileName, "pdf"));
+            var data = await GetApplicationFormUgData(applicationFormId);
+            //get directory of reports
+            var reportFileDirectory = Path.Combine(_env.ContentRootPath, "Reports");
+            // get path of template docx file
+            var reportTemplatePath = Path.Combine(reportFileDirectory, "ug_admission_template.docx");
+            // name of new file without extension
+            var newFileName = $"UG-{data.PersonalInformationTableModel!.ApplicantName}-Admission Form-{data.TextFields.FormId}";
+            // new docx file path
+            var newFilePathDocx = Path.Combine(reportFileDirectory, string.Join(".", newFileName, "docx"));
+            // new pdf file path for cleanup purpose
+            //var newFilePathPdf = Path.Combine(reportFileDirectory, string.Join(".", newFileName, "pdf"));
             try
             {
                 // copy template into new path
@@ -57,11 +57,11 @@ namespace AMS.SERVICES.Reporting.Services
             }
             finally
             {
-                if (File.Exists(newFilePathPdf))
-                    File.Delete(newFilePathPdf);
+                if (File.Exists(newFilePathDocx))
+                    File.Delete(newFilePathDocx);
             }
         }
-        private void ReplaceAllTextBoxes(WordprocessingDocument doc, List<KeyValuePair<string,string>> data)
+        private void ReplaceAllTextBoxes(WordprocessingDocument doc, List<KeyValuePair<string, string>> data)
         {
             var mainPart = doc.MainDocumentPart;
 
@@ -95,9 +95,9 @@ namespace AMS.SERVICES.Reporting.Services
                     {
                         run.Append(new Text(newText));
                     }
-                   
+
                 }
-               
+
             }
         }
 
@@ -115,9 +115,11 @@ namespace AMS.SERVICES.Reporting.Services
                 .Include(app => app.ProgramsApplied!)
                     .ThenInclude(ap => ap.Department)
                 .Include(app => app.Session)
+                .Include(app => app.Session)
                 .ThenInclude(session => session!.AcademicYear)
                 .Include(app => app.FeeChallan)
                 .Include(app => app.Applicant)
+                .Include(app => app.Program)
                 .Include(app => app.Applicant!.Degrees!)
                     .ThenInclude(dg => dg.DegreeGroup)
                 .Include(app => app.Applicant!.EmergencyContact)
@@ -151,18 +153,83 @@ namespace AMS.SERVICES.Reporting.Services
         }
         private void ReplaceAcademicRecordTable(Table table, List<AcademicRecordsTableModel> data)
         {
-            var rows = table.Elements<TableRow>();
-            int index = 0;
-            foreach (var row in rows)
+            var rows = table.Elements<TableRow>().ToList();
+            // Matric
+            var matricCells = rows[0].Elements<TableCell>().ToList();
+            AddTextToCell(matricCells[0], data[0].DegreeGroupName);
+            AddTextToCell(matricCells[1], data[0].RollNo);
+            AddTextToCell(matricCells[2], data[0].BoardOrUniversity);
+            AddTextToCell(matricCells[3], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[0].PassingYear));
+            AddTextToCell(matricCells[4], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[0].ObtainedMarks));
+            AddTextToCell(matricCells[5], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[0].TotalMarks));
+
+            // Intermediate
+            var intermediateCells = rows[1].Elements<TableCell>().ToList();
+            AddTextToCell(intermediateCells[0], data[1].DegreeGroupName);
+            AddTextToCell(intermediateCells[1], data[1].RollNo);
+            AddTextToCell(intermediateCells[2], data[1].BoardOrUniversity);
+            AddTextToCell(intermediateCells[3], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[1].PassingYear));
+            AddTextToCell(intermediateCells[4], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[1].ObtainedMarks));
+            AddTextToCell(intermediateCells[5], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[1].TotalMarks));
+            if (data.Count == 2)
             {
-                var cells = row.Elements<TableCell>().ToList();
-                AddTextToCell(cells[0], data[index].DegreeGroupName);
-                AddTextToCell(cells[1], data[index].RollNo);
-                AddTextToCell(cells[2], data[index].BoardOrUniversity);
-                AddTextToCell(cells[3], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[index].PassingYear));
-                AddTextToCell(cells[4], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[index].ObtainedMarks));
-                AddTextToCell(cells[5], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[index].TotalMarks));
-                index++;
+                var fourth = rows[3].Elements<TableCell>().ToList();
+                AddTextToCell(fourth[0], "");
+                AddTextToCell(fourth[1], "");
+                AddTextToCell(fourth[2], "");
+                AddTextToCell(fourth[3], "");
+                AddTextToCell(fourth[4], "");
+                AddTextToCell(fourth[5], "");
+
+                var third = rows[2].Elements<TableCell>().ToList();
+                AddTextToCell(third[0], "");
+                AddTextToCell(third[1], "");
+                AddTextToCell(third[2], "");
+                AddTextToCell(third[3], "");
+                AddTextToCell(third[4], "");
+                AddTextToCell(third[5], "");
+            }
+            if (data.Count == 3)
+            {
+                // Other
+                var otherCells = rows[3].Elements<TableCell>().ToList();
+                AddTextToCell(otherCells[0], data[2].DegreeGroupName);
+                AddTextToCell(otherCells[1], data[2].RollNo);
+                AddTextToCell(otherCells[2], data[2].BoardOrUniversity);
+                AddTextToCell(otherCells[3], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[2].PassingYear));
+                AddTextToCell(otherCells[4], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[2].ObtainedMarks));
+                AddTextToCell(otherCells[5], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[2].TotalMarks));
+
+                // fourth
+                var fourth = rows[2].Elements<TableCell>().ToList();
+                AddTextToCell(fourth[0], "");
+                AddTextToCell(fourth[1], "");
+                AddTextToCell(fourth[2], "");
+                AddTextToCell(fourth[3], "");
+                AddTextToCell(fourth[4], "");
+                AddTextToCell(fourth[5], "");
+            }
+            if (data.Count == 4)
+            {
+
+                var thirdCells = rows[3].Elements<TableCell>().ToList();
+                AddTextToCell(thirdCells[0], data[2].DegreeGroupName);
+                AddTextToCell(thirdCells[1], data[2].RollNo);
+                AddTextToCell(thirdCells[2], data[2].BoardOrUniversity);
+                AddTextToCell(thirdCells[3], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[2].PassingYear));
+                AddTextToCell(thirdCells[4], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[2].ObtainedMarks));
+                AddTextToCell(thirdCells[5], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[2].TotalMarks));
+
+
+                var otherCells = rows[2].Elements<TableCell>().ToList();
+                AddTextToCell(otherCells[0], data[3].DegreeGroupName);
+                AddTextToCell(otherCells[1], data[3].RollNo);
+                AddTextToCell(otherCells[2], data[3].BoardOrUniversity);
+                AddTextToCell(otherCells[3], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[3].PassingYear));
+                AddTextToCell(otherCells[4], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[3].ObtainedMarks));
+                AddTextToCell(otherCells[5], ApplicationFormReportingHelper.ReplaceZeroWithEmpty(data[3].TotalMarks));
+
+
             }
         }
         private void ReplacePersonalInformationTable(Table table, PersonalInformationTableModel data)
@@ -184,11 +251,11 @@ namespace AMS.SERVICES.Reporting.Services
             var cnicCells = rows[6].Elements<TableCell>().ToList();
             AddTextToCell(cnicCells[1], ApplicationFormReportingHelper.FormatCNICWithDashes(data.Cnic));
             var emailCells = rows[7].Elements<TableCell>().ToList();
-            AddTextToCell(emailCells[1], data.FatherName);
+            AddTextToCell(emailCells[1], data.Email);
             var mobileNoCells = rows[8].Elements<TableCell>().ToList();
             AddTextToCell(mobileNoCells[1], ApplicationFormReportingHelper.FormatPhoneNo(data.MobileNo));
             var everExpelledFromUniCells = rows[9].Elements<TableCell>().ToList();
-            AddTextToCell(everExpelledFromUniCells[1], data.EverExpelled);
+            AddTextToCell(everExpelledFromUniCells[1], data.EverExpelled.ToUpper());
         }
         private static void ReplaceEmergencyContactNo(Table table, EmergencyContactInformationTableModel data)
         {
@@ -204,6 +271,18 @@ namespace AMS.SERVICES.Reporting.Services
         }
         private static void ReplaceAppliedProgramsTable(Table table, List<AppliedProgramTableModel> data)
         {
+            if (data.Count < 5)
+            {
+                var remainingRowsCount = 5 - data.Count;
+                for (int i = 0; i < remainingRowsCount; i++)
+                {
+                    data.Add(new AppliedProgramTableModel
+                    {
+                        DepartmentName = "",
+                        Shift = ""
+                    });
+                }
+            }
             var rows = table.Elements<TableRow>();
             int index = 0;
             foreach (var row in rows)
@@ -255,7 +334,7 @@ namespace AMS.SERVICES.Reporting.Services
                 var newImagePart = doc.MainDocumentPart.AddImagePart(ImagePartType.Jpeg);
 
                 // Add image data to the new image part
-                using (var stream = new FileStream(imagePath, FileMode.Open))
+                using (var stream = new FileStream(string.Concat("wwwroot/",imagePath.Split("7081")[1].Remove(0, 1)), FileMode.Open))
                 {
                     newImagePart.FeedData(stream);
                 }
@@ -285,7 +364,8 @@ namespace AMS.SERVICES.Reporting.Services
                         }).ToList();
 
             List<AppliedProgramTableModel> appliedProgramTableModels = data.ProgramsApplied!
-                .Select(appliedProgram => new AppliedProgramTableModel {
+                .Select(appliedProgram => new AppliedProgramTableModel
+                {
                     DepartmentName = appliedProgram.Department!.Name,
                     Shift = appliedProgram.TimeShift!.Name,
                 }).ToList();
@@ -324,7 +404,7 @@ namespace AMS.SERVICES.Reporting.Services
                 City = data.Applicant.City!,
                 Cnic = data.Applicant.Cnic!,
                 PostalCode = data.Applicant.PostalCode ?? 0,
-                PostalAddress = data.Applicant.PostalAddress!,
+                PostalAddress = data.Applicant.PermanentAddress!,
                 Dob = data.Applicant.Dob.GetValueOrDefault(),
                 Domicile = data.Applicant.Domicile!,
                 Female = ApplicationFormReportingHelper.GetTickOrCrossForFemale(data.Applicant.Gender!),
@@ -370,6 +450,6 @@ namespace AMS.SERVICES.Reporting.Services
                new KeyValuePair<string, string>(ApplicationFormReportingHelper.FormId,ApplicationFormReportingHelper.NumberToString(model.FormId)),
                new KeyValuePair<string, string>(ApplicationFormReportingHelper.PostalCode,ApplicationFormReportingHelper.NumberToString(model.PostalCode)),
             ];
-}
+        }
     }
 }

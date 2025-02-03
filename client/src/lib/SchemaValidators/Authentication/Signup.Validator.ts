@@ -3,7 +3,9 @@ const getCharacterValidationError = (str: string) => {
     return `Your password must have at least 1 ${str} character`;
 };
 export const signUpFormSchema = z.object({
-    fullName: z.string().min(2, "Full name must contain at least 2 character(s)"),
+    fullName: z.string().min(2, "Full name must contain at least 2 character(s)").regex(/^[A-Za-z\s]+$/, {
+        message: 'Full Name  must contain only alphabetic character.',
+    }),
     email: z.string().min(5, "Email must contain at least 5 character(s)").email(),
     cnic: z.string().regex(/^\d{13}$/, "only 13 digits are allowed"),
     password: z.string()

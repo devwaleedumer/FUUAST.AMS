@@ -9,6 +9,7 @@ namespace AMS.DOMAIN.Entities.Lookups
         public AdmissionSession()
         {
             ApplicationForms = new HashSet<ApplicationForm>();
+            MeritLists = new HashSet<MeritList>();
         }
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -16,6 +17,7 @@ namespace AMS.DOMAIN.Entities.Lookups
         public DateTime? EndDate { get; set; }
         public int? AcademicYearId { get; set; }
         public virtual ICollection<ApplicationForm>? ApplicationForms { get; set; }
+        public virtual ICollection<MeritList>? MeritLists { get; set; }
         public AcademicYear? AcademicYear { get; set; }
         public virtual Program? Program { get; set; }
         public int? InsertedBy { get; set; }

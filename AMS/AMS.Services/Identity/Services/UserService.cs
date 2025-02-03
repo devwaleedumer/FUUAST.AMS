@@ -63,7 +63,6 @@ namespace AMS.SERVICES.Identity.Services
         {
             var user = await GetUserFromClaimsAsync(claims);
             var applicant = await _db.Applicants.FirstOrDefaultAsync(x => x.ApplicationUserId == user.Id);
-           
             var response = new ApplicantUserResponse
             {
                 Id = user.Id,
@@ -71,6 +70,7 @@ namespace AMS.SERVICES.Identity.Services
                 FullName = applicant.FullName ?? "",
                 UserName = user.UserName,
                 ProfilePictureUrl = user.ProfilePictureUrl,
+                ApplicantId = applicant.Id
             };
             return response;
         }
@@ -228,7 +228,7 @@ namespace AMS.SERVICES.Identity.Services
             {
                 throw new BadRequestException("Could 'nt add role to user");
             }
-            var emailVerificationUri = await GenerateEmailVerificationLinkAsync(user, new Uri("http://localhost:4200/applayout/app/account/create-password"), new List<KeyValuePair<string, string>>());
+            var emailVerificationUri = await GenerateEmailVerificationLinkAsync(user, new Uri("http://localhost:4200/create-password"), new List<KeyValuePair<string, string>>());
             var eMailModel = new RegisterUserEmailModel()
             {
                 Email = user.Email,

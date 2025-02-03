@@ -31,6 +31,9 @@ namespace AMS.DATA
         public virtual DbSet<FeeChallan> FeeChallans { get; set; } = null!;
         public virtual DbSet<FeeChallanSubmissionDetail> FeeChallanSubmissionDetails { get; set; } = null!;
         public virtual DbSet<ProgramApplied> ProgramsApplied { get; set; } = null!;
+        public virtual DbSet<MeritList> MeritLists { get; set; } = null!;
+        public virtual DbSet<MeritListDetails> MeritListDetails { get; set; } = null!;
+
         #endregion
 
         #region Lookups
@@ -255,6 +258,59 @@ namespace AMS.DATA
                         .HasConstraintName("FK_Applicant_ApplicationForm");
 
             });
+            // Merit List Entities
+            modelBuilder.Entity<MeritList>(entity => {
+              
+                entity.ToTable("MeritList", "Domain");
+
+                entity.HasKey(e => e.Id);   
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(e => e.Program)
+                       .WithMany(e => e.MeritLists)
+                       .HasForeignKey(e => e.ProgramId)
+                       .OnDelete(DeleteBehavior.Cascade)
+                       .HasConstraintName("FK_MeritList_Program");
+                
+                entity.HasOne(e => e.Session)
+                       .WithMany(e => e.MeritLists)
+                       .HasForeignKey(e => e.SessionId)
+                       .OnDelete(DeleteBehavior.Cascade)
+                       .HasConstraintName("FK_MeritList_Session");
+                
+                entity.HasOne(e => e.Department)
+                       .WithMany(e => e.MeritLists)
+                       .HasForeignKey(e => e.DepartmentId)
+                       .OnDelete(DeleteBehavior.Cascade)
+                       .HasConstraintName("FK_MeritList_Department");
+                
+                entity.HasOne(e => e.Shift)
+                       .WithMany(e => e.MeritLists)
+                       .HasForeignKey(e => e.ShiftId)
+                       .OnDelete(DeleteBehavior.Cascade)
+                       .HasConstraintName("FK_MeritList_Shift");
+
+                entity.HasIndex(ml => new { ml.SessionId, ml.ProgramId, ml.DepartmentId, ml.ShiftId });
+
+
+            });
+
+            modelBuilder.Entity<MeritListDetails>(entity =>
+            {
+                entity.ToTable("MeritListDetails", "Domain");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+              
+                entity.HasOne(e => e.MeritList)
+                       .WithMany(e => e.MeritListDetails)
+                       .HasForeignKey(e => e.MeritListId)
+                       .OnDelete(DeleteBehavior.NoAction)
+                       .HasConstraintName("FK_MeritListDetails_MeritList");
+
+                entity.Property(x => x.Score).HasPrecision(18, 2);
+
+            });
 
             modelBuilder.Entity<EmergencyContact>(entity =>
             {
@@ -341,6 +397,12 @@ namespace AMS.DATA
                 entity.Property(e => e.SubmissionDate).HasColumnType("datetime2");
                 entity.Property(e => e.IsSubmitted).HasDefaultValue(false);
 
+                entity.HasOne(e => e.MeritListDetails)
+                      .WithOne(e => e.ApplicationForm)
+                      .HasForeignKey<MeritListDetails>(e => e.ApplicationFormId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .HasConstraintName("FK_ApplicationForm_MeritListDetails");
+
                 entity.HasOne(e => e.FeeChallan)
                         .WithOne(e => e.ApplicationForm)
                         .HasForeignKey<FeeChallan>(e => e.ApplicationFormId)
@@ -375,9 +437,7 @@ namespace AMS.DATA
                 entity.ToTable("FeeChallanSubmissionDetail", "Domain");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.BranchNameWithCity)
-                                     .HasMaxLength(200)
-                                    .IsUnicode(false);
+               
                 entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
                 entity.Property(e => e.DocumentUrl)
                                     .IsUnicode(false);
@@ -664,6 +724,7 @@ namespace AMS.DATA
         modelBuilder.Entity<Program>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
         modelBuilder.Entity<ApplicationUser>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
         modelBuilder.Entity<ApplicationRole>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
+        modelBuilder.Entity<ProgramApplied>().HasQueryFilter(f => f.IsDeleted == false || f.IsDeleted == null);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

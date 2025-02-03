@@ -21,6 +21,7 @@ namespace AMS.SERVICES.DataService
                                        .AsNoTracking()
                                        .Where(programDepartment => programDepartment.Department!.FaculityId == facultyId && programDepartment.ProgramId == programId)
                                        .Select(d => d.Department)
+                                       .Distinct()
                                        .ToListAsync(ct)
                                        .ConfigureAwait(false);
             return result.Adapt<List<DeparmentResponse>>();

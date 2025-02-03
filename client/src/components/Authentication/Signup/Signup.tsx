@@ -39,6 +39,7 @@ const Signup: FC<SignupProps> = ({}) => {
       confirmPassword: "",
       cnic:""
     },
+    mode: "onChange",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showCPassword, setShowCPassword] = useState<boolean>(false);
@@ -64,7 +65,7 @@ const Signup: FC<SignupProps> = ({}) => {
           </div>
               <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
                 {/* Sign up to your account */}
-                Join Our Campus
+                Join FUUAST
               </h3>
               <p className="text-sm">
                  Begin your academic journey with us
@@ -103,7 +104,7 @@ const Signup: FC<SignupProps> = ({}) => {
                         CNIC
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="6110112346789" {...field} />
+                        <Input placeholder="6110112346789"  {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -18,6 +18,5 @@ namespace AMS.DOMAIN.Entities.AMS
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public bool? IsDeleted { get; set; }
-
     }
 }

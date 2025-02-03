@@ -12,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../../ui/accordion";
-import {  AlertTriangleIcon, ArrowLeft, ArrowRight, GraduationCap, Plus, Save } from "lucide-react";
+import {  AlertTriangleIcon, ArrowLeft, ArrowRight, Asterisk, Check, ChevronsUpDown, GraduationCap, Plus, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Form,
@@ -37,6 +37,9 @@ import { IDegreeGroupWithDegreeLevel } from "@/types/degreeGroup";
 import { useCreateApplicantDegreesMutation } from "@/redux/features/applicant/applicantApi";
 import { toast } from "@/components/ui/use-toast";
 import { BiSolidSave } from "react-icons/bi";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { allBoardsAndUniversities } from "@/lib/data";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
 type CreateDegreeProps = {
 appliedProgram: string;
@@ -64,16 +67,24 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
     control,
     name: "degrees",
   });
+  const [IsCountryListOpen, setIsCountryListOpen] = useState<boolean[]>( Array(degreeList.length).fill(false));
   const processDegreeInfo =async (data: DegreeValues) => {
     console.log("data => ",data)
     await createApplicantDegrees(data);
   }
+  const handleOpenChange = (index: number) => {
+  setIsCountryListOpen(prevState => {
+    const newState = [...prevState]; // Create a copy of the previous state
+    newState[index] = !newState[index]; // Toggle the value at the specified index
+    return newState; // Return the updated state
+  });
+};
   return (
     <>
     <Card >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(processDegreeInfo,(error) => console.log(error))}>
-            {fields?.map((field, index) => (
+            {fields?.map((field, index : any)  => (
               <div key={"degreeInfo" + index} className="first:pt-5 last:pb-5 px-3 pb-3">
                 <Card className="col-span-3 px-3 shadow-none">
                   <Accordion
@@ -105,24 +116,77 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                      <div className=" space-y-2 border p-4 rounded-md">
             <div className={cn( "sm:grid gap-4 rounded-md relative",typeof degreeList[index] ==  "undefined" ? "md:grid-cols-2" : "md:grid-cols-3")}
                         >
-                          <FormField
-                            control={form.control}
-                            name={`degrees.${index}.boardOrUniversityName`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Board or University</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="text"
-                                    //   disabled={loading}
-                                    {...field}
-                                    error={errors.degrees?.[index]?.boardOrUniversityName?.message}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          
+                  <FormField
+                    control={form.control}
+                    name={`degrees.${index}.boardOrUniversityName`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col space-y-2">
+                        <FormLabel className="relative">
+                          Board or University{" "}
+                          <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
+                        </FormLabel>{" "}
+                        <Popover
+                          open={IsCountryListOpen[index]}
+                          onOpenChange={() => handleOpenChange(index)}
+                        >
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "justify-between",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value
+                                  ? allBoardsAndUniversities.find(
+                                      (bu) => bu === field.value
+                                    )
+                                  : "Select board or university"}
+                                <ChevronsUpDown className="opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="md:w-[300px] p-0">
+                            <Command>
+                              <CommandInput
+                                placeholder="Search country."
+                                className="h-9"
+                              />
+                              <CommandList>
+                                <CommandEmpty>No University Found.</CommandEmpty>
+                                <CommandGroup>
+                                  {allBoardsAndUniversities.map((c) => (
+                                    <CommandItem
+                                      value={c}
+                                      key={c}
+                                      onSelect={() => {
+                                        form.setValue( `degrees.${index}.boardOrUniversityName`, c);
+                                        handleOpenChange(index);
+                                      }}
+                                    >
+                                      {c}
+                                      <Check
+                                        className={cn(
+                                          "ml-auto",
+                                          c === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                            <FormField
                             control={form.control}
                             name={`degrees.${index}.degreeGroupId`}
@@ -154,9 +218,6 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                               </FormItem>
                             )}
                           />
-
-                       
-                        
                           <FormField
                             control={form.control}
                             name={`degrees.${index}.subject`}
@@ -263,7 +324,7 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                 </Card>
               </div>
             ))}
-             <div className="mt-4 flex justify-center">
+             {/* <div className="mt-4 flex justify-center">
                   <Button
                     type="button"
                     className="flex justify-center"
@@ -282,7 +343,7 @@ const CreateDegree: FC<CreateDegreeProps> = ({appliedProgram,degreeList,degreeGr
                   > <Plus className="size-4" />
                     Add
                   </Button>
-                </div>
+                </div> */}
             <div className="flex justify-between mb-3 px-3">
                  <Button disabled={createIsLoading} size={"sm"}  onClick={(e) => dispatch(prevStep())}>
                 <ArrowLeft  className="size-4" />

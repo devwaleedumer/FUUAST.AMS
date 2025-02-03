@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using AMS.MODELS.FeeChallan
+@model FeeChallanReportDto
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -118,27 +120,27 @@
           </tr>
           <tr class="data_cells">
             <td colspan="1">Form No.</td>
-            <td colspan="1">123123</td>
+            <td colspan="1">@Model.ApplicationFormNo</td>
             <td colspan="1">Voucher#</td>
-            <td colspan="1">31231</td>
+            <td colspan="1">@Model.VoucherNo</td>
           </tr>
           <tr class="data_cells">
             <td colspan="2">CNIC</td>
-            <td colspan="2">123121231323</td>
+            <td colspan="2">@Model.CNIC</td>
           </tr>
           <tr class="data_cells">
             <td colspan="2">Student's Name</td>
-            <td colspan="2">Waleed Umer</td>
+            <td colspan="2">@Model.FullName</td>
           </tr>
           <tr class="data_cells">
             <td colspan="2">Father's Name</td>
-            <td colspan="2">Umer Khan</td>
+            <td colspan="2">@Model.FatherName</td>
           </tr>
           <tr class="data_cells">
             <td>Admission</td>
-            <td>Fall 2024</td>
+            <td>@Model.AdmissionSession</td>
             <td>Program</td>
-            <td>BS 3rd Year Program (5th Semester Intake)</td>
+            <td>@Model.Program</td>
           </tr>
           <tr class="data_cells_heading">
             <td colspan="2">Fee Head</td>
@@ -146,10 +148,10 @@
           </tr>
           <tr class="data_cells">
             <td colspan="2">Processing Fee</td>
-            <td colspan="2">2000 × 5 = Rs.10000/-</td>
+            <td colspan="2">2000 × @Model.NoOfProgramsApplied = Rs.@(Model.NoOfProgramsApplied * 2000)/-</td>
           </tr>
           <tr class="data_cells_heading">
-            <td colspan="4">In words: Ten Thousands only/-</td>
+            <td colspan="4">In words: @Model.AmountInWords only/-</td>
           </tr>
           <tr class="signature">
             <td colspan="4">
@@ -178,46 +180,46 @@
               Note: Pay at any HBL Branch.
             </td>
           </tr>
-          <tr class="data_cells">
-            <td colspan="1">Form No.</td>
-            <td colspan="1">123123</td>
-            <td colspan="1">Voucher#</td>
-            <td colspan="1">31231</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">CNIC</td>
-            <td colspan="2">123121231323</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Student's Name</td>
-            <td colspan="2">Waleed Umer</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Father's Name</td>
-            <td colspan="2">Umer Khan</td>
-          </tr>
-          <tr class="data_cells">
-            <td>Admission</td>
-            <td>Fall 2024</td>
-            <td>Program</td>
-            <td>BS 3rd Year Program (5th Semester Intake)</td>
-          </tr>
-          <tr class="data_cells_heading">
-            <td colspan="2">Fee Head</td>
-            <td colspan="2">Amount</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Processing Fee</td>
-            <td colspan="2">2000 × 5 = Rs.10000/-</td>
-          </tr>
-          <tr class="data_cells_heading">
-            <td colspan="4">In words: Ten Thousands only/-</td>
-          </tr>
-          <tr class="signature">
-            <td colspan="4">
-              <span id="border_top">Bank Authorized Signature & Stamp</span>
-            </td>
-          </tr>
+                <tr class="data_cells">
+                    <td colspan="1">Form No.</td>
+                    <td colspan="1">@Model.ApplicationFormNo</td>
+                    <td colspan="1">Voucher#</td>
+                    <td colspan="1">@Model.VoucherNo</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">CNIC</td>
+                    <td colspan="2">@Model.CNIC</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Student's Name</td>
+                    <td colspan="2">@Model.FullName</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Father's Name</td>
+                    <td colspan="2">@Model.FatherName</td>
+                </tr>
+                <tr class="data_cells">
+                    <td>Admission</td>
+                    <td>@Model.AdmissionSession</td>
+                    <td>Program</td>
+                    <td>@Model.Program</td>
+                </tr>
+                <tr class="data_cells_heading">
+                    <td colspan="2">Fee Head</td>
+                    <td colspan="2">Amount</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Processing Fee</td>
+                    <td colspan="2">2000 × @Model.NoOfProgramsApplied = Rs.@(Model.NoOfProgramsApplied * 2000)/-</td>
+                </tr>
+                <tr class="data_cells_heading">
+                    <td colspan="4">In words: @Model.AmountInWords only/-</td>
+                </tr>
+                <tr class="signature">
+                    <td colspan="4">
+                        <span id="border_top">Bank Authorized Signature & Stamp</span>
+                    </td>
+                </tr>
         </table>
       </div>
       <div class="container2 container">
@@ -242,47 +244,47 @@
               Note: Pay at any HBL Branch.
             </td>
           </tr>
-          <tr class="data_cells">
-            <td colspan="1">Form No.</td>
-            <td colspan="1">123123</td>
-            <td colspan="1">Voucher#</td>
-            <td colspan="1">31231</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">CNIC</td>
-            <td colspan="2">123121231323</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Student's Name</td>
-            <td colspan="2">Waleed Umer</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Father's Name</td>
-            <td colspan="2">Umer Khan</td>
-          </tr>
-          <tr class="data_cells">
-            <td>Admission</td>
-            <td>Fall 2024</td>
-            <td>Program</td>
-            <td>BS 3rd Year Program (5th Semester Intake)</td>
-          </tr>
-          <tr class="data_cells_heading">
-            <td colspan="2">Fee Head</td>
-            <td colspan="2">Amount</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Processing Fee</td>
-            <td colspan="2">2000 × 5 = Rs.10000/-</td>
-          </tr>
-          <tr class="data_cells_heading">
-            <td colspan="4">In words: Ten Thousands only/-</td>
-          </tr>
-          <tr class="signature">
-            <td colspan="4">
-              <span id="border_top">Bank Authorized Signature & Stamp</span>
-            </td>
-          </tr>
-        </table>
+                <tr class="data_cells">
+                    <td colspan="1">Form No.</td>
+                    <td colspan="1">@Model.ApplicationFormNo</td>
+                    <td colspan="1">Voucher#</td>
+                    <td colspan="1">@Model.VoucherNo</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">CNIC</td>
+                    <td colspan="2">@Model.CNIC</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Student's Name</td>
+                    <td colspan="2">@Model.FullName</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Father's Name</td>
+                    <td colspan="2">@Model.FatherName</td>
+                </tr>
+                <tr class="data_cells">
+                    <td>Admission</td>
+                    <td>@Model.AdmissionSession</td>
+                    <td>Program</td>
+                    <td>@Model.Program</td>
+                </tr>
+                <tr class="data_cells_heading">
+                    <td colspan="2">Fee Head</td>
+                    <td colspan="2">Amount</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Processing Fee</td>
+                    <td colspan="2">2000 × @Model.NoOfProgramsApplied = Rs.@(Model.NoOfProgramsApplied * 2000)/-</td>
+                </tr>
+                <tr class="data_cells_heading">
+                    <td colspan="4">In words: @Model.AmountInWords only/-</td>
+                </tr>
+                <tr class="signature">
+                    <td colspan="4">
+                        <span id="border_top">Bank Authorized Signature & Stamp</span>
+                    </td>
+                </tr>
+            </table>
         <table class="t4">
           <tr>
             <td class="header" colspan="4">
@@ -304,47 +306,47 @@
               Note: Pay at any HBL Branch.
             </td>
           </tr>
-          <tr class="data_cells">
-            <td colspan="1">Form No.</td>
-            <td colspan="1">123123</td>
-            <td colspan="1">Voucher#</td>
-            <td colspan="1">31231</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">CNIC</td>
-            <td colspan="2">123121231323</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Student's Name</td>
-            <td colspan="2">Waleed Umer</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Father's Name</td>
-            <td colspan="2">Umer Khan</td>
-          </tr>
-          <tr class="data_cells">
-            <td>Admission</td>
-            <td>Fall 2024</td>
-            <td>Program</td>
-            <td>BS 3rd Year Program (5th Semester Intake)</td>
-          </tr>
-          <tr class="data_cells_heading">
-            <td colspan="2">Fee Head</td>
-            <td colspan="2">Amount</td>
-          </tr>
-          <tr class="data_cells">
-            <td colspan="2">Processing Fee</td>
-            <td colspan="2">2000 × 5 = Rs.10000/-</td>
-          </tr>
-          <tr class="data_cells_heading">
-            <td colspan="4">In words: Ten Thousands only/-</td>
-          </tr>
-          <tr class="signature">
-            <td colspan="4">
-              <span id="border_top">Bank Authorized Signature & Stamp</span>
-            </td>
-          </tr>
-        </table>
+                <tr class="data_cells">
+                    <td colspan="1">Form No.</td>
+                    <td colspan="1">@Model.ApplicationFormNo</td>
+                    <td colspan="1">Voucher#</td>
+                    <td colspan="1">@Model.VoucherNo</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">CNIC</td>
+                    <td colspan="2">@Model.CNIC</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Student's Name</td>
+                    <td colspan="2">@Model.FullName</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Father's Name</td>
+                    <td colspan="2">@Model.FatherName</td>
+                </tr>
+                <tr class="data_cells">
+                    <td>Admission</td>
+                    <td>@Model.AdmissionSession</td>
+                    <td>Program</td>
+                    <td>@Model.Program</td>
+                </tr>
+                <tr class="data_cells_heading">
+                    <td colspan="2">Fee Head</td>
+                    <td colspan="2">Amount</td>
+                </tr>
+                <tr class="data_cells">
+                    <td colspan="2">Processing Fee</td>
+                    <td colspan="2">2000 × @Model.NoOfProgramsApplied = Rs.@(Model.NoOfProgramsApplied * 2000)/-</td>
+                </tr>
+                <tr class="data_cells_heading">
+                    <td colspan="4">In words: @Model.AmountInWords only/-</td>
+                </tr>
+                <tr class="signature">
+                    <td colspan="4">
+                        <span id="border_top">Bank Authorized Signature & Stamp</span>
+                    </td>
+                </tr>
+            </table>
       </div>
     </div>
   </body>

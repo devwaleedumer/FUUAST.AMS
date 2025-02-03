@@ -38,7 +38,7 @@
 
         public static string FormatPhoneNo(string input) => input.Insert(4, "-");
         public static string ReplaceZeroWithEmpty(int input) => input == 0 ? "0" : input.ToString();
-        public static string CreateAcademicSessionYearAndProgram(string academicSession, string AcademicYear, string programName) => $"ACADEMIC SESSION {academicSession} {AcademicYear} ${programName}";
+        public static string CreateAcademicSessionYearAndProgram(string academicSession, string AcademicYear, string programName) => $"ACADEMIC SESSION {academicSession} {AcademicYear} {programName}";
         public static string NumberToString(int input) => input.ToString();
         public static string FormatCNICWithDashes(string input)
         {

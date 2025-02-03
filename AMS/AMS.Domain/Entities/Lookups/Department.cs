@@ -14,6 +14,7 @@ namespace AMS.DOMAIN.Entities.Lookups
         {
             ProgramApplied = new HashSet<ProgramApplied>();
             ProgramDepartments = new HashSet<ProgramDepartment>();
+            MeritLists = new HashSet<MeritList>();
         }
         public int Id { get; set; }
         public  string Name { get; set; }
@@ -21,6 +22,7 @@ namespace AMS.DOMAIN.Entities.Lookups
         public virtual Faculity? Faculity { get; set; }
         public virtual ICollection<ProgramApplied>? ProgramApplied { get; set; }
         public virtual ICollection<ProgramDepartment>? ProgramDepartments { get; set; }
+        public virtual ICollection<MeritList>? MeritLists { get; set; }
         public int? InsertedBy { get; set; }
         public DateTime? InsertedDate { get; set; }
         public int? UpdatedBy { get; set; }

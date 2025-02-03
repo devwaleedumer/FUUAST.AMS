@@ -17,5 +17,7 @@ namespace AMS.MODELS.Identity.User
         public string? Email { get; set; }
 
         public string? ProfilePictureUrl { get; set; }
+
+        public int ApplicantId { get; set; }
     }
 }

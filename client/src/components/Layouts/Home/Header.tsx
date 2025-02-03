@@ -25,7 +25,7 @@ const Header: FC<Props> = () => {
                 <Link href={'#requirements'} className='text-sm font-medium hover:underline underline-offset-4'>Requirements</Link>
                 <Link href={'#contact'} className='text-sm font-medium hover:underline underline-offset-4'>Contact</Link>
                 <Link target="_blank" href={"/advertisement/admsn_aut_2024.jpg"}  className='text-sm font-medium hover:underline underline-offset-4'>Advertisement</Link>
-                 <Link href={AuthRoutes.Login} >
+                 <Link href={AuthRoutes.SignUp} >
             <Button  size={"sm"} >Apply Now</Button>
            </Link>
             </nav>
@@ -35,7 +35,7 @@ const Header: FC<Props> = () => {
          {
           showMobileNav && <div className='md:hidden block fixed top-0 left-0 z-50 min-h-screen w-full mx-auto mt-[62.67px] bg-emerald-50'>
              <nav className='flex  md:flex flex-col  items-center gap-4 mt-5 ' onClick={()=> setShowMobileNav(false)}>
-                 <Link href={AuthRoutes.Login} className=''>
+                 <Link href={AuthRoutes.SignUp} className=''>
             <Button  size={"lg"} >Apply Now</Button></Link>
                 <Link href={'#programs'} className='text-sm font-medium hover:underline underline-offset-4'>Program</Link>
                 <Link href={'#requirements'} className='text-sm font-medium hover:underline underline-offset-4'>Requirements</Link>

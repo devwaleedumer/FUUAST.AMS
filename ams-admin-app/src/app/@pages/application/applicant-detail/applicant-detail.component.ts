@@ -13,17 +13,17 @@ import { MessageService } from 'primeng/api';
   styleUrl: './applicant-detail.component.scss'
 })
 export class ApplicantDetailComponent {
-  applicantFormgroup!:FormGroup
+  applicantFormgroup!: FormGroup
   isEditing: boolean = false;
   deleteDialog: boolean = false;
   addDialog: boolean = false;
   submitted: boolean = false;
-  imageUrl:string="";
-  applicantInfoResponse:any[]=[];
-  updateApplicantRequest:UpdateApplicantRequest;
-  applicantInfoRequest:ApplicantInfoRequest
+  imageUrl: string = "";
+  applicantInfoResponse: any[] = [];
+  updateApplicantRequest: UpdateApplicantRequest;
+  applicantInfoRequest: ApplicantInfoRequest
   cols: any[] = [];
-  applicantId:number | undefined;
+  applicantId: number | undefined;
   exportColumns: any[] = [];
   totalRecords: number = 0;
   programType: string = '';
@@ -35,14 +35,14 @@ export class ApplicantDetailComponent {
   ];
 
 
-  constructor(private _applicantmanagementservice:ApplicantmanagementService,private fb:FormBuilder,private messageService:MessageService){
-this.applicantInfoRequest=new ApplicantInfoRequest();
-this.updateApplicantRequest=new UpdateApplicantRequest();
+  constructor(private _applicantmanagementservice: ApplicantmanagementService, private fb: FormBuilder, private messageService: MessageService) {
+    this.applicantInfoRequest = new ApplicantInfoRequest();
+    this.updateApplicantRequest = new UpdateApplicantRequest();
   }
-  ngOnInit(){
+  ngOnInit() {
     this.getApplicantInfo();
     this.validateFormgroup();
-    
+
     this.cols = [
       { field: "name", header: "Name" },
       { field: "fatherName", header: "FatherName" },
@@ -53,28 +53,28 @@ this.updateApplicantRequest=new UpdateApplicantRequest();
     this.exportColumns = this.cols.map(col => (col.header));
   }
 
-  validateFormgroup(){
+  validateFormgroup() {
     this.applicantFormgroup = this.fb.group({
       userName: ['', Validators.required],
       fatherName: [''],
       email: ['', [Validators.required, Validators.email]],
       dob: ['', Validators.required],
       cnic: ['', Validators.required],
-      matricDegreeName:[''],
+      matricDegreeName: [''],
       matricBoard: [''],
       matricYear: [''],
       matricSubject: [''],
       matricRollNo: [''],
       matricTotalMarks: [''],
       matricObtainedMarks: [''],
-      intermediateDegreeName:[''],
+      intermediateDegreeName: [''],
       intermediateBoard: [''],
       intermediateYear: [''],
       intermediateSubject: [''],
       intermediateRollNo: [''],
       intermediateTotalMarks: [''],
       intermediateObtainedMarks: [''],
-      bachleorDegreeName:[''],
+      bachleorDegreeName: [''],
       bachleorBoard: [''],
       bachleorYear: [''],
       bachleorSubject: [''],
@@ -83,131 +83,133 @@ this.updateApplicantRequest=new UpdateApplicantRequest();
       bachleorObtainedMarks: [''],
     });
   }
-  OnSearch(){
+  OnSearch() {
     debugger
     this.applicantInfoResponse = [];
-    this._applicantmanagementservice.getAllApplicantDetail(this.applicantInfoRequest).subscribe((response: any) => { {
-      debugger
-          this.applicantInfoResponse= response;
-          
-          this.imageUrl=response.documentUrl
-        }
-      });
+    this._applicantmanagementservice.getAllApplicantDetail(this.applicantInfoRequest).subscribe((response: any) => {
+      {
+        debugger
+        this.applicantInfoResponse = response;
+
+        this.imageUrl = response.documentUrl
+      }
+    });
   }
   getApplicantInfo() {
     this.applicantInfoResponse = [];
     //this.filteredUserDetails = [];
-    this._applicantmanagementservice.getAllApplicantDetail(this.applicantInfoRequest).subscribe((response: any) => { {
-      
-          this.applicantInfoResponse= response; 
-               
-        }
-      });
+    this._applicantmanagementservice.getAllApplicantDetail(this.applicantInfoRequest).subscribe((response: any) => {
+      {
+
+        this.applicantInfoResponse = response;
+
+      }
+    });
   }
-  showEditModal(response:any){
+  showEditModal(response: any) {
     debugger
     const backendBaseUrl = 'https://localhost:7081';
     this.programType = response.programTypeName;
-    
-    this.addDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
-    this.imageUrl = `${backendBaseUrl}${response.documentUrl}`;
-    const dob = new Date(response.dob).toISOString().split('T')[0]; 
+
+    this.addDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
+    this.imageUrl = `${response.documentUrl}`;
+    const dob = new Date(response.dob).toISOString().split('T')[0];
     this.applicantFormgroup.patchValue({
       ...response,
       dob: dob,
-     
-  });
-  const degrees = response.degrees || [];
 
-const matricDegree =  Array.isArray(degrees) ? degrees.find(d => d.degreeLevelId === 1) : null;
-if (matricDegree) {
-  this.applicantFormgroup.patchValue({
-    matricDegreeName:matricDegree.degreeName,
-    matricBoard: matricDegree.boardOrUniversityName,
-    matricYear: matricDegree.passingYear,
-    matricSubject: matricDegree.subject,
-    matricRollNo: matricDegree.rollNo,
-    matricTotalMarks: matricDegree.totalMarks,
-    matricObtainedMarks: matricDegree.obtainedMarks,
-  });
-}
-const intermediateDegree =  Array.isArray(degrees) ? degrees.find(d => d.degreeLevelId === 2) : null;
-if (intermediateDegree) {
-  this.applicantFormgroup.patchValue({
-    intermediateDegreeName: intermediateDegree.degreeName,
-    intermediateBoard: intermediateDegree.boardOrUniversityName,
-    intermediateYear: intermediateDegree.passingYear,
-    intermediateSubject: intermediateDegree.subject,
-    intermediateRollNo: intermediateDegree.rollNo,
-    intermediateTotalMarks: intermediateDegree.totalMarks,
-    intermediateObtainedMarks: intermediateDegree.obtainedMarks,
-  });
-}
-const bachleorDegree =  Array.isArray(degrees) ? degrees.find(d => d.degreeLevelId === 3 ||  d.degreeLevelId === 4)  : null;
-if (bachleorDegree) {
-  this.applicantFormgroup.patchValue({
-    bachleorDegreeName:  bachleorDegree.degreeName,
-    bachleorBoard: bachleorDegree.boardOrUniversityName,
-    bachleorYear: bachleorDegree.passingYear,
-    bachleorSubject: bachleorDegree.subject,
-    bachleorRollNo: bachleorDegree.rollNo,
-    bachleorTotalMarks: bachleorDegree.totalMarks,
-    bachleorObtainedMarks: bachleorDegree.obtainedMarks,
-  });
-}
-  this.applicantId=response.applicantId;
-  this.applicantFormgroup.disable();
+    });
+    const degrees = response.degrees || [];
+
+    const matricDegree = Array.isArray(degrees) ? degrees.find(d => d.degreeLevelId === 1) : null;
+    if (matricDegree) {
+      this.applicantFormgroup.patchValue({
+        matricDegreeName: matricDegree.degreeName,
+        matricBoard: matricDegree.boardOrUniversityName,
+        matricYear: matricDegree.passingYear,
+        matricSubject: matricDegree.subject,
+        matricRollNo: matricDegree.rollNo,
+        matricTotalMarks: matricDegree.totalMarks,
+        matricObtainedMarks: matricDegree.obtainedMarks,
+      });
+    }
+    const intermediateDegree = Array.isArray(degrees) ? degrees.find(d => d.degreeLevelId === 2) : null;
+    if (intermediateDegree) {
+      this.applicantFormgroup.patchValue({
+        intermediateDegreeName: intermediateDegree.degreeName,
+        intermediateBoard: intermediateDegree.boardOrUniversityName,
+        intermediateYear: intermediateDegree.passingYear,
+        intermediateSubject: intermediateDegree.subject,
+        intermediateRollNo: intermediateDegree.rollNo,
+        intermediateTotalMarks: intermediateDegree.totalMarks,
+        intermediateObtainedMarks: intermediateDegree.obtainedMarks,
+      });
+    }
+    const bachleorDegree = Array.isArray(degrees) ? degrees.find(d => d.degreeLevelId === 3 || d.degreeLevelId === 4) : null;
+    if (bachleorDegree) {
+      this.applicantFormgroup.patchValue({
+        bachleorDegreeName: bachleorDegree.degreeName,
+        bachleorBoard: bachleorDegree.boardOrUniversityName,
+        bachleorYear: bachleorDegree.passingYear,
+        bachleorSubject: bachleorDegree.subject,
+        bachleorRollNo: bachleorDegree.rollNo,
+        bachleorTotalMarks: bachleorDegree.totalMarks,
+        bachleorObtainedMarks: bachleorDegree.obtainedMarks,
+      });
+    }
+    this.applicantId = response.applicantId;
+    this.applicantFormgroup.disable();
 
   }
-  
-  isDeleted(response:any) {
+
+  isDeleted(response: any) {
     this.deleteDialog = true;
-  
+
   }
- confirmDelete(){
+  confirmDelete() {
   }
   hideDialog() {
     this.addDialog = false;
     this.submitted = false;
   }
-  OnReset(){
-    this.applicantInfoRequest=new ApplicantInfoRequest();
-    this. getApplicantInfo();
+  OnReset() {
+    this.applicantInfoRequest = new ApplicantInfoRequest();
+    this.getApplicantInfo();
   }
   update(action: string) {
     debugger
     this.updateApplicantRequest.verificationStatusEid = action;
     this.updateApplicantRequest.applicantId = this.applicantId;
-  this._applicantmanagementservice.updateApplicantDetail(this.updateApplicantRequest).subscribe(() => {
-      const successMessage = action === 'APPROVED' 
-        ? 'Applicant approved successfully' 
+    this._applicantmanagementservice.updateApplicantDetail(this.updateApplicantRequest).subscribe(() => {
+      const successMessage = action === 'APPROVED'
+        ? 'Applicant approved successfully'
         : 'Applicant rejected successfully';
-      this.messageService.add({ 
-        severity: 'success', 
-        summary: 'Successful', 
-        detail: successMessage, 
-        life: 3000 
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Successful',
+        detail: successMessage,
+        life: 3000
       });
       this.getApplicantInfo();
       this.hideDialog();
     }, error => {
-      const errorMessage = action === 'APPROVED' 
-        ? 'Error approving applicant' 
+      const errorMessage = action === 'APPROVED'
+        ? 'Error approving applicant'
         : 'Error rejecting applicant';
-  
-      this.messageService.add({ 
-        severity: 'error', 
-        summary: 'Error', 
-        detail: errorMessage, 
-        life: 3000 
+
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: errorMessage,
+        life: 3000
       });
     });
   }
-  
 
-  
+
+
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
@@ -253,10 +255,10 @@ if (bachleorDegree) {
           applicant.cnic,
           applicant.email,
           applicant.verificationStatusEid === 1 ? 'Pending' :
-          applicant.verificationStatusEid === 2 ? 'Approved' :
-          applicant.verificationStatusEid === 3 ? 'Rejected':  'Unknown'
-        
-        
+            applicant.verificationStatusEid === 2 ? 'Approved' :
+              applicant.verificationStatusEid === 3 ? 'Rejected' : 'Unknown'
+
+
           // Add other fields as needed
         ]);
 
@@ -284,12 +286,12 @@ if (bachleorDegree) {
       })
     });
   }
-   getFilterData(event: TableLazyLoadEvent) {
-  //   this._service.getAllProgramByFilter(event).subscribe((data) => {
-  //     this.totalRecords = data.total;
-  //     this.programResponse = data.data;
-   // })
- // }
+  getFilterData(event: TableLazyLoadEvent) {
+    //   this._service.getAllProgramByFilter(event).subscribe((data) => {
+    //     this.totalRecords = data.total;
+    //     this.programResponse = data.data;
+    // })
+    // }
 
-}
+  }
 }

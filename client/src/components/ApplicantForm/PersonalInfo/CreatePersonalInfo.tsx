@@ -47,6 +47,7 @@ import {
   genders,
   religions,
   photographRequirements,
+  pakistanCitiesByProvince,
 } from "@/lib/data";
 import {
   PersonalEditInfoValues,
@@ -96,7 +97,7 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
   const [isOpen, setIsOpen] = useState(false);
   const form = useForm<PersonalInfoValues>({
     resolver: zodResolver( personalInfo ),
-    mode: "all",
+    mode: "onChange",
     defaultValues: personalInfoDefaults
   });
   const [loading, setLoading] = useState(false);
@@ -113,7 +114,13 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                         .then((data) => {
                            toast({
                                   title: "Success",
-                                  description:  `Applicant created with id ${data.id}`
+                                  description:  `Personal info added.`,
+                                  action: (
+                                    <div className="flex items-center">
+                                      <UserRoundCheck className="mr-2 h-5 w-5 text-green-500" />
+                                      <span className="font-semibold text-green-500">Success</span>
+                                    </div>
+                                  )   
                                 })
                            dispatch(nextStep());
                         });
@@ -395,6 +402,45 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                       </FormItem>
                     )}
                   />
+                    <FormField
+                    control={form.control}
+                    name="province"
+                    render={({ field }) => (
+                      <FormItem className="mb-2">
+                        <FormLabel className="relative">
+                          Province{" "}
+                          <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
+                        </FormLabel>
+                       <Select
+                          disabled={loading}
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger error={errors.religion?.message}>
+                              <SelectValue
+                                defaultValue={field.value}
+                                placeholder="Select a Religion"
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {/* @ts-ignore  */}
+                            {pakistanCitiesByProvince.map((p_c) => (
+                              <SelectItem
+                                key={p_c.province + "pvc"}
+                                value={p_c.province}
+                              >
+                                {p_c.province}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="domicile"
@@ -409,27 +455,6 @@ const CreatePersonalInfo: FC<CreatePersonalInfoProps> = ({}) => {
                             disabled={loading}
                             placeholder="Domicile"
                             error={errors.domicile?.message}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="province"
-                    render={({ field }) => (
-                      <FormItem className="mb-2">
-                        <FormLabel className="relative">
-                          Province{" "}
-                          <Asterisk className="size-2 inline-flex absolute top-[2px]" />{" "}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={loading}
-                            error={errors.province?.message}
-                            placeholder="Province"
                             {...field}
                           />
                         </FormControl>

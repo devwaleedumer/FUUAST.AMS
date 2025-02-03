@@ -52,7 +52,7 @@ namespace AMS.Controllers.Identity
         [HttpPost("filter")]
         public async Task<IActionResult> GetAllAcademicYearByFilter([FromBody] LazyLoadEvent request, CancellationToken ct)
             => Ok(await _userService.GetUserByFilter(request, ct));
-        
+
     }
 }
 
