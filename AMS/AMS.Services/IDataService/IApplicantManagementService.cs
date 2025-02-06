@@ -1,10 +1,9 @@
-﻿using AMS.MODELS.ApplicantManagement;
+﻿using AMS.MODELS;
+using AMS.MODELS.ApplicantManagement;
 using AMS.MODELS.ApplicationForm.Applicant;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AMS.MODELS.Filters;
+using AMS.MODELS.MeritList;
+
 
 namespace AMS.SERVICES.IDataService
 {
@@ -12,5 +11,8 @@ namespace AMS.SERVICES.IDataService
     {
         Task<List<ApplicantInfoList>> GetAllApplicantDetails(ApplicantInfoRequest user);
         Task<List<Applicantmanagementresponse>> UpdateApplicantDetails(updateApplicantRequest request);
+        Task<MeritListDataModel> GetMeritListData(int meritListId);
+        Task<PaginationResponse<MeritListResponse>> GetAllMeritListDetailsByFilter(LazyLoadEvent request, CancellationToken ct);
+        Task GenerateMeritList(GenerateMeritListRequest request);
     }
 }

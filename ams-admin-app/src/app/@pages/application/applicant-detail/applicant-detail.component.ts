@@ -6,6 +6,8 @@ import autoTable from 'jspdf-autotable';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UpdateApplicantRequest } from '../../../@core/api/applicant_management/updateapplicantmanagement';
 import { MessageService } from 'primeng/api';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
 
 @Component({
   selector: 'app-applicant-detail',
@@ -16,9 +18,11 @@ export class ApplicantDetailComponent {
   applicantFormgroup!: FormGroup
   isEditing: boolean = false;
   deleteDialog: boolean = false;
+  ResponseDialog: boolean = false;
   addDialog: boolean = false;
   submitted: boolean = false;
   imageUrl: string = "";
+  responseText: string = '';
   applicantInfoResponse: any[] = [];
   updateApplicantRequest: UpdateApplicantRequest;
   applicantInfoRequest: ApplicantInfoRequest
@@ -33,13 +37,15 @@ export class ApplicantDetailComponent {
     { label: 'Approved', value: 2 },
     { label: 'Rejected', value: 3 }
   ];
+  userdetail: any;
 
 
-  constructor(private _applicantmanagementservice: ApplicantmanagementService, private fb: FormBuilder, private messageService: MessageService) {
+  constructor(private _applicantmanagementservice: ApplicantmanagementService, private fb: FormBuilder, private messageService: MessageService, public _auth: AuthService, public _permission: RolesAndPermissionService) {
     this.applicantInfoRequest = new ApplicantInfoRequest();
     this.updateApplicantRequest = new UpdateApplicantRequest();
   }
   ngOnInit() {
+    this.userdetail = this._auth.User;
     this.getApplicantInfo();
     this.validateFormgroup();
 
@@ -108,13 +114,17 @@ export class ApplicantDetailComponent {
   }
   showEditModal(response: any) {
     debugger
-    const backendBaseUrl = 'https://localhost:7081';
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.AppicantDetail.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update Applicant detail.', life: 3000 });
+      return;
+    }
+    //const backendBaseUrl = 'https://localhost:7081';
     this.programType = response.programTypeName;
 
     this.addDialog = true;
     this.submitted = true;
     this.isEditing = false;
-    this.imageUrl = `${response.documentUrl}`;
+    this.imageUrl = response.documentUrl;
     const dob = new Date(response.dob).toISOString().split('T')[0];
     this.applicantFormgroup.patchValue({
       ...response,
@@ -178,10 +188,17 @@ export class ApplicantDetailComponent {
     this.applicantInfoRequest = new ApplicantInfoRequest();
     this.getApplicantInfo();
   }
+  OnCancel() {
+    this.ResponseDialog = false
+  }
+  OnReject() {
+    this.ResponseDialog = true
+  }
   update(action: string) {
     debugger
     this.updateApplicantRequest.verificationStatusEid = action;
     this.updateApplicantRequest.applicantId = this.applicantId;
+    this.updateApplicantRequest.Remarks = this.responseText
     this._applicantmanagementservice.updateApplicantDetail(this.updateApplicantRequest).subscribe(() => {
       const successMessage = action === 'APPROVED'
         ? 'Applicant approved successfully'
@@ -194,6 +211,7 @@ export class ApplicantDetailComponent {
       });
       this.getApplicantInfo();
       this.hideDialog();
+      this.ResponseDialog = false;
     }, error => {
       const errorMessage = action === 'APPROVED'
         ? 'Error approving applicant'
@@ -234,7 +252,7 @@ export class ApplicantDetailComponent {
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }
@@ -291,7 +309,7 @@ export class ApplicantDetailComponent {
     //     this.totalRecords = data.total;
     //     this.programResponse = data.data;
     // })
-    // }
+    // }
 
   }
 }

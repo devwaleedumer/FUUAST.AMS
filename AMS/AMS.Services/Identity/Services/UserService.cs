@@ -116,7 +116,7 @@ namespace AMS.SERVICES.Identity.Services
                     .ConfigureAwait(false)
                           :
                 await query.AsNoTracking()
-                    .LazySearch(request.GlobalFilter, "Username")
+                    .LazySearch(request.GlobalFilter, "UserName")
                     .Where(x => x.UserTypeEid == (int)UserType.Admin)
                     .Select(user => new UserDetailsDto
                     {

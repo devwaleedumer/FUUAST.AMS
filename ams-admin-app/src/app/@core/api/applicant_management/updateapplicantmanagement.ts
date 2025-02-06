@@ -1,4 +1,5 @@
 export class UpdateApplicantRequest {
-    applicantId:number | undefined;
-    verificationStatusEid:string | undefined;
+  applicantId: number | undefined;
+  verificationStatusEid: string | undefined;
+  Remarks: string | undefined
 }

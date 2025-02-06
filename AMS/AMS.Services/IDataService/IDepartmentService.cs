@@ -12,5 +12,7 @@ namespace AMS.SERVICES.IDataService
         Task<UpdateDepartmentResponse> UpdateDepartment(UpdateDepartmentRequest Request, CancellationToken ct);
         Task DeleteDepartment(int id, CancellationToken ct);
         Task<PaginationResponse<DeparmentResponse>> GetDepartmentByFilter(LazyLoadEvent request, CancellationToken ct);
+        Task<List<DeparmentResponse>> GetDepartmentsByProgramId(int programId, CancellationToken ct);
+
     }
 }

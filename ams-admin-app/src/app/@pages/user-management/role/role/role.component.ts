@@ -67,7 +67,6 @@ export class RoleComponent {
       description: ['', Validators.required],
     })
   }
-
   ngOnInit(): void {
     this.loadAllRoles();
     this.loadAllPermissions();
@@ -79,7 +78,6 @@ export class RoleComponent {
       this.selectedRole = this.roles[0];
     })
   }
-
   loadAllPermissions() {
     this.rolesService.getAllPermission().subscribe((response) => {
       this.permissions = mapPermissions(response);
@@ -87,15 +85,12 @@ export class RoleComponent {
       this.filteredPermissions = [...this.permissions];
     })
   }
-
   selectRole(role: Role): void {
     this.selectedRole = role;
   }
-
   isPermissionEnabled(permissionId: string): boolean {
     return this.selectedRole.permissions.includes(permissionId);
   }
-
   togglePermission(permissionId: string): void {
     const index = this.selectedRole.permissions.indexOf(permissionId);
     if (index === -1) {
@@ -104,40 +99,43 @@ export class RoleComponent {
       this.selectedRole.permissions.splice(index, 1);
     }
   }
-
   filterPermissions(): void {
     this.filteredPermissions = this.permissions.filter(permission => {
       const matchesSearch = permission.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         permission.description.toLowerCase().includes(this.searchQuery.toLowerCase());
-      const matchesModule = !this.selectedModule || permission.module === this.selectedModule;
-      return matchesSearch && matchesModule;
+      //  const matchesModule = !this.selectedModule || permission.module === this.selectedModule;
+      return matchesSearch;
     });
   }
-
   onSearch(): void {
     this.filterPermissions();
   }
-
   onModuleChange(): void {
     this.filterPermissions();
   }
-
   saveChanges(): void {
     // Implement save logic here
     console.log('Saving changes for role:', this.selectedRole);
     this.rolesService.updateRolePermissions(this.selectedRole.id, { id: this.selectedRole.id, permissions: this.selectedRole.permissions }).subscribe(() => {
+      this.loadAllRoles();
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Role Permissions Updated', life: 3000 });
+
     }, error => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message || error.detail || 'Role permissions could not be updated', life: 3000 });
     });
   }
-
   // Edit, Delete, Add
   openNew() {
     this.isEditing = true; // Add mode
     this.roleFormGroup.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
     this.addDialog = true;
+  }
+  filterText(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.roleFormGroup.get('userName')?.setValue(filteredValue, { emitEvent: true }); // Update the form control value
   }
   hideDialog() {
     this.addDialog = false;
@@ -162,6 +160,7 @@ export class RoleComponent {
     this.roleFormGroup.markAllAsTouched();
   }
   saveDetails() {
+    debugger
     this.submitted = true;
     // alert(JSON.stringify(this.roleFormGroup.errors))
     if (this.roleFormGroup.valid) {

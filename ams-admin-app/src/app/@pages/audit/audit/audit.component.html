@@ -1,0 +1,53 @@
+<div class="card">
+  <h4 class="py-3"><span class="pi pi-search text-xl"></span> Audit Trails</h4>
+  <hr />
+  <p-table
+    #dt
+    [value]="audits"
+    [paginator]="true"
+    [lazy]="true"
+    [rows]="20"
+    [totalRecords]="totalRecords"
+    [loading]="loading"
+    [rowsPerPageOptions]="[20, 100, 150]"
+    (onLazyLoad)="getFilterData($event)"
+    [style]="{ width: '100%', minHeight: '600px' }"
+    [rowHover]="true"
+    dataKey="id"
+    [lazy]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="userId">
+          User ID <p-sortIcon field="userId"></p-sortIcon>
+        </th>
+        <th pSortableColumn="type">
+          Type <p-sortIcon field="type"></p-sortIcon>
+        </th>
+        <th pSortableColumn="tableName">
+          Table Name <p-sortIcon field="tableName"></p-sortIcon>
+        </th>
+        <th pSortableColumn="dateTime">
+          Date <p-sortIcon field="dateTime"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-audit>
+      <tr>
+        <td>{{ audit.id }}</td>
+        <td>{{ audit.userId || "N/A" }}</td>
+        <td>{{ audit.type }}</td>
+        <td>{{ audit.tableName }}</td>
+        <td>{{ audit.dateTime | date : "dd MMM yyyy, hh:mm a" }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5">No audit records found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

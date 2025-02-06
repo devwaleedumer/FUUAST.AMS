@@ -9,6 +9,8 @@ import { ShiftService } from '../../../@core/services/shift/shift.service';
 import { Subject } from 'rxjs';
 import { ShiftRequest } from '../../../@core/api/configuration/shift/shift';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
 declare var $: any;
 @Component({
   selector: 'app-shift',
@@ -24,9 +26,9 @@ export class ShiftComponent {
   addShiftDialog: boolean = false;
   shiftId!: number;
   shiftResponse: any[] = [];
-  shiftRequest:ShiftRequest;
-   submitted: boolean = false;
-   cols: any[] = [];
+  shiftRequest: ShiftRequest;
+  submitted: boolean = false;
+  cols: any[] = [];
   exportColumns: any[] = [];
 
   statuses: any[] = [];
@@ -36,17 +38,19 @@ export class ShiftComponent {
 
   rowsPerPageOptions = [5, 10, 20];
   destroy$: Subject<void> = new Subject<void>();
-  constructor(private _shiftService: ShiftService, private messageService: MessageService,private fb:FormBuilder) {
-    this.shiftRequest=new ShiftRequest();
-    this.shiftId=0;
-   }
+  userdetail: any;
+  constructor(private _shiftService: ShiftService, private messageService: MessageService, private fb: FormBuilder, public _auth: AuthService, public _permission: RolesAndPermissionService) {
+    this.shiftRequest = new ShiftRequest();
+    this.shiftId = 0;
+  }
 
   ngOnInit() {
     this.ValidationAddFormControl();
-   
-     this.loadShiftData();
-     
-     
+
+    this.loadShiftData();
+    this.userdetail = this._auth.User;
+
+
 
     this.cols = [
       { field: 'id', header: 'Shift ID' },
@@ -62,77 +66,94 @@ export class ShiftComponent {
 
   }
   loadShiftData() {
-   
-    this._shiftService.getAllShift().subscribe((response:any) => 
-    {
+
+    this._shiftService.getAllShift().subscribe((response: any) => {
       console.log('Shift data received:', response);
       this.shiftResponse = response;
-      this.shiftRequest.id=response.id;
-   },
-   (error) => {
-      console.error('Error fetching shift data:', error);
-   }
-);
-}
-openNew() {
-  this.isEditing = true; // Add mode
+      this.shiftRequest.id = response.id;
+    },
+      (error) => {
+        console.error('Error fetching shift data:', error);
+      }
+    );
+  }
+  openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Shift.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create shift.', life: 3000 });
+      return;
+    }
+    this.isEditing = true; // Add mode
     this.addShiftForm.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
-    this.addShiftDialog = true; 
-}
+    this.addShiftDialog = true;
+  }
+  filterText(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.addShiftForm.get('name')?.setValue(filteredValue, { emitEvent: true }); // Update the form control value
+  }
 
-ValidationAddFormControl(){
-this.addShiftForm = this.fb.group({
-  name: ['', Validators.required],
-  description:['', Validators.required]
-});
-}
-hideDialog() {
-  this.addShiftDialog = false;
-  this.submitted = false;
-}
-  deleteshift(response:any) {
+  ValidationAddFormControl() {
+    this.addShiftForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required]
+    });
+  }
+  hideDialog() {
+    this.addShiftDialog = false;
+    this.submitted = false;
+  }
+  deleteshift(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Shift.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete shift.', life: 3000 });
+      return;
+    }
     this.deleteShiftDialog = true;
-    this.shiftId=response.id;
-    
-  }
-editDetails(){
+    this.shiftId = response.id;
 
-  if (this.addShiftForm.valid) {
+  }
+  editDetails() {
 
-   this.shiftRequest=this.addShiftForm.value;
-   this.shiftRequest.id=this.shiftId;
-    this._shiftService.updateShift(this.shiftRequest).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Shift Added', life: 3000 });
-      this.loadShiftData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Shift could not be added', life: 3000 });
-    });
+    if (this.addShiftForm.valid) {
+
+      this.shiftRequest = this.addShiftForm.value;
+      this.shiftRequest.id = this.shiftId;
+      this._shiftService.updateShift(this.shiftRequest).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Shift Added', life: 3000 });
+        this.loadShiftData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Shift could not be added', life: 3000 });
+      });
+    }
+    this.addShiftForm.markAllAsTouched();
   }
-  this.addShiftForm.markAllAsTouched();
-}
-saveDetails() {
-  this.submitted = true;
-  if (this.addShiftForm.valid) {
-   
-    this._shiftService.addShift(this.addShiftForm.value).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Shift Added', life: 3000 });
-      this.loadShiftData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Shift could not be added', life: 3000 });
-    });
+  saveDetails() {
+    this.submitted = true;
+    if (this.addShiftForm.valid) {
+
+      this._shiftService.addShift(this.addShiftForm.value).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Shift Added', life: 3000 });
+        this.loadShiftData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Shift could not be added', life: 3000 });
+      });
+    }
+    this.addShiftForm.markAllAsTouched();
   }
-  this.addShiftForm.markAllAsTouched();
-}
-  
-  showEditShiftModal(response:any){
-    this.addShiftDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
+
+  showEditShiftModal(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Shift.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update shift.', life: 3000 });
+      return;
+    }
+    this.addShiftDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
     this.addShiftForm.patchValue(response);
-    this.shiftId=response.id;
+    this.shiftId = response.id;
   }
 
   confirmDelete() {
@@ -146,15 +167,15 @@ saveDetails() {
     this.deleteShiftDialog = false;
   }
   findIndexById(id: string): number {
-      let index = -1;
-      for (let i = 0; i < this.shiftResponse.length; i++) {
-          if (this.shiftResponse[i].id === id) {
-              index = i;
-              break;
-          }
+    let index = -1;
+    for (let i = 0; i < this.shiftResponse.length; i++) {
+      if (this.shiftResponse[i].id === id) {
+        index = i;
+        break;
       }
-  
-      return index;
+    }
+
+    return index;
   }
 
   createId(): string {
@@ -189,7 +210,7 @@ saveDetails() {
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }
@@ -241,5 +262,5 @@ saveDetails() {
     })
   }
 
- 
+
 }

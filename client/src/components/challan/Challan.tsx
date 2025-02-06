@@ -31,7 +31,9 @@ const Challan = (props: Props) => {
     });
     const [isChallanLoading, setIsChallanLoading] = useState(false)
     const applicantId = useAppSelector(x => x.auth.user?.applicantId)
-    const {data,isLoading: applicationDetailLoading, isSuccess : applicationDetailSuccess, isError: applicationDetailError } = useGetApplicationDetailQuery(applicantId as number,{}) 
+    const {data, refetch,isLoading: applicationDetailLoading, isSuccess : applicationDetailSuccess, isError: applicationDetailError } = useGetApplicationDetailQuery(applicantId as number,{
+      
+    }) 
     const [admissionFormLoading, setAdmissionFormLoading] = useState(false)
     // const [generatePdf, { isLoading: isChallanLoading, isError }] = useLazyGetFeeChallanQuery();
   const handleDownload = async () => {
@@ -92,6 +94,7 @@ const Challan = (props: Props) => {
 
   useEffect(() => {
     if (uploadImageIsSuccess) {
+      refetch()
       toast({
         title: "Challan uploaded successfully",
         description: "Challan uploaded successfully!",
@@ -152,7 +155,7 @@ const Challan = (props: Props) => {
         </CardContent>
       </Card>
      {
-     data.challanStatus !== "Paid" &&  <>
+       <>
          <div className='border-t my-5 relative'>
             <span className=' absolute -top-[12px] text-gray-600 px-2  left-1/2 bg-white'>OR</span>
       </div>
@@ -185,7 +188,7 @@ const Challan = (props: Props) => {
                       </CardContent>
                       <CardFooter>
                       <div className="  flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 w-full rounded">
-                      <Button disabled={uploadChallanImageLoading} className="w-full sm:w-auto" type="submit">
+                      <Button disabled={uploadChallanImageLoading } className="w-full sm:w-auto" type="submit">
                       <ReceiptText className="mr-2 h-4 w-4" /> Upload Challan
                       </Button>
                       </div>

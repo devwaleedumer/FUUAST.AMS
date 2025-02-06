@@ -1,10 +1,12 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { Product } from '../../../@core/api/dashboard/product';
 import { FacultyService } from '../../../@core/services/faculty/faculty.service';
 import { Faculty } from '../../../@core/api/configuration/faculty/faculty';
 import autoTable from 'jspdf-autotable';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
 
 @Component({
   templateUrl: 'faculty.component.html',
@@ -41,11 +43,13 @@ export class FacultyComponent implements OnInit {
   totalRecords: number = 0;
 
   rowsPerPageOptions = [5, 10, 20];
-  isLoading : boolean = false;
+  isLoading: boolean = false;
+  userdetail: any;
 
-  constructor(private facultyService: FacultyService, private messageService: MessageService) { }
+  constructor(private facultyService: FacultyService, private messageService: MessageService, public _auth: AuthService, public _permission: RolesAndPermissionService) { }
 
   ngOnInit() {
+    this.userdetail = this._auth.User;
     this.cols = [
       { field: 'id', header: 'Faculty ID' },
       { field: "name", header: "Name" },
@@ -54,6 +58,10 @@ export class FacultyComponent implements OnInit {
     this.exportColumns = this.cols.map(col => (col.header));
   }
   openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Faculty.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create faculty.', life: 3000 });
+      return;
+    }
     this.faculty = {};
     this.submitted = false;
     this.facultyDialog = true;
@@ -61,43 +69,62 @@ export class FacultyComponent implements OnInit {
   deleteSelectedFaculty() {
     this.deleteFacultiesDialog = true;
   }
+  filterText(event: Event): void {
+
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.faculty.name = filteredValue;
+  }
+
 
   showEditFacultyModal(faculty: Faculty) {
-    this.faculty = {...faculty} ;
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Faculty.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update Faculty.', life: 3000 });
+      return;
+    }
+    this.faculty = { ...faculty };
     this.submitted = false;
     this.editFacultyDialog = true;
   }
   editFaculty() {
     if (this.faculty.name?.trim()) {
-      this.facultyService.updateFaculty(this.faculty,this.faculty.id!)
+      this.facultyService.updateFaculty(this.faculty, this.faculty.id!)
         .subscribe((data) => {
-          const index  = this.faculties.findIndex(f => f.id == data.id)
+          const index = this.faculties.findIndex(f => f.id == data.id)
           this.faculties[index].name = data.name;
           this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Updated', life: 3000 });
         });
       this.submitted = true;
-  }
-      this.editFacultyDialog = false;
-      this.faculty = {};
+    }
+    this.editFacultyDialog = false;
+    this.faculty = {};
   }
   deleteFaculty(faculty: Faculty) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Faculty.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete faculty.', life: 3000 });
+      return;
+    }
     this.deleteFacultyDialog = true;
     this.faculty = { ...faculty };
   }
   confirmDelete() {
     this.deleteFacultyDialog = false;
     if (this.faculty.id) {
-       this.facultyService.deleteFaculty(this.faculty.id).subscribe( {next: (data) => {
-         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Deleted', life: 3000 });
-           this.table.reset()
-           this.faculty = {};
-       }
-         ,error: (error: any) => {
-         console.log(error)
-           this.messageService.add({ severity: 'error', summary: 'Error', detail: error ??  `Faculty couldn't be deleted right now` });
-           this.faculty = {};
-         }
-       })
+      this.facultyService.deleteFaculty(this.faculty.id).subscribe({
+        next: (data) => {
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Deleted', life: 3000 });
+          this.table.reset()
+          this.faculty = {};
+        }
+        , error: (error: any) => {
+          console.log(error)
+          this.messageService.add({
+            severity: 'error', summary: 'Error', detail: error ?? `Faculty couldn't be deleted right now`
+          });
+          this.faculty = {};
+        }
+      })
     }
   }
 
@@ -113,11 +140,10 @@ export class FacultyComponent implements OnInit {
     this.submitted = true;
     if (this.faculty.name?.trim()) {
       this.facultyService.createFaculty(this.faculty)
-                         .subscribe((data) =>
-                         {
-                           this.faculties = [...this.faculties,data]
-                           this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Created', life: 3000 });
-                         });
+        .subscribe((data) => {
+          this.faculties = [...this.faculties, data]
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Faculty Created', life: 3000 });
+        });
       this.facultyDialog = false;
       this.faculty = {};
     }
@@ -156,7 +182,7 @@ export class FacultyComponent implements OnInit {
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }

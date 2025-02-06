@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AMS.DOMAIN.Identity
 {
-    public class ApplicationRoleClaim : IdentityRoleClaim<int>, IBaseEntity<int>
+    public class ApplicationRoleClaim : IdentityRoleClaim<int>
     {
         public virtual ApplicationRole Role { get; set; } = null!;
 

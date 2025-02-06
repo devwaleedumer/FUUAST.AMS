@@ -21,7 +21,7 @@ import Link from "next/link";
 import { AuthRoutes } from "@/utils/routes/Routes";
 import { InputShowHide } from "@/components/ui/input-show-hide";
 import isAuth from "@/components/ApplicantProtected";
-import { BookOpen, LoaderCircle } from "lucide-react";
+import { BookOpen, CheckCircle2, LoaderCircle } from "lucide-react";
 import { useRegisterMutation } from "@/redux/features/auth/userApi";
 import { toast } from "@/components/ui/use-toast";
 import { redirect } from "next/navigation";
@@ -50,7 +50,18 @@ const Signup: FC<SignupProps> = ({}) => {
   }
    useEffect(() => {
     if(isSuccess){
-      toast({title: "Success",description: data},)
+       toast({
+        title:"Success",
+        description: data,
+        className: "bg-background border-l-8 border-l-green-500",
+        action: (
+                <div className="flex items-center">
+                  <CheckCircle2 className="mr-2 h-5 w-5 text-green-500" />
+                  <span className="font-semibold text-green-500">Success</span>
+                </div>
+              ),
+        // i
+      })
       redirect("/login")
     }
     
@@ -65,7 +76,7 @@ const Signup: FC<SignupProps> = ({}) => {
           </div>
               <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
                 {/* Sign up to your account */}
-                Join FUUAST
+                Start your journey at FUUAST
               </h3>
               <p className="text-sm">
                  Begin your academic journey with us

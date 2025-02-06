@@ -7,6 +7,8 @@ import { ProgramRequest } from '../../../@core/api/configuration/program/program
 import autoTable from 'jspdf-autotable';
 import { ProgramService } from '../../../@core/services/program/program.service';
 import { ProgramtypeService } from '../../../@core/services/programtype/programtype.service';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
 
 @Component({
   selector: 'app-program',
@@ -21,9 +23,9 @@ export class ProgramComponent {
   programId!: number;
   programResponse: any[] = [];
   programtypeResponse: any[] = [];
-  progamRequest:ProgramRequest;
-   submitted: boolean = false;
-   cols: any[] = [];
+  progamRequest: ProgramRequest;
+  submitted: boolean = false;
+  cols: any[] = [];
   exportColumns: any[] = [];
 
   statuses: any[] = [];
@@ -33,17 +35,18 @@ export class ProgramComponent {
 
   rowsPerPageOptions = [5, 10, 20];
   destroy$: Subject<void> = new Subject<void>();
-  constructor(private _service: ProgramService, private messageService: MessageService,private fb:FormBuilder,private _programtypeService:ProgramtypeService) {
-   this.progamRequest=new ProgramRequest();
-    this.programId=0;
-   }
+  userdetail: any;
+  constructor(private _service: ProgramService, private messageService: MessageService, private fb: FormBuilder, private _programtypeService: ProgramtypeService, public _auth: AuthService, public _permission: RolesAndPermissionService) {
+    this.progamRequest = new ProgramRequest();
+    this.programId = 0;
+  }
 
   ngOnInit() {
     this.ValidationAddFormControl();
-   
-     this.loadprogramData();
-     
-     
+
+    this.loadprogramData();
+    this.userdetail = this._auth.User;
+
 
     this.cols = [
       { field: 'id', header: 'Program ID' },
@@ -62,96 +65,112 @@ export class ProgramComponent {
   }
   loadprogramData() {
 
-    this._service.getAllprogram().subscribe((response:any) => 
-    {
+    this._service.getAllprogram().subscribe((response: any) => {
       debugger
 
       //console.log('Shift data received:', response);
       this.programResponse = response;
-      this.progamRequest.id=response.id;
-   },
-   (error) => {
-      console.error('Error fetching program data:', error);
-   }
-);
-}
-openNew() {
-  this.isEditing = true; // Add mode
-  this.loadProgramtype();
+      this.progamRequest.id = response.id;
+    },
+      (error) => {
+        console.error('Error fetching program data:', error);
+      }
+    );
+  }
+  openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Program.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create program.', life: 3000 });
+      return;
+    }
+    this.isEditing = true; // Add mode
+    this.loadProgramtype();
     this.addprogramForm.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
-    this.addDialog = true; 
-}
+    this.addDialog = true;
+  }
 
-ValidationAddFormControl(){
-this.addprogramForm = this.fb.group({
-  name: ['', Validators.required], 
-programTypeId:[null, Validators.required]
- 
-});
-}
-loadProgramtype(){
+  ValidationAddFormControl() {
+    this.addprogramForm = this.fb.group({
+      name: ['', Validators.required],
+      programTypeId: [null, Validators.required]
 
-  this._programtypeService.getAllprogramtype().subscribe((response:any) => 
-    {
+    });
+  }
+  filterText(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.addprogramForm.get('name')?.setValue(filteredValue, { emitEvent: true }); // Update the form control value
+  }
+  loadProgramtype() {
+
+    this._programtypeService.getAllprogramtype().subscribe((response: any) => {
       debugger
       //console.log('Shift data received:', response)
       this.programtypeResponse = response;
-   }
-);
-}
-hideDialog() {
-  this.addDialog = false;
-  this.submitted = false;
-}
-isDeleted(response:any) {
+    }
+    );
+  }
+  hideDialog() {
+    this.addDialog = false;
+    this.submitted = false;
+  }
+  isDeleted(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Program.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete program.', life: 3000 });
+      return;
+    }
     this.deleteDialog = true;
-    this.programId=response.id;
-    
-  }
-editDetails(){
+    this.programId = response.id;
 
-  if (this.addprogramForm.valid) {
+  }
+  editDetails() {
 
-   this.progamRequest=this.addprogramForm.value;
-   this.progamRequest.id=this.programId;
-    this._service.updateProgram(this.progamRequest).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'program Added', life: 3000 });
-      this.loadprogramData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'program could not be added', life: 3000 });
-    });
+    if (this.addprogramForm.valid) {
+
+      this.progamRequest = this.addprogramForm.value;
+      this.progamRequest.id = this.programId;
+      this._service.updateProgram(this.progamRequest).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'program Added', life: 3000 });
+        this.loadprogramData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'program could not be added', life: 3000 });
+      });
+    }
+    this.addprogramForm.markAllAsTouched();
   }
-  this.addprogramForm.markAllAsTouched();
-}
-saveDetails() {
-  this.submitted = true;
-  if (this.addprogramForm.valid) {
-   
-    this._service.addProgram(this.addprogramForm.value).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'program Added', life: 3000 });
-      this.loadprogramData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'program could not be added', life: 3000 });
-    });
+  saveDetails() {
+    this.submitted = true;
+    if (this.addprogramForm.valid) {
+
+      this._service.addProgram(this.addprogramForm.value).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'program Added', life: 3000 });
+        this.loadprogramData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'program could not be added', life: 3000 });
+      });
+    }
+    this.addprogramForm.markAllAsTouched();
   }
-  this.addprogramForm.markAllAsTouched();
-}
-  
-showEditModal(response:any){
-    this.addDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
+
+  showEditModal(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Program.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update program.', life: 3000 });
+      return;
+    }
+    this.addDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
     this.loadProgramtype();
     debugger
     this.addprogramForm.patchValue(response);
-    this.programId=response.id;
+    this.programId = response.id;
   }
 
   confirmDelete() {
- 
+
     this._service.deleteProgram(this.programId).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'program Deleted', life: 3000 });
       this.loadprogramData();
@@ -161,15 +180,15 @@ showEditModal(response:any){
     this.deleteDialog = false;
   }
   findIndexById(id: string): number {
-      let index = -1;
-      for (let i = 0; i < this.programResponse.length; i++) {
-          if (this.programResponse[i].id === id) {
-              index = i;
-              break;
-          }
+    let index = -1;
+    for (let i = 0; i < this.programResponse.length; i++) {
+      if (this.programResponse[i].id === id) {
+        index = i;
+        break;
       }
-  
-      return index;
+    }
+
+    return index;
   }
 
   createId(): string {
@@ -204,7 +223,7 @@ showEditModal(response:any){
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }

@@ -25,9 +25,16 @@ namespace AMS.SHARED.Constants.Authorization
         public const string Users = nameof(Users);
         public const string UserRoles = nameof(UserRoles);
         public const string Roles = nameof(Roles);
+        public const string Shift = nameof(Shift);
+        public const string Faculty = nameof(Faculty);
+        public const string Program = nameof(Program);
+        public const string Department = nameof(Department);
+        public const string Session = nameof(Session);
+        public const string AcademicYear = nameof(AcademicYear);
+        public const string ProgramType = nameof(ProgramType);
+        public const string AppicantDetail = nameof(AppicantDetail);
         public const string RoleClaims = nameof(RoleClaims);
         public const string ApplicationForms = nameof(ApplicationForms);
-        public const string Brands = nameof(Brands);
     }
 
     public static class AMSPermissions
@@ -46,7 +53,39 @@ namespace AMS.SHARED.Constants.Authorization
         new("View Roles", AMSAction.View, AMSResource.Roles),
         new("Create Roles", AMSAction.Create, AMSResource.Roles),
         new("Update Roles", AMSAction.Update, AMSResource.Roles),
-        new("Delete Roles", AMSAction.Delete, AMSResource.Roles),
+        new("Delete Roles", AMSAction.Delete, AMSResource.Roles), 
+        new("View Shift", AMSAction.View, AMSResource.Shift),
+        new("Create Shift", AMSAction.Create, AMSResource.Shift),
+        new("Update Shift", AMSAction.Update, AMSResource.Shift),
+        new("Delete Shift", AMSAction.Delete, AMSResource.Shift), 
+        new("View Faculty", AMSAction.View, AMSResource.Faculty),
+        new("Create Faculty", AMSAction.Create, AMSResource.Faculty),
+        new("Update Faculty", AMSAction.Update, AMSResource.Faculty),
+        new("Delete Faculty", AMSAction.Delete, AMSResource.Faculty), 
+        new("View Program", AMSAction.View, AMSResource.Program),
+        new("Create Program", AMSAction.Create, AMSResource.Program),
+        new("Update Program", AMSAction.Update, AMSResource.Program),
+        new("Delete Program", AMSAction.Delete, AMSResource.Program), 
+        new("View Department", AMSAction.View, AMSResource.Department),
+        new("Create Department", AMSAction.Create, AMSResource.Department),
+        new("Update Department", AMSAction.Update, AMSResource.Department),
+        new("Delete Department", AMSAction.Delete, AMSResource.Department),
+        new("View Session", AMSAction.View, AMSResource.Session),
+        new("Create Session", AMSAction.Create, AMSResource.Session),
+        new("Update Session", AMSAction.Update, AMSResource.Session),
+        new("Delete Session", AMSAction.Delete, AMSResource.Session),
+        new("View AcademicYear", AMSAction.View, AMSResource.AcademicYear),
+        new("Create AcademicYear", AMSAction.Create, AMSResource.AcademicYear),
+        new("Update AcademicYear", AMSAction.Update, AMSResource.AcademicYear),
+        new("Delete AcademicYear", AMSAction.Delete, AMSResource.AcademicYear),
+        new("View ProgramType", AMSAction.View, AMSResource.ProgramType),
+        new("Create ProgramType", AMSAction.Create, AMSResource.ProgramType),
+        new("Update ProgramType", AMSAction.Update, AMSResource.ProgramType),
+        new("Delete ProgramType", AMSAction.Delete, AMSResource.ProgramType),
+        new("View AppicantDetail", AMSAction.View, AMSResource.AppicantDetail),
+        new("Create AppicantDetail", AMSAction.Create, AMSResource.AppicantDetail),
+        new("Update AppicantDetail", AMSAction.Update, AMSResource.AppicantDetail),
+        new("Delete AppicantDetail", AMSAction.Delete, AMSResource.AppicantDetail),
         new("View RoleClaims", AMSAction.View, AMSResource.RoleClaims),
         new("Update RoleClaims", AMSAction.Update, AMSResource.RoleClaims),
         new("View ApplicationForms", AMSAction.View, AMSResource.ApplicationForms, IsBasic: true),
@@ -55,6 +94,7 @@ namespace AMS.SHARED.Constants.Authorization
         new("Update ApplicationForms", AMSAction.Update, AMSResource.ApplicationForms,IsBasic: true),
         new("Delete ApplicationForms", AMSAction.Delete, AMSResource.ApplicationForms),
         new("Export ApplicationForms", AMSAction.Export, AMSResource.ApplicationForms),
+
    
         };
 

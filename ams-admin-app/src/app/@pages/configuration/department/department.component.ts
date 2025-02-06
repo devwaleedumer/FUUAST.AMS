@@ -8,6 +8,9 @@ import { DepartmentService } from '../../../@core/services/department/department
 import { MessageService } from 'primeng/api';
 import { FacultyService } from '../../../@core/services/faculty/faculty.service';
 import autoTable from 'jspdf-autotable';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
+import { User } from '../../../@core/api/auth/user';
 
 @Component({
   selector: 'app-department',
@@ -21,10 +24,10 @@ export class DepartmentComponent {
   addDialog: boolean = false;
   departmentId!: number;
   departmentResponse: any[] = [];
- facultyResponse: any[] = [];
-  departmentRequest:DepartmentRequest;
-   submitted: boolean = false;
-   cols: any[] = [];
+  facultyResponse: any[] = [];
+  departmentRequest: DepartmentRequest;
+  submitted: boolean = false;
+  cols: any[] = [];
   exportColumns: any[] = [];
 
   statuses: any[] = [];
@@ -34,17 +37,20 @@ export class DepartmentComponent {
 
   rowsPerPageOptions = [5, 10, 20];
   destroy$: Subject<void> = new Subject<void>();
-  constructor(private _service: DepartmentService, private messageService: MessageService,private fb:FormBuilder,private _facultyService:FacultyService) {
-   this.departmentRequest=new DepartmentRequest();
-    this.departmentId=0;
-   }
+  user: any;
+  userdetail: any;
+
+  constructor(private _service: DepartmentService, public _auth: AuthService, private messageService: MessageService, private fb: FormBuilder, private _facultyService: FacultyService, public _permission: RolesAndPermissionService) {
+    this.departmentRequest = new DepartmentRequest();
+    this.departmentId = 0;
+  }
 
   ngOnInit() {
     this.ValidationAddFormControl();
-   
-     this.loaddepartmentData();
-     
-     
+    this.user = this._auth.User;
+    this.loaddepartmentData();
+    this.userdetail = this._auth.User;
+
 
     this.cols = [
       { field: 'id', header: 'Department ID' },
@@ -61,90 +67,108 @@ export class DepartmentComponent {
 
   }
   loaddepartmentData() {
-    this._service.getAllDepartment().subscribe((response:any) => 
-    {
+    this._service.getAllDepartment().subscribe((response: any) => {
 
       //console.log('Shift data received:', response);
       this.departmentResponse = response;
-      this.departmentRequest.id=response.id;
-   },
-   (error) => {
-      console.error('Error fetching program data:', error);
-   }
-);
-}
-openNew() {
-  this.isEditing = true; // Add mode
-  this.loadFaculity();
+      this.departmentRequest.id = response.id;
+    },
+      (error) => {
+        console.error('Error fetching program data:', error);
+      }
+    );
+  }
+
+  openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Department.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create department.', life: 3000 });
+      return;
+    }
+    this.isEditing = true; // Add mode
+    this.loadFaculity();
     this.adddepartmentForm.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
-    this.addDialog = true; 
-}
+    this.addDialog = true;
+  }
 
-ValidationAddFormControl(){
-this.adddepartmentForm = this.fb.group({
-  name: ['', Validators.required],
-  faculityId:[null, Validators.required]
-});
-}
-loadFaculity(){
-  this._facultyService.getAllFaculty().subscribe((response:any) => 
-    {
+  ValidationAddFormControl() {
+    this.adddepartmentForm = this.fb.group({
+      name: ['', Validators.required],
+      faculityId: [null, Validators.required]
+    });
+  }
+  loadFaculity() {
+    this._facultyService.getAllFaculty().subscribe((response: any) => {
       //console.log('Shift data received:', response)
       this.facultyResponse = response;
-   }
-);
-}
-hideDialog() {
-  this.addDialog = false;
-  this.submitted = false;
-}
-isDeleted(response:any) {
+    }
+    );
+  }
+  hideDialog() {
+    this.addDialog = false;
+    this.submitted = false;
+  }
+  isDeleted(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Department.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete deparmtent.', life: 3000 });
+      return;
+    }
     this.deleteDialog = true;
-    this.departmentId=response.id;
-    
+    this.departmentId = response.id;
+
   }
-editDetails(){
-  if (this.adddepartmentForm.valid) {
-   this.departmentRequest=this.adddepartmentForm.value;
-   this.departmentRequest.id=this.departmentId;
-    this._service.updateDepartment(this.departmentRequest).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'department Added', life: 3000 });
-      this.loaddepartmentData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'department could not be added', life: 3000 });
-    });
+  editDetails() {
+    if (this.adddepartmentForm.valid) {
+      this.departmentRequest = this.adddepartmentForm.value;
+      this.departmentRequest.id = this.departmentId;
+      this._service.updateDepartment(this.departmentRequest).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'department Added', life: 3000 });
+        this.loaddepartmentData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'department could not be added', life: 3000 });
+      });
+    }
+    this.adddepartmentForm.markAllAsTouched();
   }
-  this.adddepartmentForm.markAllAsTouched();
-}
-saveDetails() {
-  this.submitted = true;
-  if (this.adddepartmentForm.valid) {
-   
-    this._service.addDepartment(this.adddepartmentForm.value).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'department Added', life: 3000 });
-      this.loaddepartmentData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'department could not be added', life: 3000 });
-    });
+  saveDetails() {
+    this.submitted = true;
+    if (this.adddepartmentForm.valid) {
+
+      this._service.addDepartment(this.adddepartmentForm.value).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'department Added', life: 3000 });
+        this.loaddepartmentData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'department could not be added', life: 3000 });
+      });
+    }
+    this.adddepartmentForm.markAllAsTouched();
   }
-  this.adddepartmentForm.markAllAsTouched();
-}
-  
-showEditModal(response:any){
-    this.addDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
+  filterText(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.adddepartmentForm.get('name')?.setValue(filteredValue, { emitEvent: true }); // Update the form control value
+  }
+
+
+  showEditModal(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Department.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update department.', life: 3000 });
+      return;
+    }
+    this.addDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
     this.loadFaculity();
     debugger
     this.adddepartmentForm.patchValue(response);
-    this.departmentId=response.id;
+    this.departmentId = response.id;
   }
 
   confirmDelete() {
- 
+
     this._service.deleteDepartment(this.departmentId).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'department Deleted', life: 3000 });
       this.loaddepartmentData();
@@ -154,15 +178,15 @@ showEditModal(response:any){
     this.deleteDialog = false;
   }
   findIndexById(id: string): number {
-      let index = -1;
-      for (let i = 0; i < this.departmentResponse.length; i++) {
-          if (this.departmentResponse[i].id === id) {
-              index = i;
-              break;
-          }
+    let index = -1;
+    for (let i = 0; i < this.departmentResponse.length; i++) {
+      if (this.departmentResponse[i].id === id) {
+        index = i;
+        break;
       }
-  
-      return index;
+    }
+
+    return index;
   }
 
   createId(): string {
@@ -197,7 +221,7 @@ showEditModal(response:any){
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }

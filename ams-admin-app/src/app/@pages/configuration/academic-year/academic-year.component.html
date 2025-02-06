@@ -96,32 +96,32 @@
               Name <p-sortIcon field="name"></p-sortIcon>
             </th>
 
-                <th pSortableColumn="StartDate">StartDate
-               <p-sortIcon field="StartDate"></p-sortIcon>
-                </th>
-                <th pSortableColumn="EndDate">EndDate
-                    <p-sortIcon field="EndDate"></p-sortIcon>
-                </th>
-                <th class="flex justify-content-center" >
-                  Actions
-                </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-response>
-            <tr>
-              <td style=" min-width: 10rem">
-                <span class="p-column-title">Id</span>
-                {{ response.id }}
-              </td>
-              <td style=" min-width: 10rem">
-                <span class="p-column-title">Name</span>
-                {{ response.name }}
-              </td>
-              
-              <td style=" min-width: 10rem">
-                <span class="p-column-title">StartDate</span>
-                {{ response.startDate | date}}
-              </td>
+            <th pSortableColumn="StartDate">
+              StartDate
+              <p-sortIcon field="StartDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="EndDate">
+              EndDate
+              <p-sortIcon field="EndDate"></p-sortIcon>
+            </th>
+            <th class="flex justify-content-center">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-response>
+          <tr>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Id</span>
+              {{ response.id }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Name</span>
+              {{ response.name }}
+            </td>
+
+            <td style="min-width: 10rem">
+              <span class="p-column-title">StartDate</span>
+              {{ response.startDate | date }}
+            </td>
 
             <td style="min-width: 10rem">
               <span class="p-column-title">EndDate</span>
@@ -179,20 +179,25 @@
               required
               autofocus
               id="name"
-              [ngClass]="{ 'ng-invalid ng-dirty': submitted && academicyearForm.get('name')?.invalid }"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && academicyearForm.get('name')?.invalid
+              }"
             />
             <div
-          *ngIf="
-academicyearForm.get('name')?.invalid &&
-(academicyearForm.get('name')?.touched || academicyearForm.get('name')?.dirty || submitted)
-"
-          class="p-error"
-        >
-          <small *ngIf="academicyearForm.get('name')?.errors?.['required'] "
-            >Name is required.</small
-          >
-        </div>
-        </div>
+              *ngIf="
+                academicyearForm.get('name')?.invalid &&
+                (academicyearForm.get('name')?.touched ||
+                  academicyearForm.get('name')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small *ngIf="academicyearForm.get('name')?.errors?.['required'] "
+                >Name is required.</small
+              >
+            </div>
+          </div>
 
           <!-- !--dropdown -->
           <div class="field">
@@ -203,19 +208,25 @@ academicyearForm.get('name')?.invalid &&
               formControlName="startDate"
               required
               id="startdate"
-              [ngClass]="{ 'ng-invalid ng-dirty': submitted && academicyearForm.get('startDate')?.invalid }"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && academicyearForm.get('startDate')?.invalid
+              }"
             />
             <div
-          *ngIf="
-academicyearForm.get('startDate')?.invalid &&
-(academicyearForm.get('startDate')?.touched || academicyearForm.get('startDate')?.dirty || submitted)
-"
-          class="p-error"
-        >
-          <small *ngIf="academicyearForm.get('startDate')?.errors?.['required'] "
-            >StartDate is required.</small
-          >
-        </div>
+              *ngIf="
+                academicyearForm.get('startDate')?.invalid &&
+                (academicyearForm.get('startDate')?.touched ||
+                  academicyearForm.get('startDate')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small
+                *ngIf="academicyearForm.get('startDate')?.errors?.['required'] "
+                >StartDate is required.</small
+              >
+            </div>
           </div>
 
           <!-- EndDate -->
@@ -227,19 +238,25 @@ academicyearForm.get('startDate')?.invalid &&
               formControlName="endDate"
               required
               id="enddate"
-              [ngClass]="{ 'ng-invalid ng-dirty': submitted && academicyearForm.get('endDate')?.invalid }"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && academicyearForm.get('endDate')?.invalid
+              }"
             />
             <div
-          *ngIf="
-academicyearForm.get('endDate')?.invalid &&
-(academicyearForm.get('endDate')?.touched || academicyearForm.get('endDate')?.dirty || submitted)
-"
-          class="p-error"
-        >
-          <small *ngIf="academicyearForm.get('endDate')?.errors?.['required'] "
-            >EndDate is required.</small
-          >
-        </div>
+              *ngIf="
+                academicyearForm.get('endDate')?.invalid &&
+                (academicyearForm.get('endDate')?.touched ||
+                  academicyearForm.get('endDate')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small
+                *ngIf="academicyearForm.get('endDate')?.errors?.['required'] "
+                >EndDate is required.</small
+              >
+            </div>
           </div>
         </form>
       </ng-template>
@@ -357,5 +374,6 @@ academicyearForm.get('endDate')?.invalid &&
         ></button>
       </ng-template>
     </p-dialog>
+      
   </div>
 </div>

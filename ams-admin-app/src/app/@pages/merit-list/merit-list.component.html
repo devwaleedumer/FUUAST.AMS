@@ -1,0 +1,274 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button
+              pButton
+              pRipple
+              label="Generate Merit List"
+              icon="pi pi-plus"
+              class="p-button-success mr-2"
+              (click)="openNew()"
+            ></button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <button
+            pButton
+            pRipple
+            label="Export"
+            icon="pi pi-upload"
+            class="p-button-help"
+            pTooltip="CSV"
+            tooltipPosition="bottom"
+            (click)="dt.exportCSV()"
+          ></button>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-file-excel"
+            pTooltip="xlsx"
+            tooltipPosition="bottom"
+            (click)="exportExcel()"
+            class="p-button-success ml-2"
+          ></button>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-file-pdf"
+            (click)="exportPdf()"
+            pTooltip="Pdf"
+            tooltipPosition="bottom"
+            class="p-button-success ml-2"
+          ></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table
+        #dt
+        [value]="meritListData"
+        [columns]="cols"
+        responsiveLayout="scroll"
+        [rows]="10"
+        [globalFilterFields]="['name', 'id']"
+        [paginator]="true"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        [totalRecords]="totalRecords"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowHover]="true"
+        dataKey="id"
+        [lazy]="true"
+        (onLazyLoad)="getFilterData($event)"
+      >
+        <ng-template pTemplate="caption">
+          <div
+            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+          >
+            <h5 class="m-0">Manage Merit List</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="onGlobalFilter(dt, $event)"
+                placeholder="Search..."
+                class="w-full sm:w-auto"
+              />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id">
+              Id <p-sortIcon field="id"></p-sortIcon>
+            </th>
+            <th>Session</th>
+            <th>Program</th>
+            <th>Department</th>
+            <th>Shift</th>
+            <th>MeritListNo</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-response>
+          <tr>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Id</span>
+              {{ response.id }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Session</span>
+              {{ response.session }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Program</span>
+              {{ response.program }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Department</span>
+              {{ response.department }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Shift</span>
+              {{ response.shift }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">MeritListNo</span>
+              {{ response.meritListNo }}
+            </td>
+            <div class="flex justify-content-center align-items-center">
+              <button
+                pButton
+                pRipple
+                (click)="downloadPdf(response.id)"
+                icon="pi pi-download"
+                class="p-button-rounded p-button-success mr-2 mt-2"
+              ></button>
+            </div>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog
+      [(visible)]="addDialog"
+      [style]="{ width: '450px',}"
+      header="Department Details"
+      [modal]="true"
+      class="p-fluid"
+    >
+      <ng-template pTemplate="header">
+        <h3>Generate Merit List</h3>
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <form [formGroup]="meritListForm">
+          <div class="field">
+            <label for="name">Program</label>
+            <p-dropdown
+              id="programId"
+              formControlName="programId"
+              [options]="programData"
+              optionLabel="name"
+              optionValue="id"
+              (onChange)="loadDepartmentData()"
+              placeholder="Select Program"
+              appendTo="body"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && meritListForm.get('programId')?.invalid
+              }"
+            >
+            </p-dropdown>
+            <div
+              *ngIf="
+                meritListForm.get('programId')?.invalid &&
+                (meritListForm.get('programId')?.touched ||
+                  meritListForm.get('programId')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small
+                *ngIf="meritListForm.get('programId')?.errors?.['required'] "
+                >Program is required.</small
+              >
+            </div>
+          </div>
+
+          <!-- !--dropdown -->
+          <div class="field">
+            <label for="departmentId">Department Id</label>
+            <p-dropdown
+              id="departmentId"
+              formControlName="departmentId"
+              [options]="departmentData"
+              optionLabel="name"
+              (onChange)="loadShiftData()"
+              optionValue="id"
+              placeholder="Select Department"
+              appendTo="body"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && meritListForm.get('departmentId')?.invalid
+              }"
+            >
+            </p-dropdown>
+            <div
+              *ngIf="
+                meritListForm.get('departmentId')?.invalid &&
+                (meritListForm.get('departmentId')?.touched ||
+                  meritListForm.get('departmentId')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small
+                *ngIf="meritListForm.get('departmentId')?.errors?.['required'] "
+                >Department is required.</small
+              >
+            </div>
+          </div>
+
+          <!--  -->
+          <div class="field">
+            <label for="shiftId">Shift</label>
+            <p-dropdown
+              id="shiftId"
+              formControlName="shiftId"
+              [options]="ShiftData"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Select Shift"
+              appendTo="body"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && meritListForm.get('shiftId')?.invalid
+              }"
+            >
+            </p-dropdown>
+            <div
+              *ngIf="
+                meritListForm.get('shiftId')?.invalid &&
+                (meritListForm.get('shiftId')?.touched ||
+                  meritListForm.get('shiftId')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small *ngIf="meritListForm.get('shiftId')?.errors?.['required'] "
+                >Shift is required.</small
+              >
+            </div>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template pTemplate="footer" style="z-index: 0 !important">
+        <button
+          pButton
+          pRipple
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="hideDialog()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Generate"
+          icon="pi pi-check"
+          class="p-button-text"
+          (click)="saveDetails()"
+        ></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>

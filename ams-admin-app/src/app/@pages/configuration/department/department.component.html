@@ -1,157 +1,159 @@
 <div class="grid">
-    <div class="col-12">
-      <div class="card px-6 py-6">
-        <p-toast></p-toast>
-        <p-toolbar styleClass="mb-4">
-          <ng-template pTemplate="left">
-            <div class="my-2">
-              <button
-                pButton
-                pRipple
-                label="New"
-                icon="pi pi-plus"
-                class="p-button-success mr-2"
-                (click)="openNew()"
-              ></button>
-            </div>
-          </ng-template>
-
-          <ng-template pTemplate="right">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
             <button
               pButton
               pRipple
-              label="Export"
-              icon="pi pi-upload"
-              class="p-button-help"
-              pTooltip="CSV"
-              tooltipPosition="bottom"
-              (click)="dt.exportCSV()"
+              label="New"
+              icon="pi pi-plus"
+              class="p-button-success mr-2"
+              (click)="openNew()"
             ></button>
-            <button
-              type="button"
-              pButton
-              pRipple
-              icon="pi pi-file-excel"
-              pTooltip="xlsx"
-              tooltipPosition="bottom"
-              (click)="exportExcel()"
-              class="p-button-success ml-2"
-            ></button>
-            <button
-              type="button"
-              pButton
-              pRipple
-              icon="pi pi-file-pdf"
-              (click)="exportPdf()"
-              pTooltip="Pdf"
-              tooltipPosition="bottom"
-              class="p-button-success ml-2"
-            ></button>
-          </ng-template>
-        </p-toolbar>
+          </div>
+        </ng-template>
 
-        <p-table
-          #dt
-          [value]="departmentResponse"
-          [columns]="cols"
-          responsiveLayout="scroll"
-          [rows]="10"
-          [globalFilterFields]="['name','id']"
-          [paginator]="true"
-          [rowsPerPageOptions]="[10, 20, 30]"
-          [totalRecords]="totalRecords"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        <ng-template pTemplate="right">
+          <button
+            pButton
+            pRipple
+            label="Export"
+            icon="pi pi-upload"
+            class="p-button-help"
+            pTooltip="CSV"
+            tooltipPosition="bottom"
+            (click)="dt.exportCSV()"
+          ></button>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-file-excel"
+            pTooltip="xlsx"
+            tooltipPosition="bottom"
+            (click)="exportExcel()"
+            class="p-button-success ml-2"
+          ></button>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-file-pdf"
+            (click)="exportPdf()"
+            pTooltip="Pdf"
+            tooltipPosition="bottom"
+            class="p-button-success ml-2"
+          ></button>
+        </ng-template>
+      </p-toolbar>
 
-          [rowHover]="true"
-          dataKey="id"
-          [lazy]="true"
-
-          (onLazyLoad)="getFilterData($event)"
-        >
-          <ng-template pTemplate="caption">
-            <div
-              class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-            >
-              <h5 class="m-0">Manage Department</h5>
-              <span class="block mt-2 md:mt-0 p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input
-                  pInputText
-                  type="text"
-                  (input)="onGlobalFilter(dt,$event)"
-                  placeholder="Search..."
-                  class="w-full sm:w-auto"
-                />
-              </span>
-            </div>
-          </ng-template>
-          <ng-template pTemplate="header">
-            <tr>
-  <!--            <th style="width: 3rem">-->
-  <!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
-  <!--            </th>-->
-              <th pSortableColumn="id">
-                Department Id <p-sortIcon field="id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="name">
-                Name <p-sortIcon field="name"></p-sortIcon>
-
-                <th pSortableColumn="department">Faculty
-               <p-sortIcon field="department"></p-sortIcon>
-               <th class="flex justify-content-center" >
-                Actions
-              </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-response>
-            <tr>
-              <td style=" min-width: 10rem">
-                <span class="p-column-title">Id</span>
-                {{ response.id }}
-              </td>
-              <td style=" min-width: 10rem">
-                <span class="p-column-title">Name</span>
-                {{ response.name }}
-              </td>
-              <td style=" min-width: 10rem">
-                <span class="p-column-title">Faculty</span>
-                {{ response.faculity }}
-              </td>
-
-              <td>
-                <div class="flex justify-content-center">
-                  <button
-                    pButton
-                    pRipple
-                    icon="pi pi-pencil"
-                    class="p-button-rounded p-button-success mr-2"
-                    (click)="showEditModal(response)"
-                  ></button>
-                  <button
-                    pButton
-                    pRipple
-                    icon="pi pi-trash"
-                    class="p-button-rounded p-button-warning"
-                    (click)="isDeleted(response)"
-                  ></button>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-
-      <p-dialog
-        [(visible)]="addDialog"
-        [style]="{ width: '450px',}"
-        header="Department Details"
-        [modal]="true"
-        class="p-fluid"
+      <p-table
+        #dt
+        [value]="departmentResponse"
+        [columns]="cols"
+        responsiveLayout="scroll"
+        [rows]="10"
+        [globalFilterFields]="['name', 'id']"
+        [paginator]="true"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        [totalRecords]="totalRecords"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowHover]="true"
+        dataKey="id"
+        [lazy]="true"
+        (onLazyLoad)="getFilterData($event)"
       >
+        <ng-template pTemplate="caption">
+          <div
+            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+          >
+            <h5 class="m-0">Manage Department</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="onGlobalFilter(dt, $event)"
+                placeholder="Search..."
+                class="w-full sm:w-auto"
+              />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <!--            <th style="width: 3rem">-->
+            <!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+            <!--            </th>-->
+            <th pSortableColumn="id">
+              Department Id <p-sortIcon field="id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="name">
+              Name <p-sortIcon field="name"></p-sortIcon>
+            </th>
 
+            <th pSortableColumn="department">
+              Faculty <p-sortIcon field="department"></p-sortIcon>
+            </th>
+
+            <th class="flex justify-content-center">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-response>
+          <tr>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Id</span>
+              {{ response.id }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Name</span>
+              {{ response.name }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Faculty</span>
+              {{ response.faculity }}
+            </td>
+
+            <td>
+              <div class="flex justify-content-center">
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-success mr-2"
+                  (click)="showEditModal(response)"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-warning"
+                  (click)="isDeleted(response)"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog
+      [(visible)]="addDialog"
+      [style]="{ width: '450px',}"
+      header="Department Details"
+      [modal]="true"
+      class="p-fluid"
+    >
       <ng-template pTemplate="header">
-        <h3>{{ isEditing ? 'Add Department Details' : 'Edit Department  Details' }}</h3>
+        <h3>
+          {{
+            isEditing ? "Add Department Details" : "Edit Department  Details"
+          }}
+        </h3>
       </ng-template>
 
       <ng-template pTemplate="content">
@@ -163,53 +165,66 @@
               pInputText
               formControlName="name"
               required
+              (input)="filterText($event)"
               autofocus
               id="name"
-              [ngClass]="{ 'ng-invalid ng-dirty': submitted && adddepartmentForm.get('name')?.invalid }"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && adddepartmentForm.get('name')?.invalid
+              }"
             />
             <div
-            *ngIf="
-  adddepartmentForm.get('name')?.invalid &&
-  (adddepartmentForm.get('name')?.touched || adddepartmentForm.get('name')?.dirty || submitted)
-"
-            class="p-error"
-          >
-            <small *ngIf="adddepartmentForm.get('name')?.errors?.['required'] "
-              >Name is required.</small
+              *ngIf="
+                adddepartmentForm.get('name')?.invalid &&
+                (adddepartmentForm.get('name')?.touched ||
+                  adddepartmentForm.get('name')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
             >
+              <small
+                *ngIf="adddepartmentForm.get('name')?.errors?.['required'] "
+                >Name is required.</small
+              >
+            </div>
           </div>
-        </div>
 
-
-<!-- !--dropdown -->
-<div class="field">
-    <label for="facultyId">Faculty</label>
-   <p-dropdown id="facultyId"
-   formControlName="faculityId"
-   [options]="facultyResponse"
-   optionLabel="name"
-   optionValue="id"
-   placeholder="Select faculty"
-               appendTo="body"
-               [ngClass]="{ 'ng-invalid ng-dirty': submitted && adddepartmentForm.get('faculityId')?.invalid }"
-   >
-   </p-dropdown>
-   <div
-   *ngIf="
-adddepartmentForm.get('faculityId')?.invalid &&
-(adddepartmentForm.get('faculityId')?.touched || adddepartmentForm.get('faculityId')?.dirty || submitted)
-"
-   class="p-error"
- >
-   <small *ngIf="adddepartmentForm.get('faculityId')?.errors?.['required'] "
-     >faculty is required.</small
-   >
- </div>
-  </div>
+          <!-- !--dropdown -->
+          <div class="field">
+            <label for="facultyId">Faculty</label>
+            <p-dropdown
+              id="facultyId"
+              formControlName="faculityId"
+              [options]="facultyResponse"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Select faculty"
+              appendTo="body"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && adddepartmentForm.get('faculityId')?.invalid
+              }"
+            >
+            </p-dropdown>
+            <div
+              *ngIf="
+                adddepartmentForm.get('faculityId')?.invalid &&
+                (adddepartmentForm.get('faculityId')?.touched ||
+                  adddepartmentForm.get('faculityId')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small
+                *ngIf="adddepartmentForm.get('faculityId')?.errors?.['required'] "
+                >faculty is required.</small
+              >
+            </div>
+          </div>
         </form>
       </ng-template>
 
-      <ng-template pTemplate="footer" style="z-index:0!important;">
+      <ng-template pTemplate="footer" style="z-index: 0 !important">
         <button
           pButton
           pRipple
@@ -221,15 +236,15 @@ adddepartmentForm.get('faculityId')?.invalid &&
         <button
           pButton
           pRipple
-          label="{{isEditing ? 'Add' : 'Update '}}"
+          label="{{ isEditing ? 'Add' : 'Update ' }}"
           icon="pi pi-check"
           class="p-button-text"
           (click)="isEditing ? saveDetails() : editDetails()"
         ></button>
       </ng-template>
     </p-dialog>
-  <!--Edit Product-->
-      <!-- <p-dialog
+    <!--Edit Product-->
+    <!-- <p-dialog
         [(visible)]="editshiftDialog"
         [style]="{ width: '450px' }"
         header="Edit Shift details"
@@ -292,25 +307,37 @@ adddepartmentForm.get('faculityId')?.invalid &&
           ></button>
         </ng-template>
       </p-dialog> -->
-  <!--Delete Dialogue-->
-      <p-dialog
-        [(visible)]="deleteDialog"
-        header="Confirm"
-        [modal]="true"
-        [style]="{ width: '450px' }"
-      >
-        <div class="flex align-items-center justify-content-center">
-          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-          <span
-          >Are you sure you want to delete
-          >?</span
-          >
-        </div>
-        <ng-template pTemplate="footer">
-          <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteDialog = false"></button>
-          <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
-        </ng-template>
-
-      </p-dialog>
-    </div>
+    <!--Delete Dialogue-->
+    <p-dialog
+      [(visible)]="deleteDialog"
+      header="Confirm"
+      [modal]="true"
+      [style]="{ width: '450px' }"
+    >
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to delete >?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          icon="pi pi-times"
+          class="p-button-text"
+          label="No"
+          (click)="deleteDialog = false"
+        ></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-check"
+          class="p-button-text"
+          label="Yes"
+          (click)="confirmDelete()"
+        ></button>
+      </ng-template>
+    </p-dialog>
+     
   </div>
+    
+</div>

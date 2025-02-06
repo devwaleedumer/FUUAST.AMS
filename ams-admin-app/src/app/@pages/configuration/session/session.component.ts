@@ -3,10 +3,12 @@ import { MessageService } from 'primeng/api';
 import autoTable from 'jspdf-autotable';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SessionRequest} from '../../../@core/api/configuration/session/sessionrequest';
+import { SessionRequest } from '../../../@core/api/configuration/session/sessionrequest';
 import { Subject } from 'rxjs';
 import { AcademicyearService } from '../../../@core/services/academicyear/academicyear.service';
 import { SessionService } from '../../../@core/services/session/session.service';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
 
 @Component({
   selector: 'app-session',
@@ -21,9 +23,9 @@ export class SessionComponent {
   sessionId!: number;
   sessionResponse: any[] = [];
   academicyearResponse: any[] = [];
- sessionRequest:SessionRequest;
-   submitted: boolean = false;
-   cols: any[] = [];
+  sessionRequest: SessionRequest;
+  submitted: boolean = false;
+  cols: any[] = [];
   exportColumns: any[] = [];
 
   statuses: any[] = [];
@@ -33,17 +35,19 @@ export class SessionComponent {
 
   rowsPerPageOptions = [5, 10, 20];
   destroy$: Subject<void> = new Subject<void>();
-  constructor(private _academicservice: AcademicyearService,private _service:SessionService, private messageService: MessageService,private fb:FormBuilder,) {
-   this. sessionRequest=new SessionRequest();
-    this.sessionId=0;
-   }
+  userdetail: any;
+  constructor(private _academicservice: AcademicyearService, private _service: SessionService, private messageService: MessageService, private fb: FormBuilder, public _auth: AuthService, public _permission: RolesAndPermissionService) {
+    this.sessionRequest = new SessionRequest();
+    this.sessionId = 0;
+  }
 
   ngOnInit() {
+    this.userdetail = this._auth.User;
     this.ValidationAddFormControl();
-   
-     this.loadsessionData();
-     
-     
+
+    this.loadsessionData();
+
+
 
     this.cols = [
       { field: 'id', header: 'Session ID' },
@@ -61,104 +65,119 @@ export class SessionComponent {
     this.exportColumns = this.cols.map(col => (col.header));
 
   }
+  filterText(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.sessionForm.get('name')?.setValue(filteredValue, { emitEvent: true }); // Update the form control value
+  }
   loadsessionData() {
-    this._service.getAllSession().subscribe((response:any) => 
-    {
+    this._service.getAllSession().subscribe((response: any) => {
       this.sessionResponse = response;
-      this.sessionRequest.id=response.id;
-     
-   },
-   (error) => {
-      console.error('Error fetching Academicyear data:', error);
-   }
-);
-}
+      this.sessionRequest.id = response.id;
 
-loadacademicData() {
-  this._academicservice.getAllAcademicyear().subscribe((response:any) => 
-  {
-    this.academicyearResponse = response;
- },
- (error) => {
-    console.error('Error fetching session data:', error);
- }
-);
-}
-openNew() {
-  debugger
-  this.isEditing = true;
-  this.addDialog = true;  // Add mode
-  this.loadacademicData();
+    },
+      (error) => {
+        console.error('Error fetching Academicyear data:', error);
+      }
+    );
+  }
+
+  loadacademicData() {
+    this._academicservice.getAllAcademicyear().subscribe((response: any) => {
+      this.academicyearResponse = response;
+    },
+      (error) => {
+        console.error('Error fetching session data:', error);
+      }
+    );
+  }
+  openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Session.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create session.', life: 3000 });
+      return;
+    }
+    this.isEditing = true;
+    this.addDialog = true;  // Add mode
+    this.loadacademicData();
     this.sessionForm.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
-     
-}
 
-ValidationAddFormControl(){
-this.sessionForm = this.fb.group({
-  name: ['', Validators.required], 
-   startDate:['', Validators.required],
-   endDate:['', Validators.required],
-   academicYearId:[null,Validators.required]
-});
-}
+  }
 
-hideDialog() {
-  this.addDialog = false;
-  this.submitted = false;
-}
-isDeleted(response:any) {
+  ValidationAddFormControl() {
+    this.sessionForm = this.fb.group({
+      name: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      academicYearId: [null, Validators.required]
+    });
+  }
+
+  hideDialog() {
+    this.addDialog = false;
+    this.submitted = false;
+  }
+  isDeleted(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Session.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete session.', life: 3000 });
+      return;
+    }
     this.deleteDialog = true;
-    this.sessionId=response.id;
-    
+    this.sessionId = response.id;
+
   }
-editDetails(){
-  if (this.sessionForm.valid) {
-   this.sessionRequest=this.sessionForm.value;
-   this.sessionRequest.id=this.sessionId;
-    this._service.updateSession(this.sessionRequest).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'session Added', life: 3000 });
-      this.loadsessionData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'session could not be added', life: 3000 });
-    });
+  editDetails() {
+    if (this.sessionForm.valid) {
+      this.sessionRequest = this.sessionForm.value;
+      this.sessionRequest.id = this.sessionId;
+      this._service.updateSession(this.sessionRequest).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'session Added', life: 3000 });
+        this.loadsessionData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'session could not be added', life: 3000 });
+      });
+    }
+    this.sessionForm.markAllAsTouched();
   }
-  this.sessionForm.markAllAsTouched();
-}
-saveDetails() {
-  this.submitted = true;
-  if (this.sessionForm.valid) {
-   
-    this._service.addSession(this.sessionForm.value).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'session Added', life: 3000 });
-      this.loadsessionData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'session could not be added', life: 3000 });
-    });
+  saveDetails() {
+    this.submitted = true;
+    if (this.sessionForm.valid) {
+
+      this._service.addSession(this.sessionForm.value).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'session Added', life: 3000 });
+        this.loadsessionData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'session could not be added', life: 3000 });
+      });
+    }
+    this.sessionForm.markAllAsTouched();
   }
-  this.sessionForm.markAllAsTouched();
-}
-  
-showEditModal(response:any){
-    this.addDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
+
+  showEditModal(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Session.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update session.', life: 3000 });
+      return;
+    }
+    this.addDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
     this.loadacademicData();
     debugger
     const startdate = new Date(response.startDate).toISOString().split('T')[0]; // Extract date only
-    const enddate = new Date(response.endDate).toISOString().split('T')[0]; 
+    const enddate = new Date(response.endDate).toISOString().split('T')[0];
     this.sessionForm.patchValue({
       ...response,
       startDate: startdate,
       endDate: enddate
-  });
-    this.sessionId=response.id;
+    });
+    this.sessionId = response.id;
   }
 
   confirmDelete() {
- 
+
     this._service.deleteSession(this.sessionId).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Academicyear Deleted', life: 3000 });
       this.loadsessionData();
@@ -168,15 +187,15 @@ showEditModal(response:any){
     this.deleteDialog = false;
   }
   findIndexById(id: string): number {
-      let index = -1;
-      for (let i = 0; i < this.sessionResponse.length; i++) {
-          if (this.sessionResponse[i].id === id) {
-              index = i;
-              break;
-          }
+    let index = -1;
+    for (let i = 0; i < this.sessionResponse.length; i++) {
+      if (this.sessionResponse[i].id === id) {
+        index = i;
+        break;
       }
-  
-      return index;
+    }
+
+    return index;
   }
 
   createId(): string {
@@ -211,7 +230,7 @@ showEditModal(response:any){
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }
@@ -266,4 +285,3 @@ showEditModal(response:any){
     })
   }
 }
-

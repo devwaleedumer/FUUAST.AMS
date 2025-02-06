@@ -4,6 +4,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { UserManagementModule } from './user-management/user-management.module';
 import { AccountModule } from './account/account.module';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { MeritListModule } from './merit-list/merit-list.module';
 @NgModule({
   declarations: [NotfoundComponent],
   imports: [
@@ -11,6 +12,7 @@ import { NotfoundComponent } from './notfound/notfound.component';
     PagesRoutingModule,
     UserManagementModule,
     AccountModule,
+    MeritListModule
   ]
 })
 export class PagesModule { }

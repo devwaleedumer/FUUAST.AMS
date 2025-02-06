@@ -8,6 +8,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Option } from '../../../@core/api/option';
 import { RoleService } from '../../../@core/services/role/role.service';
 import { Role } from '../../../@core/api/auth/role';
+import { AccountService } from '../../../@core/services/account/account.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { ToggleRequest } from '../../../@core/api/user-management/toogle/togglerequest';
+//import { ToggleRequest } from '../../../@core/api/user-management/toogle/togglerequest';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -35,8 +40,12 @@ export class UserComponent {
   userRequest!: UserRequest;
   roles: Option[] = []
   statusLoader: boolean = false;
+  toggleRequest: ToggleRequest;
+  userdetail: any;
 
-  constructor(private _service: UserService, private _roleService: RoleService, private messageService: MessageService, private fb: FormBuilder) {
+  constructor(private _service: UserService, private _accountservice: AccountService, private _roleService: RoleService, private messageService: MessageService, private fb: FormBuilder, public _auth: AuthService, public _permission: RolesAndPermissionService) {
+    this.toggleRequest = new ToggleRequest();
+
     this.userFormGroup = this.fb.group({
       userName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -48,6 +57,7 @@ export class UserComponent {
     this.rows = 10;
   }
   ngOnInit() {
+    this.userdetail = this._auth.User;
     this.cols = [
       { field: 'id', header: 'UserId' },
       { field: "username", header: "Username" },
@@ -60,12 +70,17 @@ export class UserComponent {
   }
 
   loadRoles() {
+    debugger
     this._roleService.getAllRoles().subscribe((response: any) => {
       this.roles = response.map((role: Role) => ({ value: role.id, label: role.name }));
     }
     );
   }
   openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Users.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create users.', life: 3000 });
+      return;
+    }
     this.loadRoles();
     this.isEditing = true; // Add mode
     this.userFormGroup.reset(); // Reset the form for new entry
@@ -77,22 +92,27 @@ export class UserComponent {
     this.submitted = false;
   }
   isDeleted(user: any) {
-    debugger
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Users.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete users.', life: 3000 });
+      return;
+    }
     this.deleteDialog = true;
     this.userId = user.id;
   }
-  showEditModal(user:any){
-    debugger
-    this.addDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
+  showEditModal(user: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.Users.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update users.', life: 3000 });
+      return;
+    }
+    this.addDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
     this.loadRoles();
     debugger
     this.userFormGroup.patchValue(user);
-    this.userId=user.id;
+    this.userId = user.id;
   }
   editDetails() {
-    debugger
     if (this.userFormGroup.valid) {
       this.userRequest = this.userFormGroup.value;
       this.userRequest.id = this.userId;
@@ -106,7 +126,12 @@ export class UserComponent {
     }
     this.userFormGroup.markAllAsTouched();
   }
-
+  filterText(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.userFormGroup.get('userName')?.setValue(filteredValue, { emitEvent: true }); // Update the form control value
+  }
   saveDetails() {
     this.submitted = true;
     if (this.userFormGroup.valid) {
@@ -121,7 +146,6 @@ export class UserComponent {
     this.userFormGroup.markAllAsTouched();
   }
   confirmDelete() {
-    debugger
     this._service.deleteUser(this.userId).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'User Deleted', life: 3000 });
       this.getFilterData({ first: this.first, last: this.rows });  // Refresh the list
@@ -145,9 +169,10 @@ export class UserComponent {
     });
   }
   toggleUserStatus(user: User) {
-    alert(JSON.stringify(user))
-    this.statusLoader = true
-    this._service.toggleUserStatus({ ActivateUser: !user.isActive, UserId: user.id }).subscribe(() => {
+    debugger
+    this.toggleRequest.ActivateUser = !user.isActive;
+    this.toggleRequest.UserId = user.id;
+    this._accountservice.toggleUserStatus(this.toggleRequest).subscribe(() => {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'User Status Updated', life: 3000 });
       this.getFilterData({ first: this.first, last: this.rows });  // Refresh the list
       this.statusLoader = false
@@ -166,7 +191,7 @@ export class UserComponent {
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }
@@ -214,7 +239,9 @@ export class UserComponent {
   getFilterData(event: TableLazyLoadEvent) {
     this.isLoading = true;
     this._service.getAllUsersByFilter(event).subscribe((data) => {
+      debugger
       this.totalRecords = data.total;
+
       this.users = data.data;
       this.isLoading = false;
     })

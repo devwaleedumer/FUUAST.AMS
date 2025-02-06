@@ -66,7 +66,7 @@ namespace AMS.MODELS.ApplicationForm.Applicant
     { 
         public int applicantId {  get; set; }
         public string VerificationStatusEid {  get; set; }
-
+        public string Remarks { get; set; }
     }
    
 }

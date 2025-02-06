@@ -39,7 +39,7 @@ export const applicationFormApi = apiSlice.injectEndpoints({
                 url: "/ApplicationForms/get-details/" + id,
                 method: "GET",
             }),
-            // providesTags: ["applicationForms"]
+            providesTags: ["applicationForms"]
         }),
         editSubmittedApplication: builder.mutation<string, editAdmissionSelectionValues>({
             query: (data) => ({

@@ -56,7 +56,7 @@
         [columns]="cols"
         responsiveLayout="scroll"
         [rows]="10"
-        [globalFilterFields]="['name','id']"
+        [globalFilterFields]="['name', 'id']"
         [paginator]="true"
         [rowsPerPageOptions]="[10, 20, 30]"
         [totalRecords]="totalRecords"
@@ -79,7 +79,7 @@
               <input
                 pInputText
                 type="text"
-                (input)="onGlobalFilter(dt,$event)"
+                (input)="onGlobalFilter(dt, $event)"
                 placeholder="Search..."
                 class="w-full sm:w-auto"
               />
@@ -88,27 +88,25 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-<!--            <th style="width: 3rem">-->
-<!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
-<!--            </th>-->
+            <!--            <th style="width: 3rem">-->
+            <!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+            <!--            </th>-->
             <th pSortableColumn="id">
               Faculty Id <p-sortIcon field="id"></p-sortIcon>
             </th>
             <th pSortableColumn="name">
               Name <p-sortIcon field="name"></p-sortIcon>
             </th>
-            <th class="flex justify-content-center" >
-              Actions
-            </th>
+            <th class="flex justify-content-center">Actions</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-faculty>
           <tr>
-            <td style=" min-width: 2rem">
+            <td style="min-width: 2rem">
               <span class="p-column-title">Id</span>
               {{ faculty.id }}
             </td>
-            <td style=" min-width: 10rem">
+            <td style="min-width: 10rem">
               <span class="p-column-title">Name</span>
               {{ faculty.name }}
             </td>
@@ -151,6 +149,7 @@
             [(ngModel)]="faculty.name"
             required
             pInputText
+            (input)="filterText($event)"
             id="createName"
             autofocus
             [ngClass]="{ 'ng-invalid ng-dirty': submitted && !faculty.name }"
@@ -179,7 +178,7 @@
         ></button>
       </ng-template>
     </p-dialog>
-<!--Edit Product-->
+    <!--Edit Product-->
     <p-dialog
       [(visible)]="editFacultyDialog"
       [style]="{ width: '450px' }"
@@ -200,7 +199,7 @@
             [ngClass]="{ 'ng-invalid ng-dirty': submitted && !faculty.name }"
           />
           <small class="ng-dirty ng-invalid" *ngIf="submitted && !faculty.name"
-          >Name is required.</small
+            >Name is required.</small
           >
         </div>
       </ng-template>
@@ -223,7 +222,7 @@
         ></button>
       </ng-template>
     </p-dialog>
-<!--Delete Dialogue-->
+    <!--Delete Dialogue-->
     <p-dialog
       [(visible)]="deleteFacultyDialog"
       header="Confirm"
@@ -233,14 +232,29 @@
       <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         <span *ngIf="faculty"
-        >Are you sure you want to delete <b>{{faculty.name }}</b
-        >?</span
+          >Are you sure you want to delete <b>{{ faculty.name }}</b
+          >?</span
         >
       </div>
       <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteFacultyDialog = false"></button>
-        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-times"
+          class="p-button-text"
+          label="No"
+          (click)="deleteFacultyDialog = false"
+        ></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-check"
+          class="p-button-text"
+          label="Yes"
+          (click)="confirmDelete()"
+        ></button>
       </ng-template>
     </p-dialog>
+      
   </div>
 </div>

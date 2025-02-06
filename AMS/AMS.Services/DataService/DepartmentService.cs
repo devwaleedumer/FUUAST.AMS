@@ -25,7 +25,20 @@ namespace AMS.SERVICES.DataService
                                        .ToListAsync(ct)
                                        .ConfigureAwait(false);
             return result.Adapt<List<DeparmentResponse>>();
+        
 
+        }
+        public async Task<List<DeparmentResponse>> GetDepartmentsByProgramId( int programId, CancellationToken ct)
+        {
+            var result = await _context.ProgramDepartments
+                                       .Include((x) => x.Department)
+                                       .AsNoTracking()
+                                       .Where(programDepartment =>  programDepartment.ProgramId == programId)
+                                       .Select(d => d.Department)
+                                       .Distinct()
+                                       .ToListAsync(ct)
+                                       .ConfigureAwait(false);
+            return result.Adapt<List<DeparmentResponse>>();
 
         }
 

@@ -44,7 +44,7 @@ namespace AMS.DatabaseSeed
                 {
                     // Create the role
                     _logger.LogInformation("Seeding {role} Role .", roleName);
-                    role = new ApplicationRole(roleName, $"{roleName} Role for Tenant");
+                    role = new ApplicationRole(roleName, $"{roleName} Role");
                     await _roleManager.CreateAsync(role);
                 }
 
@@ -53,9 +53,14 @@ namespace AMS.DatabaseSeed
                 {
                     await AssignPermissionsToRoleAsync(dbContext, AMSPermissions.Basic, role);
                 }
+
                 else if (roleName == AMSRoles.Admin)
                 {
-                    await AssignPermissionsToRoleAsync(dbContext, AMSPermissions.Admin, role);
+                    await AssignPermissionsToRoleAsync(dbContext, AMSPermissions.Admin, role); ;
+                }
+                else if (roleName == AMSRoles.SuperAdmin)
+                {
+                    await AssignPermissionsToRoleAsync(dbContext, AMSPermissions.All, role); ;
                 }
             }
         }
@@ -95,7 +100,6 @@ namespace AMS.DatabaseSeed
                     NormalizedUserName = _admin.Username.ToUpperInvariant(),
                     IsActive = true,
                     UserTypeEid = (int)UserType.Admin,
-
                 };
 
                 _logger.LogInformation("Seeding Default Admin User.");
@@ -105,10 +109,10 @@ namespace AMS.DatabaseSeed
             }
 
             // Assign role to user
-            if (!await _userManager.IsInRoleAsync(adminUser, AMSRoles.Admin))
+            if (!await _userManager.IsInRoleAsync(adminUser, AMSRoles.SuperAdmin))
             {
                 _logger.LogInformation("Assigning Admin Role to Admin User .");
-                await _userManager.AddToRoleAsync(adminUser, AMSRoles.Admin);
+                await _userManager.AddToRoleAsync(adminUser, AMSRoles.SuperAdmin);
             }
         }
     }

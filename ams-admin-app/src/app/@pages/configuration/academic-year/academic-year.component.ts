@@ -6,6 +6,8 @@ import { AcademicyearService } from '../../../@core/services/academicyear/academ
 import { MessageService } from 'primeng/api';
 import { Subject } from 'rxjs';
 import { AcademicyearRequest } from '../../../@core/api/configuration/academicyear/academicyearrequest';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
 
 @Component({
   selector: 'app-academic-year',
@@ -20,18 +22,20 @@ export class AcademicYearComponent {
   addDialog: boolean = false;
   academicyearId!: number;
   academicyearResponse: any[] = [];
-  academicyearRequest:AcademicyearRequest;
-   submitted: boolean = false;
-   cols: any[] = [];
+  academicyearRequest: AcademicyearRequest;
+  submitted: boolean = false;
+  cols: any[] = [];
   exportColumns: any[] = [];
   totalRecords: number = 0;
   rowsPerPageOptions = [5, 10, 20];
-  constructor(private _service: AcademicyearService, private messageService: MessageService,private fb:FormBuilder,) {
-   this. academicyearRequest=new AcademicyearRequest();
-    this.academicyearId=0;
-   }
+  userdetail: any;
+  constructor(private _service: AcademicyearService, private messageService: MessageService, private fb: FormBuilder, public _auth: AuthService, public _permission: RolesAndPermissionService) {
+    this.academicyearRequest = new AcademicyearRequest();
+    this.academicyearId = 0;
+  }
 
   ngOnInit() {
+    this.userdetail = this._auth.User;
     this.ValidationAddFormControl();
 
     this.cols = [
@@ -46,75 +50,86 @@ export class AcademicYearComponent {
 
   }
   loadacademicData() {
-    this._service.getAllAcademicyear().subscribe((response:any) =>
-    {
+    this._service.getAllAcademicyear().subscribe((response: any) => {
       this.academicyearResponse = response;
-      this.academicyearRequest.id=response.id;
+      this.academicyearRequest.id = response.id;
 
-   },
-   (error) => {
-      console.error('Error fetching Academicyear data:', error);
-   }
-);
-}
-openNew() {
-  this.isEditing = true; // Add mode
+    },
+      (error) => {
+        console.error('Error fetching Academicyear data:', error);
+      }
+    );
+  }
+  openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.AcademicYear.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create academicyear.', life: 3000 });
+      return;
+    }
+    this.isEditing = true; // Add mode
     this.academicyearForm.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
     this.addDialog = true;
-}
+  }
 
-ValidationAddFormControl(){
-this.academicyearForm = this.fb.group({
-  name: ['', Validators.required],
-   startDate:['', Validators.required],
-   endDate:['', Validators.required]
+  ValidationAddFormControl() {
+    this.academicyearForm = this.fb.group({
+      name: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required]
 
-});
-}
+    });
+  }
 
-hideDialog() {
-  this.addDialog = false;
-  this.submitted = false;
-}
-isDeleted(response:any) {
+  hideDialog() {
+    this.addDialog = false;
+    this.submitted = false;
+  }
+  isDeleted(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.AcademicYear.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete academicyear.', life: 3000 });
+      return;
+    }
     this.deleteDialog = true;
-    this.academicyearId=response.id;
+    this.academicyearId = response.id;
 
   }
-editDetails(){
-  if (this.academicyearForm.valid) {
-   this.academicyearRequest=this.academicyearForm.value;
-   this.academicyearRequest.id=this.academicyearId;
-    this._service.updateAcademicyear(this.academicyearRequest).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Academicyear Added', life: 3000 });
-      this.loadacademicData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Academicyear could not be added', life: 3000 });
-    });
+  editDetails() {
+    if (this.academicyearForm.valid) {
+      this.academicyearRequest = this.academicyearForm.value;
+      this.academicyearRequest.id = this.academicyearId;
+      this._service.updateAcademicyear(this.academicyearRequest).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Academicyear Added', life: 3000 });
+        this.loadacademicData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Academicyear could not be added', life: 3000 });
+      });
+    }
+    this.academicyearForm.markAllAsTouched();
   }
-  this.academicyearForm.markAllAsTouched();
-}
-saveDetails() {
-  this.submitted = true;
-  if (this.academicyearForm.valid) {
+  saveDetails() {
+    this.submitted = true;
+    if (this.academicyearForm.valid) {
 
-    this._service.addAcademicyear(this.academicyearForm.value).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Academicyear Added', life: 3000 });
-      this.loadacademicData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Academicyear could not be added', life: 3000 });
-    });
+      this._service.addAcademicyear(this.academicyearForm.value).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Academicyear Added', life: 3000 });
+        this.loadacademicData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Academicyear could not be added', life: 3000 });
+      });
+    }
+    this.academicyearForm.markAllAsTouched();
   }
-  this.academicyearForm.markAllAsTouched();
-}
 
-showEditModal(response:any){
-    this.addDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
+  showEditModal(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.AcademicYear.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update academicyear.', life: 3000 });
+      return;
+    }
+    this.addDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
     debugger
     const startdate = new Date(response.startDate).toISOString().split('T')[0]; // Extract date only
     const enddate = new Date(response.endDate).toISOString().split('T')[0];
@@ -122,8 +137,8 @@ showEditModal(response:any){
       ...response,
       startDate: startdate,
       endDate: enddate
-  });
-    this.academicyearId=response.id;
+    });
+    this.academicyearId = response.id;
   }
 
   confirmDelete() {
@@ -137,15 +152,15 @@ showEditModal(response:any){
     this.deleteDialog = false;
   }
   findIndexById(id: string): number {
-      let index = -1;
-      for (let i = 0; i < this.academicyearResponse.length; i++) {
-          if (this.academicyearResponse[i].id === id) {
-              index = i;
-              break;
-          }
+    let index = -1;
+    for (let i = 0; i < this.academicyearResponse.length; i++) {
+      if (this.academicyearResponse[i].id === id) {
+        index = i;
+        break;
       }
+    }
 
-      return index;
+    return index;
   }
 
   createId(): string {
@@ -180,7 +195,7 @@ showEditModal(response:any){
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }

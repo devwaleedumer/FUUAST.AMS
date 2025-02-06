@@ -26,7 +26,10 @@ export const feeChallanApi = apiSlice.injectEndpoints({
                     body: {
                         imageRequest: data.imageRequest
                     },
-                }
+                    invalidatesTags: ["applicationForms"]
+
+
+                };
             }
         })
 

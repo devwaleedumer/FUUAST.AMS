@@ -10,21 +10,24 @@ import { FilterResponse } from '../../api/filter-response';
 export class ProgramService {
   _baseEndPoint: string = 'Programs';
   constructor(private _httpService: GenericHttpClientService) {
-   }
+  }
   getAllprogram(): Observable<any> {
     return this._httpService.get<any>(`${this._baseEndPoint}`)
   }
-  getAllProgramByFilter (data:any) : Observable<FilterResponse<any>> {
-    return this._httpService.post<FilterResponse<any>>(`${this._baseEndPoint}/filter`,undefined,data)
+  getDepartmentsByProgram(programId: number): Observable<any> {
+    return this._httpService.get<any>(`${this._baseEndPoint}/${programId}/departments`)
   }
-  addProgram(request:ProgramRequest): Observable<any> {
-    return this._httpService.post<any>(`${this._baseEndPoint}/AddProgram`,undefined,request)
-    }
-    deleteProgram(id:number): Observable<any> {
-      debugger
-      return this._httpService.delete<any>(`${this._baseEndPoint}/DeleteProgram?id=${encodeURIComponent(id)}`)
+  getAllProgramByFilter(data: any): Observable<FilterResponse<any>> {
+    return this._httpService.post<FilterResponse<any>>(`${this._baseEndPoint}/filter`, undefined, data)
   }
-  updateProgram(request:ProgramRequest): Observable<any> {
-    return this._httpService.put<any>(`${this._baseEndPoint}/UpdateProgram`,request)
-    }
+  addProgram(request: ProgramRequest): Observable<any> {
+    return this._httpService.post<any>(`${this._baseEndPoint}/AddProgram`, undefined, request)
+  }
+  deleteProgram(id: number): Observable<any> {
+    debugger
+    return this._httpService.delete<any>(`${this._baseEndPoint}/DeleteProgram?id=${encodeURIComponent(id)}`)
+  }
+  updateProgram(request: ProgramRequest): Observable<any> {
+    return this._httpService.put<any>(`${this._baseEndPoint}/UpdateProgram`, request)
+  }
 }

@@ -27,4 +27,7 @@ export class AccountService {
   //    getAllDepartmentByFilter (data:any) : Observable<FilterResponse<any>> {
   //      return this._httpService.post<FilterResponse<any>>(`${this._baseEndPoint}/filter`,undefined,data)
   //    }
+  toggleUserStatus(data: any): Observable<any> {
+    return this._httpService.post<any>(`${this._baseEndPoint}/toggle-status`, undefined, data)
+  }
 }

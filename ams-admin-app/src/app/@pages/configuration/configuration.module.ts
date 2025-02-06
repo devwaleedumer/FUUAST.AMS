@@ -9,7 +9,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
-import {ToolbarModule} from 'primeng/toolbar'
+import { ToolbarModule } from 'primeng/toolbar'
 import { RatingModule } from 'primeng/rating';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -17,7 +17,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
-import {TooltipModule} from 'primeng/tooltip';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ShiftComponent } from './shift/shift.component';
 import { ShiftService } from '../../@core/services/shift/shift.service';
@@ -36,7 +36,7 @@ import { SessionComponent } from './session/session.component';
 
 @NgModule({
   declarations: [
-    ShiftComponent,FacultyComponent,ProgramtypeComponent, ProgramComponent, DepartmentComponent, AcademicYearComponent,SessionComponent
+    ShiftComponent, FacultyComponent, ProgramtypeComponent, ProgramComponent, DepartmentComponent, AcademicYearComponent, SessionComponent
   ],
   imports: [
     CommonModule,
@@ -60,6 +60,6 @@ import { SessionComponent } from './session/session.component';
 
   ]
   ,
-  providers:[MessageService,ShiftService,FacultyService,ProgramtypeService,ProgramService,DepartmentService,SessionService,AcademicyearService]
+  providers: [MessageService, ShiftService, FacultyService, ProgramtypeService, ProgramService, DepartmentService, SessionService, AcademicyearService]
 })
 export class ConfigurationModule { }

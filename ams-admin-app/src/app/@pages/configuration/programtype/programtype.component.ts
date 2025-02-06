@@ -5,7 +5,9 @@ import { MessageService } from 'primeng/api';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { ProgramtypeService } from '../../../@core/services/programtype/programtype.service';
-import { ProgramtypeRequest} from '../../../@core/api/configuration/programtype/programtype';
+import { ProgramtypeRequest } from '../../../@core/api/configuration/programtype/programtype';
+import { RolesAndPermissionService } from '../../../@core/utilities/roles-and-permission.service';
+import { AuthService } from '../../../@core/utilities/auth-service.service';
 
 @Component({
   selector: 'app-programtype',
@@ -20,9 +22,9 @@ export class ProgramtypeComponent {
   addDialog: boolean = false;
   programtypeId!: number;
   programtypeResponse: any[] = [];
-  progamtypeRequest:ProgramtypeRequest;
-   submitted: boolean = false;
-   cols: any[] = [];
+  progamtypeRequest: ProgramtypeRequest;
+  submitted: boolean = false;
+  cols: any[] = [];
   exportColumns: any[] = [];
 
   statuses: any[] = [];
@@ -32,17 +34,20 @@ export class ProgramtypeComponent {
 
   rowsPerPageOptions = [5, 10, 20];
   destroy$: Subject<void> = new Subject<void>();
-  constructor(private _service: ProgramtypeService, private messageService: MessageService,private fb:FormBuilder) {
-   this.progamtypeRequest=new ProgramtypeRequest();
-    this.programtypeId=0;
-   }
+  userdetail: any;
+
+  constructor(private _service: ProgramtypeService, private messageService: MessageService, private fb: FormBuilder, public _auth: AuthService, public _permission: RolesAndPermissionService) {
+    this.progamtypeRequest = new ProgramtypeRequest();
+    this.programtypeId = 0;
+  }
 
   ngOnInit() {
+    this.userdetail = this._auth.User;
     this.ValidationAddFormControl();
-   
-     this.loadprogramtypeData();
-     
-     
+
+    this.loadprogramtypeData();
+
+
 
     this.cols = [
       { field: 'id', header: 'Programtype ID' },
@@ -58,77 +63,95 @@ export class ProgramtypeComponent {
 
   }
   loadprogramtypeData() {
-   
-    this._service.getAllprogramtype().subscribe((response:any) => 
-    {
+
+    this._service.getAllprogramtype().subscribe((response: any) => {
       //console.log('Shift data received:', response);
       this.programtypeResponse = response;
-      this.progamtypeRequest.id=response.id;
-   },
-   (error) => {
-      console.error('Error fetching programtype data:', error);
-   }
-);
-}
-openNew() {
-  this.isEditing = true; // Add mode
+      this.progamtypeRequest.id = response.id;
+    },
+      (error) => {
+        console.error('Error fetching programtype data:', error);
+      }
+
+    );
+  }
+  filterText(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    inputElement.value = filteredValue;
+    this.addprogramtypeForm.get('name')?.setValue(filteredValue, { emitEvent: true }); // Update the form control value
+  }
+  openNew() {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.ProgramType.Create")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to create programtype.', life: 3000 });
+      return;
+    }
+    this.isEditing = true; // Add mode
     this.addprogramtypeForm.reset(); // Reset the form for new entry
     this.submitted = false; // Reset submitted flag
-    this.addDialog = true; 
-}
+    this.addDialog = true;
+  }
 
-ValidationAddFormControl(){
-this.addprogramtypeForm = this.fb.group({
-  name: ['', Validators.required],
- 
-});
-}
-hideDialog() {
-  this.addDialog = false;
-  this.submitted = false;
-}
-isDeleted(response:any) {
+  ValidationAddFormControl() {
+    this.addprogramtypeForm = this.fb.group({
+      name: ['', Validators.required],
+
+    });
+  }
+  hideDialog() {
+    this.addDialog = false;
+    this.submitted = false;
+  }
+  isDeleted(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.ProgramType.Delete")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to delete programtype.', life: 3000 });
+      return;
+    }
     this.deleteDialog = true;
-    this.programtypeId=response.id;
-    
-  }
-editDetails(){
-  debugger
-  if (this.addprogramtypeForm.valid) {
+    this.programtypeId = response.id;
 
-   this.progamtypeRequest=this.addprogramtypeForm.value;
-   this.progamtypeRequest.id=this.programtypeId;
-    this._service.updateProgramtype(this.progamtypeRequest).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'programtype Added', life: 3000 });
-      this.loadprogramtypeData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'programtype could not be added', life: 3000 });
-    });
   }
-  this.addprogramtypeForm.markAllAsTouched();
-}
-saveDetails() {
-  this.submitted = true;
-  if (this.addprogramtypeForm.valid) {
-   
-    this._service.addProgramtype(this.addprogramtypeForm.value).subscribe(() => {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'programtype Added', life: 3000 });
-      this.loadprogramtypeData();  // Refresh the list
-      this.hideDialog();
-    }, error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'programtype could not be added', life: 3000 });
-    });
+  editDetails() {
+    debugger
+    if (this.addprogramtypeForm.valid) {
+
+      this.progamtypeRequest = this.addprogramtypeForm.value;
+      this.progamtypeRequest.id = this.programtypeId;
+      this._service.updateProgramtype(this.progamtypeRequest).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'programtype Added', life: 3000 });
+        this.loadprogramtypeData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'programtype could not be added', life: 3000 });
+      });
+    }
+    this.addprogramtypeForm.markAllAsTouched();
   }
-  this.addprogramtypeForm.markAllAsTouched();
-}
-  
-showEditModal(response:any){
-    this.addDialog=true;
-    this.submitted=true;
-    this.isEditing=false;
+  saveDetails() {
+    this.submitted = true;
+    if (this.addprogramtypeForm.valid) {
+
+      this._service.addProgramtype(this.addprogramtypeForm.value).subscribe(() => {
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'programtype Added', life: 3000 });
+        this.loadprogramtypeData();  // Refresh the list
+        this.hideDialog();
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'programtype could not be added', life: 3000 });
+      });
+    }
+    this.addprogramtypeForm.markAllAsTouched();
+  }
+
+  showEditModal(response: any) {
+    if (!this._permission.hasRequiredPermission(this.userdetail, "Permissions.ProgramType.Update")) {
+      this.messageService.add({ severity: 'error', summary: 'Not Successful', detail: 'You do not have permission to update programtype.', life: 3000 });
+      return;
+    }
+    this.addDialog = true;
+    this.submitted = true;
+    this.isEditing = false;
     this.addprogramtypeForm.patchValue(response);
-    this.programtypeId=response.id;
+    this.programtypeId = response.id;
   }
 
   confirmDelete() {
@@ -142,15 +165,15 @@ showEditModal(response:any){
     this.deleteDialog = false;
   }
   findIndexById(id: string): number {
-      let index = -1;
-      for (let i = 0; i < this.programtypeResponse.length; i++) {
-          if (this.programtypeResponse[i].id === id) {
-              index = i;
-              break;
-          }
+    let index = -1;
+    for (let i = 0; i < this.programtypeResponse.length; i++) {
+      if (this.programtypeResponse[i].id === id) {
+        index = i;
+        break;
       }
-  
-      return index;
+    }
+
+    return index;
   }
 
   createId(): string {
@@ -185,7 +208,7 @@ showEditModal(response:any){
       });
       FileSaver.saveAs(
         data,
-        fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
+        fileName + "export" + new Date().getTime() + EXCEL_EXTENSION
       );
     });
   }

@@ -621,7 +621,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({
                                   ? countrie.find(
                                       (country) => country === field.value
                                     )
-                                  : "Select language"}
+                                  : "Select Country"}
                                 <ChevronsUpDown className="opacity-50" />
                               </Button>
                             </FormControl>
@@ -1018,7 +1018,7 @@ const EditPersonalInfo: FC<EditPersonalInfoProps> = ({
               <div className=" flex justify-between w-full">
                 <Button
                   type="button"
-                  disabled={isLoading}
+                  disabled={true}
                   onClick={(e) => dispatch(prevStep())}
                   size={"sm"}
                 >

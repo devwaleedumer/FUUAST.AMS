@@ -56,17 +56,15 @@
         [columns]="cols"
         responsiveLayout="scroll"
         [rows]="10"
-        [globalFilterFields]="['name','id']"
+        [globalFilterFields]="['name', 'id']"
         [paginator]="true"
         [rowsPerPageOptions]="[10, 20, 30]"
         [totalRecords]="totalRecords"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        
         [rowHover]="true"
         dataKey="id"
         [lazy]="true"
-       
         (onLazyLoad)="getFilterData($event)"
       >
         <ng-template pTemplate="caption">
@@ -79,7 +77,7 @@
               <input
                 pInputText
                 type="text"
-                (input)="onGlobalFilter(dt,$event)"
+                (input)="onGlobalFilter(dt, $event)"
                 placeholder="Search..."
                 class="w-full sm:w-auto"
               />
@@ -88,27 +86,25 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-<!--            <th style="width: 3rem">-->
-<!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
-<!--            </th>-->
+            <!--            <th style="width: 3rem">-->
+            <!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+            <!--            </th>-->
             <th pSortableColumn="id">
               Shift Id <p-sortIcon field="id"></p-sortIcon>
             </th>
             <th pSortableColumn="name">
               Name <p-sortIcon field="name"></p-sortIcon>
             </th>
-            <th class="flex justify-content-center" >
-              Actions
-            </th>
+            <th class="flex justify-content-center">Actions</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-response>
           <tr>
-            <td style=" min-width: 10rem">
+            <td style="min-width: 10rem">
               <span class="p-column-title">Id</span>
               {{ response.id }}
             </td>
-            <td style=" min-width: 10rem">
+            <td style="min-width: 10rem">
               <span class="p-column-title">Name</span>
               {{ response.name }}
             </td>
@@ -143,86 +139,97 @@
       [modal]="true"
       class="p-fluid"
     >
-    
-    <ng-template pTemplate="header">
-      <h3>{{ isEditing ? 'Add Shift Details' : 'Edit Shift Details' }}</h3>
-    </ng-template>
-  
-    <ng-template pTemplate="content">
-      <form [formGroup]="addShiftForm">
-        <div class="field">
-          <label for="name">Name</label>
-          <input
-            type="text"
-            pInputText
-            formControlName="name"
-            required
-            autofocus
-            id="name"
-            [ngClass]="{ 'ng-invalid ng-dirty': submitted && addShiftForm.get('name')?.invalid }"
-          />
-          <div
-          *ngIf="
-addShiftForm.get('name')?.invalid &&
-(addShiftForm.get('name')?.touched || addShiftForm.get('name')?.dirty || submitted)
-"
-          class="p-error"
-        >
-          <small *ngIf="addShiftForm.get('name')?.errors?.['required'] "
-            >Name is required.</small
-          >
-        </div>
-        </div>
-  
-        <div class="field">
-          <label for="description">Description</label>
-          <textarea
-            id="description"
-            pInputTextarea
-            formControlName="description"
-            required
-            rows="3"
-            cols="20"
-            [ngClass]="{ 'ng-invalid ng-dirty': submitted && addShiftForm.get('description')?.invalid }"
-          ></textarea>
-          <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted">
-        
+      <ng-template pTemplate="header">
+        <h3>{{ isEditing ? "Add Shift Details" : "Edit Shift Details" }}</h3>
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <form [formGroup]="addShiftForm">
+          <div class="field">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              pInputText
+              formControlName="name"
+              required
+              (input)="filterText($event)"
+              autofocus
+              id="name"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && addShiftForm.get('name')?.invalid
+              }"
+            />
+            <div
+              *ngIf="
+                addShiftForm.get('name')?.invalid &&
+                (addShiftForm.get('name')?.touched ||
+                  addShiftForm.get('name')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small *ngIf="addShiftForm.get('name')?.errors?.['required'] "
+                >Name is required.</small
+              >
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              pInputTextarea
+              formControlName="description"
+              required
+              rows="3"
+              cols="20"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  submitted && addShiftForm.get('description')?.invalid
+              }"
+            ></textarea>
+            <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted">
+
           </small> -->
-          <div
-          *ngIf="
-addShiftForm.get('description')?.invalid &&
-(addShiftForm.get('description')?.touched || addShiftForm.get('description')?.dirty || submitted)
-"
-          class="p-error"
-        >
-          <small *ngIf="addShiftForm.get('description')?.errors?.['required'] "
-            >Description is required.</small
-          >
-        </div>
-        </div>
-      </form>
-    </ng-template>
-  
-    <ng-template pTemplate="footer">
-      <button
-        pButton
-        pRipple
-        label="Cancel"
-        icon="pi pi-times"
-        class="p-button-text"
-        (click)="hideDialog()"
-      ></button>
-      <button
-        pButton
-        pRipple
-        label="{{isEditing ? 'Add' : 'Update '}}"
-        icon="pi pi-check"
-        class="p-button-text"
-        (click)="isEditing ? saveDetails() : editDetails()"
-      ></button>
-    </ng-template>
-  </p-dialog>
-<!--Edit Product-->
+            <div
+              *ngIf="
+                addShiftForm.get('description')?.invalid &&
+                (addShiftForm.get('description')?.touched ||
+                  addShiftForm.get('description')?.dirty ||
+                  submitted)
+              "
+              class="p-error"
+            >
+              <small
+                *ngIf="addShiftForm.get('description')?.errors?.['required'] "
+                >Description is required.</small
+              >
+            </div>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="hideDialog()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="{{ isEditing ? 'Add' : 'Update ' }}"
+          icon="pi pi-check"
+          class="p-button-text"
+          (click)="isEditing ? saveDetails() : editDetails()"
+        ></button>
+      </ng-template>
+    </p-dialog>
+    <!--Edit Product-->
     <!-- <p-dialog
       [(visible)]="editshiftDialog"
       [style]="{ width: '450px' }"
@@ -230,7 +237,7 @@ addShiftForm.get('description')?.invalid &&
       [modal]="true"
       class="p-fluid"
     >
-    
+
       <ng-template pTemplate="content">
         <form [formGroup]="updateshiftForm">
         <div class="field">
@@ -286,7 +293,7 @@ addShiftForm.get('description')?.invalid &&
         ></button>
       </ng-template>
     </p-dialog> -->
-<!--Delete Dialogue-->
+    <!--Delete Dialogue-->
     <p-dialog
       [(visible)]="deleteShiftDialog"
       header="Confirm"
@@ -295,16 +302,27 @@ addShiftForm.get('description')?.invalid &&
     >
       <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span
-        >Are you sure you want to delete
-        >?</span
-        >
+        <span>Are you sure you want to delete >?</span>
       </div>
       <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteShiftDialog = false"></button>
-        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-times"
+          class="p-button-text"
+          label="No"
+          (click)="deleteShiftDialog = false"
+        ></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-check"
+          class="p-button-text"
+          label="Yes"
+          (click)="confirmDelete()"
+        ></button>
       </ng-template>
-  
     </p-dialog>
+      
   </div>
 </div>

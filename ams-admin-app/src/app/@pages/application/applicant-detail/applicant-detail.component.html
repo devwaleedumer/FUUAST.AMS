@@ -175,13 +175,6 @@
                   class="p-button-rounded p-button-success mr-2"
                   (click)="showEditModal(response)"
                 ></button>
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-trash"
-                  class="p-button-rounded p-button-warning"
-                  (click)="isDeleted(response)"
-                ></button>
               </div>
             </td>
           </tr>
@@ -496,7 +489,7 @@
           label="Rejected"
           icon="pi pi-times"
           class="p-button-text"
-          (click)="update('REJECTED')"
+          (click)="OnReject()"
         ></button>
         <button
           pButton
@@ -508,6 +501,43 @@
         ></button>
       </ng-template>
     </p-dialog>
+
+    <p-dialog
+      [(visible)]="ResponseDialog"
+      header="Rejection Reason"
+      [modal]="true"
+      [style]="{ width: '500px' }"
+    >
+      <div>
+        <textarea
+          [(ngModel)]="responseText"
+          rows="4"
+          [style]="{ width: '400px' }"
+          placeholder="Enter rejection reason..."
+          class="p-inputtext p-component"
+        ></textarea>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          icon="pi pi-times"
+          class="p-button-text"
+          label="Cancel"
+          (click)="OnCancel()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-check"
+          class="p-button-text"
+          label="Save"
+          (click)="update('REJECTED')"
+        ></button>
+      </ng-template>
+    </p-dialog>
+
     <!--Edit Product-->
     <!-- <p-dialog
       [(visible)]="editshiftDialog"
@@ -550,30 +580,7 @@
           >Description  is required.</small
           >
         </div>
-
-      </form>
-      </ng-template>
-      <ng-template pTemplate="footer">
-        <button
-          pButton
-          pRipple
-          label="Cancel"
-          icon="pi pi-times"
-          class="p-button-text"
-          (click)="hideEditDialogue()"
-        ></button>
-        <button
-          pButton
-          pRipple
-          label="Save"
-          icon="pi pi-check"
-          class="p-button-text"
-          (click)="editFaculty()"
-        ></button>
-      </ng-template>
-    </p-dialog> -->
-    <!--Delete Dialogue-->
-    <p-dialog
+ <p-dialog
       [(visible)]="deleteDialog"
       header="Confirm"
       [modal]="true"
@@ -602,5 +609,58 @@
         ></button>
       </ng-template>
     </p-dialog>
+
+      </form>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="hideEditDialogue()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Save"
+          icon="pi pi-check"
+          class="p-button-text"
+          (click)="editFaculty()"
+        ></button>
+      </ng-template>
+    </p-dialog> -->
+    <!--Delete Dialogue-->
+    <p-dialog
+      [(visible)]="deleteDialog"
+      header="Response"
+      [modal]="true"
+      [style]="{ width: '450px' }"
+    >
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to delete >?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          icon="pi pi-times"
+          class="p-button-text"
+          label="No"
+          (click)="(deleteDialog)"
+        ></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-check"
+          class="p-button-text"
+          label="Yes"
+          (click)="confirmDelete()"
+        ></button>
+      </ng-template>
+    </p-dialog>
+      
   </div>
 </div>

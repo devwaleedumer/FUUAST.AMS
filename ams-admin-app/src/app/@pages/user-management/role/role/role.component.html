@@ -217,6 +217,7 @@
             type="text"
             formControlName="name"
             required
+            (input)="filterText($event)"
             class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-300 focus:border-purple- block w-full p-2.5 focus:outline-none"
             autofocus
             id="name"

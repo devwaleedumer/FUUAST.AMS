@@ -1,13 +1,22 @@
 ﻿using AMS.MODELS.Filters;
 using AMS.MODELS.Program;
+using AMS.SERVICES.DataService;
 using AMS.SERVICES.IDataService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMS.Controllers
 {
-    public class ProgramsController(IProgramService service) : BaseApiController
+    public class ProgramsController(IProgramService service, IDepartmentService departmentService) : BaseApiController
     {
        private readonly IProgramService _service = service;
+       private readonly IDepartmentService _departmentService = departmentService;
+
+
+
+        [HttpGet("{programId:int}/departments")]
+        public async Task<IActionResult> GetTimeShiftByDepartmentId( int programId, CancellationToken ct)
+              => Ok(await _departmentService.GetDepartmentsByProgramId(programId, ct));
+
         [HttpGet]
         public async Task<IActionResult> GetAllPrograms(CancellationToken ct)
         {

@@ -7,24 +7,26 @@ import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { DashboardsRoutingModule } from './dashboard-routing.module';
-import { DashboardService } from '../../@core/services/dashboard/dashboard.service';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        ChartModule,
-        MenuModule,
-        TableModule,
-        StyleClassModule,
-        PanelMenuModule,
-        ButtonModule,
-        DashboardsRoutingModule
-    ],
-    declarations: [DashboardComponent],
-   
-    
+  imports: [
+    CommonModule,
+    FormsModule,
+    ChartModule,
+    MenuModule,
+    TableModule,
+    StyleClassModule,
+    PanelMenuModule,
+    ButtonModule,
+    DashboardsRoutingModule,
+    ProgressSpinnerModule,
+
+  ],
+  declarations: [DashboardComponent],
+
+
 })
 export class DashboardModule { }

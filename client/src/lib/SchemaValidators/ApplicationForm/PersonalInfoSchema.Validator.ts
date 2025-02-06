@@ -32,7 +32,7 @@ export const personalInfoEditSchema = z.discriminatedUnion("isImageChanged", [
         })
             .trim()
             .regex(/^[A-Za-z]+( [A-Za-z]+)*$/, {
-                message: "Full Name must contain only alphabets."
+                message: "Father Name must contain only alphabets."
             }),
         permanentAddress: z.string({
             invalid_type_error: "Permanent address is required"

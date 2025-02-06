@@ -40,23 +40,25 @@ export class AppMenuComponent implements OnInit {
               },
             ]
           },
-          {
-            label: 'Configurations', icon: 'pi pi-fw pi-cog',
-            items: [
-              { label: 'Academic Year', icon: 'pi pi-fw pi-calendar', routerLink: ['/applayout/app/configuration/academicyear'] },
-              { label: 'Session', icon: 'pi pi-fw pi-clock', routerLink: ['/applayout/app/configuration/session'] },
-              { label: 'Faculty', icon: 'pi pi-fw pi-briefcase', routerLink: ['/applayout/app/configuration/faculty'] },
-              { label: 'Department', icon: 'pi pi-fw pi-building', routerLink: ['/applayout/app/configuration/department'] },
-              { label: 'Program Type', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/programtype'] },
-              { label: 'Programs', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/program'] },
-              // { label: 'Program Departments', icon: 'pi pi-fw pi-list', routerLink: ['/administration/session'] },
-              {
-                label: 'Shifts', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/shift'],
-              }
-            ]
-          },
+
         ]
       },
+      {
+        label: 'Configurations', icon: 'pi pi-fw pi-cog',
+        items: [
+          { label: 'Academic Year', icon: 'pi pi-fw pi-calendar', routerLink: ['/applayout/app/configuration/academicyear'] },
+          { label: 'Session', icon: 'pi pi-fw pi-clock', routerLink: ['/applayout/app/configuration/session'] },
+          {
+            label: 'Shifts', icon: 'pi pi-map', routerLink: ['/applayout/app/configuration/shift'],
+          },
+          { label: 'Faculty', icon: 'pi pi-fw pi-briefcase', routerLink: ['/applayout/app/configuration/faculty'] },
+          { label: 'Department', icon: 'pi pi-fw pi-building', routerLink: ['/applayout/app/configuration/department'] },
+          { label: 'Programs', icon: 'pi pi-graduation-cap', routerLink: ['/applayout/app/configuration/program'] },
+          { label: 'Program Type', icon: 'pi pi-fw pi-list', routerLink: ['/applayout/app/configuration/programtype'] },
+          { label: 'Program Departments', icon: 'pi pi-building-columns', routerLink: ['/administration/session'] },
+        ]
+      }
+      ,
       {
         label: 'Application Management',
         icon: 'pi pi-fw pi-briefcase',
@@ -66,27 +68,31 @@ export class AppMenuComponent implements OnInit {
             icon: 'pi pi-fw pi-globe',
             routerLink: ['/applayout/app/application/applicant']
           },
+
+        ]
+      },
+      {
+        label: 'Merit List Management',
+        icon: 'pi pi-search',
+        items: [
           {
-            label: 'Auth',
-            icon: 'pi pi-fw pi-user',
-            items: [
-              {
-                label: 'Login',
-                icon: 'pi pi-fw pi-sign-in',
-                routerLink: ['/auth/login']
-              },
-              {
-                label: 'Error',
-                icon: 'pi pi-fw pi-times-circle',
-                routerLink: ['/auth/error']
-              },
-              {
-                label: 'Access Denied',
-                icon: 'pi pi-fw pi-lock',
-                routerLink: ['/auth/access']
-              }
-            ]
+            label: 'Merit List',
+            icon: 'pi pi-list-check',
+            routerLink: ['/applayout/app/merit-list']
           },
+
+        ]
+      },
+      {
+        label: 'Audit Trails Management',
+        icon: 'pi pi-search',
+        items: [
+          {
+            label: 'Audit Trails',
+            icon: 'pi pi-fw pi-globe',
+            routerLink: ['/applayout/app/audit']
+          },
+
         ]
       },
     ];
